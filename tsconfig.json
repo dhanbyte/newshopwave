@@ -19,11 +19,9 @@
     "noImplicitThis": false,
     "alwaysStrict": false,
     "forceConsistentCasingInFileNames": false,
-
     "noImplicitReturns": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-
     "skipDefaultLibCheck": true,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
@@ -33,7 +31,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
     "paths": {

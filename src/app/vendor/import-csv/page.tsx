@@ -52,6 +52,9 @@ const processCsvWithAIEngine = (data, log) => {
   const bodyKey = findKey(['Body (HTML)', 'Description']);
   const vendorKey = findKey(['Vendor', 'Brand']);
   const priceKey = findKey(['Variant Price', 'Price']);
+  const compareAtPriceKey = findKey(['Variant Compare At Price', 'Compare At Price']);
+  const weightKey = findKey(['Variant Grams', 'Weight']);
+  const typeKey = findKey(['Type', 'Category']);
   // Find all image columns (Image Src 1, Image Src 2, etc.)
   const imageKeys = allHeaders.filter(h => 
     h.toLowerCase().includes('image src') || 
@@ -85,6 +88,10 @@ const processCsvWithAIEngine = (data, log) => {
 
     const title = masterRow[titleKey]?.trim() || `Untitled Product - ${handle}`;
     const description = masterRow[bodyKey] || '';
+    const price = parseFloat(masterRow[priceKey] || 0);
+    const compareAtPrice = parseFloat(masterRow[compareAtPriceKey] || 0);
+    const weight = masterRow[weightKey] ? `${masterRow[weightKey]}g` : null;
+    const category = masterRow[typeKey] || null;
     
     // Collect images from all image columns
     const allImages = [];
@@ -105,7 +112,10 @@ const processCsvWithAIEngine = (data, log) => {
       handle: handle,
       title: title,
       brand: masterRow[vendorKey] || 'Unknown Brand',
-      price: parseFloat(masterRow[priceKey] || 0).toFixed(2),
+      price: price.toFixed(2),
+      originalPrice: compareAtPrice > price ? compareAtPrice.toFixed(2) : null,
+      weight: weight,
+      category: category,
       images: allImages,
       features: features,
       sku: sku,
@@ -203,19 +213,46 @@ const ImportCSVPage = () => {
                 <ul className="divide-y divide-gray-200">{products.map(p => (
                     <li key={p.handle} className="p-4 hover:bg-gray-50">
                       <div className="flex items-start gap-4">
-                        <img src={p.images[0] || 'https://via.placeholder.com/80x80?text=No+Image'} alt={p.title} width={80} height={80} className="rounded-md bg-gray-200 object-cover" onError={(e) => { e.target.src = 'https://via.placeholder.com/80x80?text=No+Image' }} />
+                        <div className="flex flex-col gap-1">
+                          <img src={p.images[0] || 'https://via.placeholder.com/80x80?text=No+Image'} alt={p.title} width={80} height={80} className="rounded-md bg-gray-200 object-cover" onError={(e) => { e.target.src = 'https://via.placeholder.com/80x80?text=No+Image' }} />
+                          {p.images.length > 1 && (
+                            <div className="flex gap-1">
+                              {p.images.slice(1, 4).map((img, idx) => (
+                                <img key={idx} src={img} alt={`${p.title} ${idx + 2}`} width={25} height={25} className="rounded object-cover" onError={(e) => { e.target.src = 'https://via.placeholder.com/25x25?text=+' }} />
+                              ))}
+                              {p.images.length > 4 && (
+                                <div className="w-6 h-6 bg-gray-300 rounded flex items-center justify-center text-xs">+{p.images.length - 4}</div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                         <div className="flex-grow">
                            <p className="text-sm text-gray-500">{p.brand} | SKU: {p.sku}</p>
                            <p className="font-semibold text-gray-800">{p.title}</p>
-                           <p className="text-lg font-bold text-blue-600">₹{p.price}</p>
+                           <div className="flex items-center gap-2">
+                             <p className="text-lg font-bold text-blue-600">₹{p.price}</p>
+                             {p.originalPrice && (
+                               <p className="text-sm text-gray-500 line-through">₹{p.originalPrice}</p>
+                             )}
+                           </div>
+                           {(p.weight || p.category) && (
+                             <p className="text-xs text-gray-500">
+                               {p.category && `Category: ${p.category}`}
+                               {p.category && p.weight && ' | '}
+                               {p.weight && `Weight: ${p.weight}`}
+                             </p>
+                           )}
                            <div className="mt-2">
                             <p className="text-xs font-bold text-gray-600">AI-Generated Features:</p>
                             <ul className="list-disc list-inside text-xs text-gray-600 pl-2">{p.features.map((f, i) => <li key={i}>{f}</li>)}</ul>
                            </div>
                         </div>
                          <div className="text-right text-xs text-gray-500 shrink-0">
-                            <p>{p.images.length} images</p>
+                            <p>{p.images.length} image{p.images.length !== 1 ? 's' : ''}</p>
                             <p>⭐ {p.rating.average} ({p.rating.count} reviews)</p>
+                            {p.fullDescription && (
+                              <p className="text-xs text-gray-400 mt-1 max-w-xs truncate">{p.fullDescription.substring(0, 50)}...</p>
+                            )}
                         </div>
                       </div>
                     </li>
