@@ -75,13 +75,23 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     setLoading(true)
     try {
+      console.log('Fetching products from admin APIs...')
+      
       const [regularRes, vendorRes] = await Promise.all([
         fetch('/api/admin/products'),
         fetch('/api/admin/vendor-products')
       ])
 
+      console.log('Regular products response status:', regularRes.status)
+      console.log('Vendor products response status:', vendorRes.status)
+
       const regularData: ProductsResponse = await regularRes.json()
       const vendorData: ProductsResponse = await vendorRes.json()
+
+      console.log('Regular products data:', regularData)
+      console.log('Vendor products data:', vendorData)
+      console.log('Regular products count:', regularData.products?.length || 0)
+      console.log('Vendor products count:', vendorData.products?.length || 0)
 
       const regularProducts = (regularData.products ?? []).map((product) =>
         normalizeProduct(product, false)
@@ -91,6 +101,7 @@ export default function ProductsPage() {
       )
 
       const allProducts = [...regularProducts, ...vendorProducts]
+      console.log('Total products after normalization:', allProducts.length)
       setProducts(allProducts)
       
       // Extract unique categories

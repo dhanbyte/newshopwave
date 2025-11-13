@@ -51,15 +51,15 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    console.log(`Fetched ${products.length} total products from database`)
+    console.log(`Fetched ${allProducts.length} total products from database`)
 
-    if (products.length === 0) {
+    if (allProducts.length === 0) {
       console.log('No products found in database')
     }
 
     return NextResponse.json({ 
       success: true, 
-      products: products || []
+      products: allProducts || []
     })
   } catch (error) {
     console.error('Error fetching vendor products:', error)
