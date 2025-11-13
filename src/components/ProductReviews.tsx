@@ -52,7 +52,8 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
         setReviews(data.map(convertToReview));
       } catch (error) {
         console.error('Error fetching reviews:', error);
-        // Show default reviews instead of error
+      } finally {
+        // Always show fake reviews
         setReviews([
           {
             _id: '1',
@@ -97,7 +98,6 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
             createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
           }
         ]);
-      } finally {
         setLoading(false);
       }
     };

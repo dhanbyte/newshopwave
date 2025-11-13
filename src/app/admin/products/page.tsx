@@ -135,7 +135,7 @@ export default function ProductsPage() {
 
       if (response.ok) {
         alert(`Product status updated to ${status}`)
-        await fetchProducts()
+        // Page will refresh manually when needed
       } else {
         alert('Failed to update product status')
       }
@@ -222,7 +222,7 @@ export default function ProductsPage() {
         alert('Product updated successfully')
         setEditingProduct(null)
         setEditForm({})
-        await fetchProducts()
+        // Page will refresh manually when needed
       } else {
         alert('Failed to update product')
       }
@@ -246,7 +246,7 @@ export default function ProductsPage() {
 
       if (response.ok) {
         alert('Product deleted successfully')
-        await fetchProducts()
+        // Page will refresh manually when needed
       } else {
         alert('Failed to delete product')
       }
@@ -395,7 +395,7 @@ export default function ProductsPage() {
         {loading ? (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto" />
-            <p className="mt-2 text-gray-600">Loading products...</p>
+            <p className="mt-2 text-gray-600">Page is manually refreshed</p>
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-8 text-gray-500">

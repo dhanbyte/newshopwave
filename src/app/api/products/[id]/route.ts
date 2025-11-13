@@ -13,11 +13,45 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const { data: product, error } = await supabase
-      .from('products')
+    // Try to find in vendor_products first, then regular products
+    let product = null
+    let error = null
+    
+    // First try vendor_products
+    const { data: vendorProduct, error: vendorError } = await supabase
+      .from('vendor_products')
       .select('*')
-      .eq('id', id)
+      .or(`id.eq.${id},slug.eq.${id}`)
       .single()
+    
+    if (vendorProduct && !vendorError) {
+      // Transform vendor product
+      product = {
+        id: vendorProduct.id,
+        name: vendorProduct.name,
+        description: vendorProduct.description,
+        price: vendorProduct.price,
+        original_price: vendorProduct.original_price,
+        image: Array.isArray(vendorProduct.images) && vendorProduct.images.length > 0 ? vendorProduct.images[0] : null,
+        extra_images: Array.isArray(vendorProduct.images) ? vendorProduct.images.slice(1) : [],
+        category: vendorProduct.category,
+        subcategory: vendorProduct.subcategory,
+        brand: vendorProduct.brand,
+        stock: vendorProduct.stock,
+        weight: vendorProduct.weight,
+        slug: vendorProduct.slug
+      }
+    } else {
+      // Try regular products
+      const { data: regularProduct, error: regularError } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .single()
+      
+      product = regularProduct
+      error = regularError
+    }
     
     if (error || !product) {
       return NextResponse.json({ 

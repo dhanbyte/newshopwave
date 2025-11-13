@@ -116,8 +116,8 @@ export default function RelatedProducts({ products, title = "Related Products" }
                 
                 <div className="pt-0.5">
                   <PriceTag 
-                    original={product.price.original} 
-                    discounted={product.price.discounted}
+                    original={product.originalPrice || product.price_original || product.price?.original || product.price} 
+                    discounted={product.price_discounted || product.price?.discounted || (product.originalPrice && product.price !== product.originalPrice ? product.price : undefined)}
                     size="sm"
                   />
                 </div>

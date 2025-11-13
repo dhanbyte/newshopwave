@@ -43,6 +43,7 @@ function ProductDetailContent() {
   const [p, setP] = useState<Product | null | undefined>(undefined);
   const [qty, setQty] = useState(1)
   const [customName, setCustomName] = useState('')
+  const [loading, setLoading] = useState(true)
   const { add } = useCart()
 
   // Track influencer referral
@@ -66,42 +67,76 @@ function ProductDetailContent() {
   }, [searchParams, p])
 
   useEffect(() => {
-    setP(undefined)
+    const fetchProduct = async () => {
+      if (!slug) {
+        setLoading(false)
+        return
+      }
 
-    if (!slug || productList.length === 0) {
-      return
+      setLoading(true)
+      setP(undefined)
+
+      // First try to find in existing products
+      if (productList.length > 0) {
+        let foundProduct = productList.find((prod) => prod.slug === slug)
+
+        if (!foundProduct) {
+          foundProduct = productList.find((prod) => prod.id === slug)
+        }
+
+        if (!foundProduct) {
+          foundProduct = productList.find((prod) => prod._id === slug)
+        }
+
+        if (!foundProduct) {
+          foundProduct = productList.find(
+            (prod) => prod.slug && prod.slug.includes(slug)
+          )
+        }
+
+        if (!foundProduct) {
+          foundProduct = productList.find((prod) => {
+            const generatedSlug = prod.name
+              ?.toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/(^-|-$)/g, '')
+            return generatedSlug === slug
+          })
+        }
+
+        if (foundProduct) {
+          setP(foundProduct)
+          setLoading(false)
+          return
+        }
+      }
+
+      // If not found in store, try to find by ID in products
+      try {
+        const response = await fetch('/api/products')
+        if (response.ok) {
+          const allProducts = await response.json()
+          const foundProduct = allProducts.find(p => p.id.toString() === slug || p.slug === slug)
+          if (foundProduct) {
+            setP(foundProduct)
+          } else {
+            setP(null)
+          }
+        } else {
+          setP(null)
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error)
+        setP(null)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    let foundProduct = productList.find((prod) => prod.slug === slug)
+    fetchProduct()
+  }, [slug, productList])
 
-    if (!foundProduct) {
-      foundProduct = productList.find((prod) => prod.id === slug)
-    }
-
-    if (!foundProduct) {
-      foundProduct = productList.find((prod) => prod._id === slug)
-    }
-
-    if (!foundProduct) {
-      foundProduct = productList.find(
-        (prod) => prod.slug && prod.slug.includes(slug)
-      )
-    }
-
-    if (!foundProduct) {
-      foundProduct = productList.find((prod) => {
-        const generatedSlug = prod.name
-          ?.toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/(^-|-$)/g, '')
-        return generatedSlug === slug
-      })
-    }
-
-    setP(foundProduct || null)
-  }, [slug, products])
-
-  if (p === undefined) {
+  if (loading || p === undefined) {
     return (
       <div className="flex justify-center py-10">
           <LoadingSpinner />
@@ -121,7 +156,7 @@ function ProductDetailContent() {
     )
   }
 
-  const price = p.price.discounted ?? p.price.original
+  const price = p.price?.discounted ?? p.price_discounted ?? p.price?.original ?? p.price_original ?? p.price ?? 0
   const images = [p.image, ...(p.extraImages||[])]
   const related = products.filter(x => x.category===p.category && x.id!==p.id).slice(0,8)
 
@@ -475,7 +510,7 @@ function ProductDetailContent() {
             </div>
             {p.brand && <div className="mt-1 text-sm text-gray-500">by {p.brand}</div>}
             {p.ratings && <div className="mt-2"><RatingStars value={p.ratings?.average ?? 0} /></div>}
-            <div className="mt-3"><PriceTag original={p.price.original} discounted={p.price.discounted} /></div>
+            <div className="mt-3"><PriceTag original={p.price?.original ?? p.price_original ?? p.originalPrice} discounted={p.price?.discounted ?? p.price_discounted ?? p.price} /></div>
             
             {p.shortDescription && <div className="mt-4 text-sm text-gray-700">
               <p>{p.shortDescription}</p>

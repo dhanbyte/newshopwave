@@ -46,15 +46,7 @@ export default function Home() {
     }
   }, [products.length, isLoading, init]);
 
-  // Auto-refresh products every 30 seconds to catch new approvals
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('Auto-refreshing products...');
-      forceRefresh();
-      setLastRefresh(new Date());
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [forceRefresh]);
+  // Removed auto-refresh to prevent constant reloading
 
   const handleManualRefresh = async () => {
     console.log('Manual refresh triggered');
@@ -71,6 +63,8 @@ export default function Home() {
     if (products.length > 0) {
       console.log('First product:', products[0]);
       console.log('Categories found:', [...new Set(products.map(p => p.category))]);
+      console.log('Vendor products:', products.filter(p => p.isVendorProduct).length);
+      console.log('Sample vendor product:', products.find(p => p.isVendorProduct));
     }
   }, [products]);
   const { toast } = useToast();
@@ -120,9 +114,8 @@ export default function Home() {
 
   const techDeals = useMemo(() => {
     const filtered = products.filter(p => {
-      const hasStock = (p.quantity ?? 0) > 0 || (p.stock ?? 0) > 0;
       const isCategory = p.category === 'Tech' || p.category === 'Electronics';
-      return isCategory && hasStock;
+      return isCategory;
     });
     console.log('Tech deals found:', filtered.length);
     return filtered;
@@ -130,9 +123,8 @@ export default function Home() {
 
   const homeDeals = useMemo(() => {
     const filtered = products.filter(p => {
-      const hasStock = (p.quantity ?? 0) > 0 || (p.stock ?? 0) > 0;
-      const isCategory = p.category === 'Home';
-      return isCategory && hasStock;
+      const isCategory = p.category === 'Home' || p.category === 'Home & Kitchen';
+      return isCategory;
     });
     console.log('Home deals found:', filtered.length);
     return filtered;
@@ -140,10 +132,9 @@ export default function Home() {
 
   const newArrivals = useMemo(() => {
     const apiNewArrivals = products.filter(p => {
-      const hasStock = (p.quantity ?? 0) > 0 || (p.stock ?? 0) > 0;
-      return p.category === 'New Arrivals' && hasStock;
+      return p.category === 'New Arrivals';
     });
-    const jsonNewArrivals = NEWARRIVALS_PRODUCTS.filter(p => p.quantity > 0);
+    const jsonNewArrivals = NEWARRIVALS_PRODUCTS; // Show all JSON products
     const combined = [...apiNewArrivals, ...jsonNewArrivals];
     console.log('New arrivals found:', combined.length);
     return combined;
@@ -151,36 +142,34 @@ export default function Home() {
 
   const fashionDeals = useMemo(() => {
     const apiFashion = products.filter(p => {
-      const hasStock = (p.quantity ?? 0) > 0 || (p.stock ?? 0) > 0;
       const isCategory = p.category === 'Fashion';
-      return isCategory && hasStock;
+      return isCategory;
     });
-    const jsonFashion = FASHION_PRODUCTS.filter(p => p.quantity > 0);
+    const jsonFashion = FASHION_PRODUCTS; // Show all JSON products
     const combined = [...apiFashion, ...jsonFashion];
     console.log('Fashion deals found:', combined.length, 'API:', apiFashion.length, 'JSON:', jsonFashion.length);
     return combined;
   }, [products]);
 
   const filteredProducts = useMemo(() => {
-    const inStockProducts = products.filter(p => (p.quantity ?? 0) > 0 || (p.stock ?? 0) > 0);
     if (selectedCategory === 'All') {
-      return [...inStockProducts, ...FASHION_PRODUCTS.filter(p => p.quantity > 0)];
+      return [...products, ...FASHION_PRODUCTS];
     }
     if (selectedCategory === 'Electronics') {
-      return inStockProducts.filter(p => p.category === 'Electronics' || p.category === 'Tech');
+      return products.filter(p => p.category === 'Electronics' || p.category === 'Tech');
     }
     if (selectedCategory === 'New Arrivals') {
-      const apiNewArrivals = inStockProducts.filter(p => p.category === 'New Arrivals');
-      const jsonNewArrivals = NEWARRIVALS_PRODUCTS.filter(p => p.quantity > 0);
+      const apiNewArrivals = products.filter(p => p.category === 'New Arrivals');
+      const jsonNewArrivals = NEWARRIVALS_PRODUCTS;
       return [...apiNewArrivals, ...jsonNewArrivals];
     }
     if (selectedCategory === 'Fashion') {
-      const apiFashion = inStockProducts.filter(p => p.category === 'Fashion');
-      const jsonFashion = FASHION_PRODUCTS.filter(p => p.quantity > 0);
+      const apiFashion = products.filter(p => p.category === 'Fashion');
+      const jsonFashion = FASHION_PRODUCTS;
       return [...apiFashion, ...jsonFashion];
     }
 
-    return inStockProducts.filter(p => p.category === selectedCategory);
+    return products.filter(p => p.category === selectedCategory);
   }, [selectedCategory, products]);
 
   const visibleProducts = useMemo(() => {
@@ -432,7 +421,7 @@ export default function Home() {
             
             // Count products from all sources
             [...products, ...NEWARRIVALS_PRODUCTS, ...FASHION_PRODUCTS].forEach(product => {
-              if (product.subcategory && ((product.quantity ?? 0) > 0 || (product.stock ?? 0) > 0)) {
+              if (product.subcategory) {
                 subcategoryCounts[product.subcategory] = (subcategoryCounts[product.subcategory] || 0) + 1;
               }
             });
@@ -446,7 +435,7 @@ export default function Home() {
             return topSubcategories.map((subcategory, index) => {
               // Find a product from this subcategory to use its image
               const productFromCategory = [...products, ...NEWARRIVALS_PRODUCTS, ...FASHION_PRODUCTS]
-                .find(p => p.subcategory === subcategory && p.image && ((p.quantity ?? 0) > 0 || (p.stock ?? 0) > 0));
+                .find(p => p.subcategory === subcategory && p.image);
               
               // Special image for Women category
               let image;

@@ -21,7 +21,7 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
   const { add } = useCart();
   const { requireAuth, user } = useRequireAuth();
   const { addNotification, hasNotification } = useNotificationStore();
-  const price = productData.price?.discounted ?? productData.price_discounted ?? productData.price?.original ?? productData.price_original ?? 0;
+  const price = productData.price_discounted || productData.price?.discounted || productData.price || productData.price?.original || productData.price_original || 0;
   
   // Generate proper slug for the product
   const getProductSlug = () => {
@@ -120,8 +120,8 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
           </div>
           <div className="mb-2 md:mb-3">
             <PriceTag 
-              original={productData.price?.original || productData.price_original} 
-              discounted={productData.price?.discounted || productData.price_discounted} 
+              original={productData.originalPrice || productData.price_original || productData.price?.original || productData.price} 
+              discounted={productData.price_discounted || productData.price?.discounted || (productData.originalPrice && productData.price !== productData.originalPrice ? productData.price : undefined)} 
               size="sm" 
             />
           </div>

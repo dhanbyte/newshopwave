@@ -57,6 +57,7 @@ export const useProductStore = create<ProductState>()((set, get) => ({
         if (response.ok) {
           const apiProducts = await response.json();
           console.log('API returned', apiProducts.length, 'products');
+          console.log('First 3 products:', apiProducts.slice(0, 3));
           const products = Array.isArray(apiProducts) ? apiProducts : [];
 
           // Ensure all products have proper slug
@@ -65,23 +66,8 @@ export const useProductStore = create<ProductState>()((set, get) => ({
             slug: product.slug || product.id || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'product'
           }));
 
-          // Add JSON products (Tech, Home, New Arrivals and Customizable) as supplements
-          const techProductsJson = TECH_PRODUCTS.map(product => ({
-            ...product,
-            slug: product.slug || product.id || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'product'
-          }));
-
-          const homeProductsJson = HOME_PRODUCTS.map(product => ({
-            ...product,
-            slug: product.slug || product.id || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'product'
-          }));
-
-          const newArrivalsProducts = NEWARRIVALS_PRODUCTS.map(product => ({
-            ...product,
-            slug: product.slug || product.id || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'product'
-          }));
-          
-          const allProducts = [...processedProducts, ...techProductsJson, ...homeProductsJson, ...newArrivalsProducts, ...CUSTOMIZABLE_PRODUCTS];
+          // Use only API products since they already include JSON products
+          const allProducts = processedProducts;
           console.log('Total products after processing:', allProducts.length);
 
           set({ products: allProducts, isLoading: false, initialized: true });
@@ -289,23 +275,8 @@ export const useProductStore = create<ProductState>()((set, get) => ({
           slug: product.slug || product.id || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'product'
         }));
         
-        // Add JSON products (Tech, Home, New Arrivals and Customizable) so UI filters keep their fallback items
-        const techProductsJson = TECH_PRODUCTS.map(product => ({
-          ...product,
-          slug: product.slug || product.id || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'product'
-        }));
-
-        const homeProductsJson = HOME_PRODUCTS.map(product => ({
-          ...product,
-          slug: product.slug || product.id || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'product'
-        }));
-
-        const newArrivalsProducts = NEWARRIVALS_PRODUCTS.map(product => ({
-          ...product,
-          slug: product.slug || product.id || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'product'
-        }));
-
-        const allProducts = [...processedProducts, ...techProductsJson, ...homeProductsJson, ...newArrivalsProducts, ...CUSTOMIZABLE_PRODUCTS];
+        // Use only API products since they already include JSON products
+        const allProducts = processedProducts;
         const vendorCount = allProducts.filter(p => p.isVendorProduct).length;
         
         set({ products: allProducts });

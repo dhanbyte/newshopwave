@@ -19,11 +19,15 @@ export async function POST(request: Request) {
     }
     
     // Check if user already exists
-    const { data: existingUser } = await supabase
+    const { data: existingUser, error: checkError } = await supabase
       .from('users')
       .select('*')
       .or(`user_id.eq.${userId},email.eq.${email}`)
-      .single();
+      .maybeSingle();
+    
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking existing user:', checkError);
+    }
 
     if (existingUser) {
       return NextResponse.json({ 
