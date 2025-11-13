@@ -301,21 +301,7 @@ export default function Home() {
         />
       </Head>
       <div className="space-y-8">
-      {/* Debug/Refresh Section - Remove in production */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mx-4">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-blue-700">
-            Products: {products.length} | Vendor: {products.filter(p => p.isVendorProduct).length}
-            {lastRefresh && <span className="ml-2">Last refresh: {lastRefresh.toLocaleTimeString()}</span>}
-          </div>
-          <button
-            onClick={handleManualRefresh}
-            className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-          >
-            Refresh Products
-          </button>
-        </div>
-      </div>
+
       
       <BannerSlider />
 

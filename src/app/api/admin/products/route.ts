@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
       .from('products')
       .select('*')
       .order('created_at', { ascending: false })
+      .limit(100000) // Use high limit to get all products
 
     return NextResponse.json({ 
       success: true, 

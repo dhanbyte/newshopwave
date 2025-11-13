@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Categories</title>
+</head>
+<body>
+    <h1>Test Categories API</h1>
+    <button onclick="testCategories()">Load Categories</button>
+    <div id="result"></div>
+
+    <script>
+        async function testCategories() {
+            try {
+                document.getElementById('result').innerHTML = 'Loading...';
+                
+                const response = await fetch('/api/categories');
+                const categories = await response.json();
+                
+                let html = '<h3>Categories:</h3>';
+                categories.forEach(cat => {
+                    const subcats = Array.isArray(cat.subcategories) ? cat.subcategories : [];
+                    html += `
+                        <div style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
+                            <h4>${cat.name} (${subcats.length} subcategories)</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                ${subcats.map(sub => 
+                                    `<span style="background: #e3f2fd; padding: 2px 8px; border-radius: 12px; font-size: 12px;">${sub}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('result').innerHTML = html;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

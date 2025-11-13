@@ -17,6 +17,7 @@ interface Category {
 
 export default function CategoryManager() {
   const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<Partial<Category>>({})
   const [newCategory, setNewCategory] = useState({ name: '', subcategories: '', image: '' })
@@ -28,11 +29,14 @@ export default function CategoryManager() {
 
   const fetchCategories = async () => {
     try {
+      setLoading(true)
       const response = await fetch('/api/categories')
       const data = await response.json()
       setCategories(data)
     } catch (error) {
       console.error('Failed to fetch categories:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -243,16 +247,16 @@ export default function CategoryManager() {
                 </div>
                 
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">Subcategories ({category.subcategories.length})</h4>
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">Subcategories ({category.subcategories?.length || 0})</h4>
                   <div className="flex flex-wrap gap-2">
-                    {category.subcategories.slice(0, 8).map((sub, idx) => (
+                    {(category.subcategories || []).slice(0, 8).map((sub, idx) => (
                       <span key={idx} className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
                         {sub}
                       </span>
                     ))}
-                    {category.subcategories.length > 8 && (
+                    {(category.subcategories?.length || 0) > 8 && (
                       <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
-                        +{category.subcategories.length - 8} more
+                        +{(category.subcategories?.length || 0) - 8} more
                       </span>
                     )}
                   </div>

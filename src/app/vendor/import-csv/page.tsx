@@ -176,7 +176,55 @@ const ImportCSVPage = () => {
         alert("No products to send!");
         return;
     }
-    alert(`Simulating push to admin: The following ${products.length} products would be saved to a review file.\n(This is a frontend demo - no file is actually saved in this step)`);
+    
+    setIsProcessing(true);
+    logger('[UPLOAD] Starting database upload...');
+    
+    try {
+      // Convert products to CSV format for API
+      const csvProducts = products.map(p => ({
+        Handle: p.handle,
+        Title: p.title,
+        'Body (HTML)': p.fullDescription,
+        Vendor: p.brand,
+        Type: p.category || '',
+        'Variant Price': parseFloat(p.price) || 0,
+        'Variant Compare At Price': p.originalPrice ? parseFloat(p.originalPrice) : '',
+        'Variant Grams': p.weight ? parseInt(p.weight.replace('g', '')) : '',
+        Published: 'TRUE',
+        ...p.images.reduce((acc, img, idx) => {
+          acc[`Image Src ${idx + 1}`] = img;
+          return acc;
+        }, {})
+      }));
+      
+      const response = await fetch('/api/vendor/import-csv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vendorId: 1, // Default vendor ID
+          products: csvProducts
+        })
+      });
+      
+      const result = await response.json();
+      logger(`[UPLOAD] API Response: ${JSON.stringify(result)}`);
+      
+      if (result.success) {
+        const count = result.processed || result.inserted || 0;
+        logger(`[UPLOAD_SUCCESS] ${count} products uploaded to database`);
+        alert(`Success! ${count} products uploaded to database for admin review.`);
+        setProducts([]);
+      } else {
+        logger(`[UPLOAD_ERROR] ${result.message}`);
+        alert(`Upload failed: ${result.message}`);
+      }
+    } catch (error) {
+      logger(`[UPLOAD_CRITICAL] ${error.message}`);
+      alert(`Upload failed: ${error.message}`);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -188,7 +236,7 @@ const ImportCSVPage = () => {
           disabled={products.length === 0 || isProcessing}
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
         >
-          Send to Admin for Review
+          {isProcessing ? 'Uploading...' : 'Send to Admin for Review'}
         </button>
       </div>
 

@@ -67,7 +67,21 @@ let categories = [
     _id: "690f19b26de573c4ce768b19",
     name: "Fashion",
     slug: "fashion",
-    subcategories: ["Men", "Women", "Kids", "Accessories"],
+    subcategories: [
+      "--- MEN'S SECTION ---",
+      "Men's T-Shirts", "Men's Shirts", "Men's Jeans", "Men's Trousers", "Men's Shorts",
+      "Men's Jackets", "Men's Hoodies", "Men's Ethnic Wear", "Men's Innerwear", "Men's Sleepwear", "Men's Shoes",
+      "--- WOMEN'S SECTION ---",
+      "Women's Tops", "Women's Dresses", "Women's Jeans", "Women's Trousers", "Women's Skirts",
+      "Women's Jackets", "Women's Ethnic Wear", "Women's Innerwear", "Women's Sleepwear", "Women's Sarees",
+      "Women's Kurtis", "Women's Leggings", "Women's Palazzo", "Women's Blouses", "Women's Shoes",
+      "--- KIDS SECTION ---",
+      "Kids Boys Clothing", "Kids Girls Clothing", "Baby Clothing", "Kids Footwear", "Kids Accessories",
+      "--- FOOTWEAR & ACCESSORIES ---",
+      "Sports Shoes", "Casual Shoes", "Formal Shoes", "Sandals", "Slippers",
+      "Bags", "Wallets", "Belts", "Watches", "Sunglasses", "Jewelry", "Hair Accessories",
+      "Caps & Hats", "Scarves", "Gloves", "Ties", "Socks", "Fashion Accessories"
+    ],
     image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400",
     isActive: true,
     order: 1

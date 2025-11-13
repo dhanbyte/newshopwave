@@ -5,9 +5,16 @@ import { TECH_PRODUCTS } from '@/lib/data/tech';
 import { HOME_PRODUCTS } from '@/lib/data/home';
 import { FASHION_PRODUCTS } from '@/lib/data/fashion';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+);
 
 // GET all products with filtering support
 export async function GET(request: Request) {
@@ -20,8 +27,8 @@ export async function GET(request: Request) {
         try {
             // Fetch both regular products and vendor products from Supabase (exclude customizable products)
             const [regularProductsResult, vendorProductsResult] = await Promise.all([
-                supabase.from('products').select('*').neq('category', 'customizable'),
-                supabase.from('vendor_products').select('*').eq('status', 'active').neq('category', 'customizable')
+                supabase.from('products').select('*').neq('category', 'customizable').order('created_at', { ascending: false }),
+                supabase.from('vendor_products').select('*').neq('category', 'customizable').order('created_at', { ascending: false })
             ]);
             
             const regularProducts = regularProductsResult.data || [];
