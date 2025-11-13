@@ -19,20 +19,42 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const vendorId = searchParams.get('vendorId')
 
-    let query = supabase
-      .from('vendor_products')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(100000) // Use high limit to get all products
+    // Fetch all products without limit using pagination
+    let allProducts = []
+    let from = 0
+    const batchSize = 1000
+    let hasMore = true
 
-    if (vendorId) {
-      query = query.eq('vendor_id', parseInt(vendorId))
+    while (hasMore) {
+      let query = supabase
+        .from('vendor_products')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .range(from, from + batchSize - 1)
+
+      if (vendorId) {
+        query = query.eq('vendor_id', parseInt(vendorId))
+      }
+
+      const { data: batch, error } = await query
+      
+      if (error) {
+        throw new Error(`Supabase error: ${error.message}`)
+      }
+
+      if (batch && batch.length > 0) {
+        allProducts = [...allProducts, ...batch]
+        from += batchSize
+        hasMore = batch.length === batchSize
+      } else {
+        hasMore = false
+      }
     }
 
-    const { data: products, error } = await query
+    console.log(`Fetched ${products.length} total products from database`)
 
-    if (error) {
-      throw new Error(`Supabase error: ${error.message}`)
+    if (products.length === 0) {
+      console.log('No products found in database')
     }
 
     return NextResponse.json({ 

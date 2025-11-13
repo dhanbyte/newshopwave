@@ -28,7 +28,7 @@ export async function GET(request: Request) {
             // Fetch both regular products and vendor products from Supabase (exclude customizable products)
             const [regularProductsResult, vendorProductsResult] = await Promise.all([
                 supabase.from('products').select('*').neq('category', 'customizable').order('created_at', { ascending: false }),
-                supabase.from('vendor_products').select('*').neq('category', 'customizable').order('created_at', { ascending: false })
+supabase.from('vendor_products').select('*').neq('category', 'customizable').order('created_at', { ascending: false })
             ]);
             
             const regularProducts = regularProductsResult.data || [];
@@ -36,12 +36,18 @@ export async function GET(request: Request) {
             
             console.log(`Found ${regularProducts.length} regular products and ${vendorProducts.length} vendor products from Supabase`);
             
+            if (regularProductsResult.error) {
+                console.error('Regular products query error:', regularProductsResult.error);
+            }
+            
             if (vendorProductsResult.error) {
                 console.error('Vendor products query error:', vendorProductsResult.error);
             }
             
             if (vendorProducts.length > 0) {
-                console.log('Sample vendor products:', vendorProducts.slice(0, 2).map(p => ({ id: p.id, name: p.name, status: p.status })));
+                console.log('Sample vendor products:', vendorProducts.slice(0, 2).map(p => ({ id: p.id, name: p.name, status: p.status, stock: p.stock })));
+            } else {
+                console.log('No vendor products found in database');
             }
             
             // Transform regular products
@@ -57,25 +63,30 @@ export async function GET(request: Request) {
                 isVendorProduct: false
             }));
 
-            // Transform vendor products
-            const transformedVendorProducts = vendorProducts.map(product => ({
-                ...product,
-                image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/400x400/f3f4f6/9ca3af?text=No+Image',
-                extraImages: Array.isArray(product.images) ? product.images : [],
-                shortDescription: product.description?.substring(0, 100) + '...' || '',
-                features: [],
-                specifications: {},
-                ratings: { average: 4.2, count: Math.floor(Math.random() * 50) + 10 },
-                quantity: product.stock,
-                isVendorProduct: true,
-                slug: product.slug || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || product.id,
-                price: {
-                    original: product.original_price || product.price,
-                    discounted: product.price,
-                    currency: '₹'
-                },
-                brand: product.brand || 'ShopWave'
-            }));
+            // Transform vendor products - filter out products with no price or stock
+            const transformedVendorProducts = vendorProducts
+                .filter(product => product.price > 0 && product.stock > 0)
+                .map(product => ({
+                    id: product.id,
+                    name: product.name,
+                    image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/400x400/f3f4f6/9ca3af?text=No+Image',
+                    extraImages: Array.isArray(product.images) ? product.images : [],
+                    shortDescription: product.description?.substring(0, 100) + '...' || '',
+                    description: product.description || '',
+                    category: product.category,
+                    subcategory: product.subcategory || '',
+                    price: Number(product.price) || 0,
+                    originalPrice: Number(product.original_price) || Number(product.price) || 0,
+                    quantity: Number(product.stock) || 0,
+                    stock: Number(product.stock) || 0,
+                    brand: product.brand || 'ShopWave',
+                    features: [],
+                    specifications: {},
+                    ratings: { average: 4.2, count: Math.floor(Math.random() * 50) + 10 },
+                    isVendorProduct: true,
+                    slug: product.slug || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `product-${product.id}`,
+                    inStock: (product.stock || 0) > 0
+                }));
 
             // Combine all products
             let allProducts = [...transformedRegularProducts, ...transformedVendorProducts];
