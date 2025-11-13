@@ -24,6 +24,118 @@ const generateSkuAI = (title) => {
   return `DSIN-${prefix}${randomNum}`;
 };
 
+// AI Function 3: Smart Category & Subcategory Detection
+const detectCategoryAI = (title, description, existingCategory) => {
+  const text = `${title} ${description}`.toLowerCase();
+  
+  // Category mapping rules
+  const categoryRules = {
+    'Tech': [
+      'headphone', 'earphone', 'bluetooth', 'wireless', 'speaker', 'charger', 'cable', 'usb',
+      'phone case', 'mobile cover', 'screen protector', 'power bank', 'adapter', 'keyboard',
+      'mouse', 'laptop', 'computer', 'tablet', 'smartwatch', 'fitness tracker', 'camera',
+      'vr', 'virtual reality', 'gaming', 'electronic', 'gadget', 'tech', 'digital'
+    ],
+    'Home': [
+      'kitchen', 'cooking', 'utensil', 'cookware', 'plate', 'bowl', 'cup', 'mug', 'glass',
+      'bottle', 'container', 'storage', 'basket', 'organizer', 'spoon', 'fork', 'knife',
+      'chopping board', 'blender', 'mixer', 'pressure cooker', 'pan', 'pot', 'kettle',
+      'home', 'household', 'cleaning', 'laundry', 'bathroom', 'bedroom', 'living room'
+    ],
+    'Fashion': [
+      'shirt', 'tshirt', 't-shirt', 'jeans', 'trouser', 'dress', 'top', 'jacket', 'hoodie',
+      'shoes', 'sandal', 'slipper', 'bag', 'wallet', 'belt', 'watch', 'jewelry', 'ring',
+      'necklace', 'earring', 'bracelet', 'clothing', 'apparel', 'fashion', 'wear',
+      'kurta', 'saree', 'legging', 'palazzo', 'ethnic', 'formal', 'casual', 'sports'
+    ],
+    'New Arrivals': [
+      'new', 'latest', 'trending', 'popular', 'bestseller', 'gift', 'premium', 'luxury',
+      'exclusive', 'limited', 'special', 'featured', 'arrival', 'fresh'
+    ]
+  };
+  
+  // Subcategory mapping
+  const subcategoryRules = {
+    // Tech subcategories
+    'Headphones': ['headphone', 'earphone', 'earbud', 'audio'],
+    'Mobile Accessories': ['phone case', 'mobile cover', 'screen protector', 'phone holder'],
+    'Mobile Chargers': ['charger', 'charging cable', 'power adapter', 'usb cable'],
+    'Speakers': ['speaker', 'bluetooth speaker', 'wireless speaker'],
+    'Watches': ['smartwatch', 'fitness tracker', 'wearable'],
+    'Computer Accessories': ['keyboard', 'mouse', 'laptop stand', 'webcam'],
+    
+    // Home subcategories
+    'Kitchen Tools': ['knife', 'chopping board', 'spatula', 'tongs', 'whisk'],
+    'Kitchen Appliances': ['blender', 'mixer', 'pressure cooker', 'kettle', 'toaster'],
+    'Cookware': ['pan', 'pot', 'frying pan', 'saucepan', 'wok'],
+    'Kitchen Storage & Container': ['container', 'jar', 'storage box', 'food container'],
+    'Water Bottles': ['bottle', 'water bottle', 'sipper', 'flask'],
+    'Plates': ['plate', 'dinner plate', 'serving plate'],
+    'Glassware': ['glass', 'tumbler', 'mug', 'cup'],
+    
+    // Fashion subcategories
+    "Men's T-Shirts": ['mens tshirt', 'men t-shirt', 'mens casual shirt'],
+    "Men's Shirts": ['mens shirt', 'formal shirt', 'dress shirt'],
+    "Men's Jeans": ['mens jeans', 'denim jeans', 'mens denim'],
+    "Women's Tops": ['womens top', 'ladies top', 'women shirt'],
+    "Women's Dresses": ['dress', 'womens dress', 'ladies dress', 'gown'],
+    "Women's Jeans": ['womens jeans', 'ladies jeans', 'women denim'],
+    "Women's Kurtis": ['kurti', 'kurta', 'ethnic wear'],
+    "Women's Leggings": ['legging', 'jegging', 'tights'],
+    'Shoes': ['shoes', 'sneaker', 'boot', 'loafer'],
+    'Sandals': ['sandal', 'chappal', 'flip flop'],
+    'Bags': ['bag', 'handbag', 'backpack', 'purse', 'sling bag'],
+    'Jewelry': ['jewelry', 'necklace', 'earring', 'ring', 'bracelet']
+  };
+  
+  // First try to detect category
+  let detectedCategory = existingCategory;
+  let maxCategoryScore = 0;
+  
+  for (const [category, keywords] of Object.entries(categoryRules)) {
+    const score = keywords.reduce((acc, keyword) => {
+      return acc + (text.includes(keyword) ? 1 : 0);
+    }, 0);
+    
+    if (score > maxCategoryScore) {
+      maxCategoryScore = score;
+      detectedCategory = category;
+    }
+  }
+  
+  // Then detect subcategory
+  let detectedSubcategory = '';
+  let maxSubcategoryScore = 0;
+  
+  for (const [subcategory, keywords] of Object.entries(subcategoryRules)) {
+    const score = keywords.reduce((acc, keyword) => {
+      return acc + (text.includes(keyword) ? 2 : 0); // Higher weight for exact matches
+    }, 0);
+    
+    if (score > maxSubcategoryScore) {
+      maxSubcategoryScore = score;
+      detectedSubcategory = subcategory;
+    }
+  }
+  
+  // Fallback subcategory based on category
+  if (!detectedSubcategory) {
+    const fallbackSubcategories = {
+      'Tech': 'Viral Gadget',
+      'Home': 'Kitchen Tools',
+      'Fashion': 'Fashion Accessories',
+      'New Arrivals': 'Shopwave'
+    };
+    detectedSubcategory = fallbackSubcategories[detectedCategory] || 'Shopwave';
+  }
+  
+  return {
+    category: detectedCategory || 'New Arrivals',
+    subcategory: detectedSubcategory,
+    confidence: maxCategoryScore + maxSubcategoryScore
+  };
+};
+
 // Main processing function with header logging for debugging.
 const processCsvWithAIEngine = (data, log) => {
   log('[AI_START] AI Engine v10 starting...');
@@ -91,7 +203,11 @@ const processCsvWithAIEngine = (data, log) => {
     const price = parseFloat(masterRow[priceKey] || 0);
     const compareAtPrice = parseFloat(masterRow[compareAtPriceKey] || 0);
     const weight = masterRow[weightKey] ? `${masterRow[weightKey]}g` : null;
-    const category = masterRow[typeKey] || null;
+    const existingCategory = masterRow[typeKey] || null;
+    
+    // AI-powered category detection
+    const categoryResult = detectCategoryAI(title, description, existingCategory);
+    log(`[AI_CATEGORY] ${title} -> ${categoryResult.category} > ${categoryResult.subcategory} (confidence: ${categoryResult.confidence})`);
     
     // Collect images from all image columns
     const allImages = [];
@@ -115,7 +231,9 @@ const processCsvWithAIEngine = (data, log) => {
       price: price.toFixed(2),
       originalPrice: compareAtPrice > price ? compareAtPrice.toFixed(2) : null,
       weight: weight,
-      category: category,
+      category: categoryResult.category,
+      subcategory: categoryResult.subcategory,
+      categoryConfidence: categoryResult.confidence,
       images: allImages,
       features: features,
       sku: sku,
@@ -188,6 +306,7 @@ const ImportCSVPage = () => {
         'Body (HTML)': p.fullDescription,
         Vendor: p.brand,
         Type: p.category || '',
+        Subcategory: p.subcategory || '',
         'Variant Price': parseFloat(p.price) || 0,
         'Variant Compare At Price': p.originalPrice ? parseFloat(p.originalPrice) : '',
         'Variant Grams': p.weight ? parseInt(p.weight.replace('g', '')) : '',
@@ -240,10 +359,18 @@ const ImportCSVPage = () => {
         </button>
       </div>
 
-      <div className="mb-4 p-4 border rounded-lg bg-gray-50">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Upload CSV</label>
+      <div className="mb-4 p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-green-50">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-2xl">🤖</span>
+          <h3 className="text-lg font-semibold text-gray-800">AI-Powered Product Import</h3>
+        </div>
+        <p className="text-sm text-gray-600 mb-3">
+          Our AI automatically detects and categorizes your products into proper categories and subcategories:
+          <span className="font-medium"> Tech, Home & Kitchen, Fashion, New Arrivals</span>
+        </p>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Upload CSV File</label>
         <input type="file" accept=".csv" onChange={handleFileChange} disabled={isProcessing} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50" />
-        {isProcessing && <p className="text-blue-600 mt-2">Processing, please wait...</p>}
+        {isProcessing && <p className="text-blue-600 mt-2">🔄 AI is analyzing and categorizing your products...</p>}
         {error && <p className="text-red-600 mt-2">Error: {error}</p>}
       </div>
 
@@ -283,13 +410,26 @@ const ImportCSVPage = () => {
                                <p className="text-sm text-gray-500 line-through">₹{p.originalPrice}</p>
                              )}
                            </div>
-                           {(p.weight || p.category) && (
-                             <p className="text-xs text-gray-500">
-                               {p.category && `Category: ${p.category}`}
-                               {p.category && p.weight && ' | '}
-                               {p.weight && `Weight: ${p.weight}`}
-                             </p>
-                           )}
+                           <div className="text-xs text-gray-500 space-y-1">
+                             {p.category && (
+                               <p className="flex items-center gap-2">
+                                 <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                                   {p.category}
+                                 </span>
+                                 {p.subcategory && (
+                                   <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
+                                     {p.subcategory}
+                                   </span>
+                                 )}
+                                 {p.categoryConfidence > 0 && (
+                                   <span className="text-xs text-gray-400">
+                                     AI: {p.categoryConfidence}✓
+                                   </span>
+                                 )}
+                               </p>
+                             )}
+                             {p.weight && <p>Weight: {p.weight}</p>}
+                           </div>
                            <div className="mt-2">
                             <p className="text-xs font-bold text-gray-600">AI-Generated Features:</p>
                             <ul className="list-disc list-inside text-xs text-gray-600 pl-2">{p.features.map((f, i) => <li key={i}>{f}</li>)}</ul>

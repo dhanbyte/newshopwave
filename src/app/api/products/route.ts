@@ -27,7 +27,7 @@ export async function GET(request: Request) {
         try {
             // Fetch both regular products and vendor products from Supabase (exclude customizable products)
             const [regularProductsResult, vendorProductsResult] = await Promise.all([
-                supabase.from('products').select('*').neq('category', 'customizable').order('created_at', { ascending: false }),
+                supabase.from('products').select('*').neq('category', 'customizable').eq('status', 'active').order('created_at', { ascending: false }),
                 supabase.from('vendor_products').select('*').neq('category', 'customizable').eq('status', 'active').order('created_at', { ascending: false })
             ]);
             

@@ -112,6 +112,7 @@ export async function POST(request: Request) {
         status: 'pending',
         stock: Number(p['Variant Inventory Qty'] || 100),
         category: String(p.Type || p.category || '').substring(0, 100) || null,
+        subcategory: String(p.Subcategory || p.subcategory || '').substring(0, 100) || null,
         brand: String(p.Vendor || p.brand || '').substring(0, 100) || null,
         weight: Number(p['Variant Grams'] || 0) || 0
       }

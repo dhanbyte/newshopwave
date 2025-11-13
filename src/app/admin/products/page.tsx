@@ -718,27 +718,25 @@ export default function ProductsPage() {
                       Stock: {product.stock}
                     </p>
 
-                    {product.isVendorProduct && (
-                      <div className="mt-2 mb-2">
-                        <select
-                          value={product.status ?? 'pending'}
-                          onChange={(event) =>
-                            updateProductStatus(product.id, event.target.value, true)
-                          }
-                          className={`px-2 py-1 rounded text-xs border ${
-                            product.status === 'active'
-                              ? 'bg-green-100 text-green-800'
-                              : product.status === 'blocked'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-yellow-100 text-yellow-800'
-                          }`}
-                        >
-                          <option value="pending">pending</option>
-                          <option value="active">approved</option>
-                          <option value="blocked">blocked</option>
-                        </select>
-                      </div>
-                    )}
+                    <div className="mt-2 mb-2">
+                      <select
+                        value={product.status ?? 'pending'}
+                        onChange={(event) =>
+                          updateProductStatus(product.id, event.target.value, product.isVendorProduct)
+                        }
+                        className={`px-2 py-1 rounded text-xs border ${
+                          product.status === 'active'
+                            ? 'bg-green-100 text-green-800'
+                            : product.status === 'blocked'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                        }`}
+                      >
+                        <option value="pending">pending</option>
+                        <option value="active">approved</option>
+                        <option value="blocked">blocked</option>
+                      </select>
+                    </div>
 
                     <div className="flex gap-2 mt-4 justify-end">
                       {editingProduct === product.id ? (
