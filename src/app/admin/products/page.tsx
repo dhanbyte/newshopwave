@@ -356,6 +356,30 @@ export default function ProductsPage() {
     }
   }
 
+  const approveAllProducts = async () => {
+    if (!confirm('This will approve ALL pending vendor products. Continue?')) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/admin/approve-all-products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        alert(`${data.count} products approved successfully!`)
+        await fetchProducts()
+      } else {
+        alert(`Failed to approve products: ${data.error}`)
+      }
+    } catch (error) {
+      alert('Failed to approve products')
+    }
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -366,6 +390,12 @@ export default function ProductsPage() {
             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
           >
             Populate Products
+          </button>
+          <button 
+            onClick={approveAllProducts}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Approve All
           </button>
           <button 
             onClick={deleteAllVendorProducts}
