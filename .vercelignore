@@ -1,8 +1,20 @@
-.history
-.qodo
-docs
-scripts
-*.md
-*.js
-!next.config.ts
-!middleware.ts
+# Build cache clear
+.vercel
+.next
+
+# Keep CSS files
+!src/app/globals.css
+!tailwind.config.js
+!postcss.config.js
+
+# Ignore scripts
+/add-database-products.js
+/add-sample-products.js
+/add-status-column.js
+/advanced-ai-categorizer.js
+/api-optimization.js
+/bulk-test-5000.js
+/category-breakdown-analysis.js
+/category-count.js
+/check-database.js
+/check-fashion-products.js
