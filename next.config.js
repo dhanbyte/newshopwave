@@ -9,6 +9,9 @@ const nextConfig = {
       'via.placeholder.com',
       'deodap.in'
     ]
+  },
+  experimental: {
+    optimizeCss: true
   }
 }
 
