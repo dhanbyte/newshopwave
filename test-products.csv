@@ -1,0 +1,4 @@
+Handle,Title,Body (HTML),Vendor,Type,Variant Price,Variant Compare At Price,Variant Grams,Image Src 1,Image Src 2,Published
+test-product-1,Test Product 1,This is a test product description,Test Brand,Electronics,999,1299,500,https://via.placeholder.com/300x300?text=Product1,https://via.placeholder.com/300x300?text=Product1-2,TRUE
+test-product-2,Test Product 2,Another test product with features,Test Brand 2,Home & Garden,1999,2499,750,https://via.placeholder.com/300x300?text=Product2,https://via.placeholder.com/300x300?text=Product2-2,TRUE
+test-product-3,Test Product 3,Third test product for verification,Test Brand 3,Sports,599,799,300,https://via.placeholder.com/300x300?text=Product3,,TRUE
