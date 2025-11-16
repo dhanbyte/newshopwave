@@ -168,7 +168,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-body antialiased bg-white">
+      <body className="font-sans antialiased bg-background text-foreground">
         <ClerkProvider publishableKey={clerkPublishableKey}>
           <ClerkAuthProvider>
             <RootContent>{children}</RootContent>
