@@ -9,6 +9,7 @@ const testProducts = [
 ];
 
 console.log('=== Fixed Category Mapping Test ===\n');
+console.log('=== Fixed Category Mapping Test ===\n');
 
 testProducts.forEach((title, i) => {
   const result = mapToWebsiteCategory(title, '', '');

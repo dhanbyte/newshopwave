@@ -13,6 +13,17 @@ export default function Footer() {
   const [showModal, setShowModal] = useState(false);
   const [dropshipperPrice, setDropshipperPrice] = useState(113);
 
+  // Check if we need to open modal after login
+  useEffect(() => {
+    if (user && sessionStorage.getItem('openDropshipperModal') === 'true') {
+      sessionStorage.removeItem('openDropshipperModal')
+      // Small delay to ensure page is fully loaded
+      setTimeout(() => {
+        setShowModal(true)
+      }, 500)
+    }
+  }, [user])
+
   useEffect(() => {
     const fetchPrice = async () => {
       try {
@@ -175,7 +186,9 @@ export default function Footer() {
               <Button 
                 onClick={() => {
                   if (!user) {
-                    // Redirect to sign-in if not logged in
+                    // Store intent to open dropshipper modal after login
+                    sessionStorage.setItem('openDropshipperModal', 'true')
+                    // Redirect to sign-in
                     window.location.href = '/sign-in?redirect=/'
                     return
                   }
@@ -270,6 +283,7 @@ export default function Footer() {
         onClose={() => setShowModal(false)}
         onSubmit={handleDropshipperRegistration}
         loading={loading}
+        price={dropshipperPrice}
       />
     </>
   );

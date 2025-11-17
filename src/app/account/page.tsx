@@ -94,6 +94,7 @@ export default function AccountPage() {
   const [userCoins, setUserCoins] = useState(5)
   const [usedScratchCards, setUsedScratchCards] = useState<string[]>([])
   const [usedSpins, setUsedSpins] = useState<string[]>([])
+  const [dropshipperPrice, setDropshipperPrice] = useState(113)
 
   useEffect(() => {
     const loadReferralStats = async () => {
@@ -113,6 +114,34 @@ export default function AccountPage() {
     
     loadReferralStats()
   }, [user?.id])
+
+  // Fetch dropshipper price
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const response = await fetch('/api/admin/dropshipper-price?t=' + Date.now())
+        const data = await response.json()
+        if (data.success) {
+          setDropshipperPrice(data.price)
+        }
+      } catch (error) {
+        console.error('Error fetching dropshipper price:', error)
+      }
+    }
+    
+    fetchPrice()
+    
+    // Listen for price updates
+    const handlePriceUpdate = () => {
+      fetchPrice()
+    }
+    
+    window.addEventListener('dropshipperPriceUpdated', handlePriceUpdate)
+    
+    return () => {
+      window.removeEventListener('dropshipperPriceUpdated', handlePriceUpdate)
+    }
+  }, [])
 
   // Fetch user data including dropshipper info
   useEffect(() => {
@@ -240,10 +269,15 @@ export default function AccountPage() {
                 <p className="text-orange-700 text-sm mb-3">Get wholesale prices on all products!</p>
                 <div className="flex gap-2">
                   <button 
-                    onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+                    onClick={() => {
+                      // Store intent to open dropshipper modal
+                      sessionStorage.setItem('openDropshipperModal', 'true')
+                      // Scroll to footer where the modal will open
+                      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+                    }}
                     className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-700"
                   >
-                    Join Now - ₹113
+                    Join Now - ₹{dropshipperPrice}
                   </button>
                   <button 
                     onClick={async () => {

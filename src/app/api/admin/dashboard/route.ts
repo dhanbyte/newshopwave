@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getDatabase } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 interface AddressRecord {
   city?: string
 }

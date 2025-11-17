@@ -9,13 +9,15 @@ interface DropshipperRegistrationModalProps {
   onClose: () => void
   onSubmit: (data: any) => void
   loading: boolean
+  price?: number
 }
 
 export default function DropshipperRegistrationModal({ 
   isOpen, 
   onClose, 
   onSubmit, 
-  loading 
+  loading,
+  price = 113
 }: DropshipperRegistrationModalProps) {
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
@@ -30,7 +32,7 @@ export default function DropshipperRegistrationModal({
     aadharPhoto: null as File | null
   })
 
-  const totalAmount = 99
+  const totalAmount = price
   const platformFee = Math.round(totalAmount * 0.14)
   const finalAmount = totalAmount + platformFee
 
