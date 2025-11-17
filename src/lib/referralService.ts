@@ -109,10 +109,18 @@ export class ReferralService {
 
   // Validate a referral code
   async validateReferralCode(code: string): Promise<ReferralCode | null> {
-    // Simplified: Return null for now (validation not implemented)
-    // TODO: Implement actual referral code validation when needed
-    console.log(`Would validate referral code: ${code}`)
-    return null
+    try {
+      const response = await fetch(`/api/referrals/validate?code=${code}`)
+      const data = await response.json()
+      
+      if (data.success && data.referralCode) {
+        return data.referralCode
+      }
+      return null
+    } catch (error) {
+      console.error('Error validating referral code:', error)
+      return null
+    }
   }
 
   // Apply referral code and calculate discount (₹5 flat discount on home products and other categories, excluding Ayurvedic)
@@ -159,17 +167,46 @@ export class ReferralService {
     orderId: string, 
     orderAmount: number
   ): Promise<boolean> {
-    // Simplified: Return true for now (recording not implemented)
-    // TODO: Implement actual referral recording when needed
-    console.log(`Would record referral usage: ${code} for order ${orderId}`)
-    return true
+    try {
+      const response = await fetch('/api/referrals/record-usage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, refereeId, orderId, orderAmount })
+      })
+      const data = await response.json()
+      return data.success
+    } catch (error) {
+      console.error('Error recording referral usage:', error)
+      return false
+    }
   }
 
   // Get referral statistics for a user
   async getReferralStats(userId: string): Promise<ReferralStats> {
-    // Simplified: Return default stats for now
-    // TODO: Implement actual referral stats API when needed
-    return this.getDefaultStats()
+    try {
+      const response = await fetch(`/api/referrals/stats?userId=${userId}`)
+      const data = await response.json()
+      
+      if (data.success && data.stats) {
+        return {
+          totalReferrals: data.stats.total_referrals || 0,
+          totalSignups: data.stats.successful_referrals || 0,
+          totalEarnings: data.stats.total_earned || 0,
+          totalEarned: data.stats.total_earned || 0,
+          totalCoins: data.stats.total_coins || 0,
+          usedCoins: data.stats.used_coins || 0,
+          availableCoins: (data.stats.total_coins || 0) - (data.stats.used_coins || 0),
+          activeReferralCodes: data.stats.active_codes || 0,
+          referralHistory: data.stats.referral_history || [],
+          signupHistory: data.stats.signup_history || []
+        }
+      }
+      
+      return this.getDefaultStats()
+    } catch (error) {
+      console.error('Error fetching referral stats:', error)
+      return this.getDefaultStats()
+    }
   }
   
   // Return default stats object
@@ -189,10 +226,18 @@ export class ReferralService {
 
   // Use coins for discount
   async useCoins(userId: string, coinsToUse: number): Promise<boolean> {
-    // Simplified: Return false for now (feature not implemented)
-    // TODO: Implement actual coin usage API when needed
-    console.log(`Would use ${coinsToUse} coins for user ${userId}`)
-    return false
+    try {
+      const response = await fetch('/api/referrals/use-coins', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, coinsToUse })
+      })
+      const data = await response.json()
+      return data.success
+    } catch (error) {
+      console.error('Error using coins:', error)
+      return false
+    }
   }
 
   // Get share link for referral code
