@@ -15,6 +15,16 @@ import { useProductStore } from '../lib/productStore';
 import { NEWARRIVALS_PRODUCTS } from '../lib/data/newarrivals';
 import { FASHION_PRODUCTS } from '../lib/data/fashion';
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+
+// Utility function to shuffle array
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
 import LoadingSpinner from '../components/LoadingSpinner';
 import MixedProductGrid from '../components/MixedProductGrid';
 import { useToast } from '../hooks/use-toast';
@@ -118,7 +128,7 @@ export default function Home() {
       return isCategory;
     });
     console.log('Tech deals found:', filtered.length);
-    return filtered;
+    return shuffleArray(filtered);
   }, [products]);
 
   const homeDeals = useMemo(() => {
@@ -127,17 +137,17 @@ export default function Home() {
       return isCategory;
     });
     console.log('Home deals found:', filtered.length);
-    return filtered;
+    return shuffleArray(filtered);
   }, [products]);
 
   const newArrivals = useMemo(() => {
     const apiNewArrivals = products.filter(p => {
       return p.category === 'New Arrivals';
     });
-    const jsonNewArrivals = NEWARRIVALS_PRODUCTS; // Show all JSON products
+    const jsonNewArrivals = NEWARRIVALS_PRODUCTS;
     const combined = [...apiNewArrivals, ...jsonNewArrivals];
     console.log('New arrivals found:', combined.length);
-    return combined;
+    return shuffleArray(combined);
   }, [products]);
 
   const fashionDeals = useMemo(() => {
@@ -145,10 +155,10 @@ export default function Home() {
       const isCategory = p.category === 'Fashion';
       return isCategory;
     });
-    const jsonFashion = FASHION_PRODUCTS; // Show all JSON products
+    const jsonFashion = FASHION_PRODUCTS;
     const combined = [...apiFashion, ...jsonFashion];
     console.log('Fashion deals found:', combined.length, 'API:', apiFashion.length, 'JSON:', jsonFashion.length);
-    return combined;
+    return shuffleArray(combined);
   }, [products]);
 
   const filteredProducts = useMemo(() => {
@@ -487,8 +497,8 @@ export default function Home() {
             </svg>
           </Link>
         </div>
-        <div className="overflow-x-auto px-4">
-          <div className="flex gap-3 pb-2" style={{width: 'max-content'}}>
+        <div className="overflow-x-auto">
+          <div className="flex gap-3 pb-2 px-3" style={{width: 'max-content'}}>
             {techDeals.map((product, index) => (
               <div key={`tech-${product.id}-${index}`} className="flex-shrink-0 w-32 md:w-48">
                 <SafeProductCard p={product} />
@@ -509,8 +519,8 @@ export default function Home() {
             </svg>
           </Link>
         </div>
-        <div className="overflow-x-auto px-4">
-          <div className="flex gap-3 pb-2" style={{width: 'max-content'}}>
+        <div className="overflow-x-auto">
+          <div className="flex gap-3 pb-2 px-3" style={{width: 'max-content'}}>
             {homeDeals.map((product, index) => (
               <div key={`home-${product.id}-${index}`} className="flex-shrink-0 w-32 md:w-48">
                 <SafeProductCard p={product} />
@@ -531,8 +541,8 @@ export default function Home() {
             </svg>
           </Link>
         </div>
-        <div className="overflow-x-auto px-4">
-          <div className="flex gap-3 pb-2" style={{width: 'max-content'}}>
+        <div className="overflow-x-auto">
+          <div className="flex gap-3 pb-2 px-3" style={{width: 'max-content'}}>
             {fashionDeals.map((product, index) => (
               <div key={`fashion-${product.id}-${index}`} className="flex-shrink-0 w-32 md:w-48">
                 <SafeProductCard p={product} />
@@ -553,8 +563,8 @@ export default function Home() {
             </svg>
           </Link>
         </div>
-        <div className="overflow-x-auto px-4">
-          <div className="flex gap-3 pb-2" style={{width: 'max-content'}}>
+        <div className="overflow-x-auto">
+          <div className="flex gap-3 pb-2 px-3" style={{width: 'max-content'}}>
             {newArrivals.map((product, index) => (
               <div key={`new-${product.id}-${index}`} className="flex-shrink-0 w-32 md:w-48">
                 <SafeProductCard p={product} />

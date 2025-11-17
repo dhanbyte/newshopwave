@@ -285,7 +285,7 @@ function ProductDetailContent() {
             <div className="text-sm font-medium mb-1">Quantity</div>
             <QtyCounter value={qty} onChange={n => setQty(Math.max(1, Math.min(10, n)))} />
           </div>
-          <div className="hidden md:flex gap-3 mt-4">
+          <div className="flex gap-3 mt-4">
             <button onClick={handleAddToCart} className="flex-1 rounded-xl bg-brand/90 py-3 text-white font-semibold transition-colors hover:bg-brand">Add to Cart</button>
             <button onClick={handleBuyNow} className="flex-1 rounded-xl bg-brand py-3 text-white font-semibold transition-colors hover:bg-brand/90">Buy Now</button>
           </div>
@@ -486,7 +486,7 @@ function ProductDetailContent() {
           }}
         />
       </Head>
-      <div>
+      <div className="pb-20 md:pb-0">
       <button onClick={() => router.back()} className="md:hidden flex items-center gap-1 text-sm text-gray-600 mb-2">
         <ChevronLeft size={16} /> Back
       </button>
