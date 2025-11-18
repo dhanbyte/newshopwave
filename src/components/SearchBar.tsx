@@ -17,7 +17,24 @@ export default function SearchBar(){
   const { products } = useProductStore();
 
   // Combine local search with API suggestions
-  const localItems = useMemo(() => liveSearch(q, products).map(p => ({ id: p.id, slug:p.slug, name: p.name, image: p.image, price: { original: p.price.original, discounted: p.price.discounted } })), [q, products])
+  const localItems = useMemo(() => {
+    return liveSearch(q, products).map(p => {
+      // Handle different price field formats
+      const priceOriginal = p.price?.original ?? p.price_original ?? 0
+      const priceDiscounted = p.price?.discounted ?? p.price_discounted
+      
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        image: p.image,
+        price: {
+          original: Number(priceOriginal) || 0,
+          discounted: priceDiscounted ? Number(priceDiscounted) : undefined
+        }
+      }
+    })
+  }, [q, products])
   
   // Fetch API suggestions when user types
   useEffect(() => {
@@ -29,23 +46,52 @@ export default function SearchBar(){
     const fetchSuggestions = async (retryCount = 0) => {
       setIsLoadingSuggestions(true)
       try {
-        const response = await fetch(`/api/products?search=${encodeURIComponent(q)}&limit=5`)
+        const response = await fetch(`/api/products?limit=50`)
         if (response.ok) {
           const data = await response.json()
-          const suggestions = (data.data || data || [])
+          const allProducts = Array.isArray(data) ? data : (data.data || [])
+          
+          // Filter products by search query
+          const searchLower = q.toLowerCase()
+          const filtered = allProducts
             .filter((p: any) => 
               p.category !== 'Ayurvedic' && 
               p.subcategory !== 'Ayurvedic' &&
-              !p.name?.toLowerCase().includes('ayurvedic')
+              !p.name?.toLowerCase().includes('ayurvedic') &&
+              (p.name?.toLowerCase().includes(searchLower) ||
+               p.brand?.toLowerCase().includes(searchLower) ||
+               p.category?.toLowerCase().includes(searchLower) ||
+               p.subcategory?.toLowerCase().includes(searchLower))
             )
-            .map((p: any) => ({
-              id: p.id || p._id,
-              slug: p.slug,
-              name: p.name,
-              image: p.image,
-              price: { original: p.price?.original ?? 0, discounted: p.price?.discounted }
-            }))
-          setApiSuggestions(suggestions)
+            .slice(0, 5)
+            .map((p: any) => {
+              // Handle different price field formats from API
+              let priceOriginal = 0
+              let priceDiscounted = undefined
+              
+              if (typeof p.price === 'object' && p.price !== null) {
+                // Price is already in Money object format
+                priceOriginal = Number(p.price.original) || 0
+                priceDiscounted = p.price.discounted ? Number(p.price.discounted) : undefined
+              } else {
+                // Fallback to old format
+                priceOriginal = Number(p.price_original || p.price || 0)
+                priceDiscounted = p.price_discounted ? Number(p.price_discounted) : undefined
+              }
+              
+              return {
+                id: p.id || p._id,
+                slug: p.slug || p.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+                name: p.name,
+                image: p.image || (Array.isArray(p.images) && p.images[0]) || 'https://via.placeholder.com/100',
+                price: {
+                  original: priceOriginal,
+                  discounted: priceDiscounted
+                }
+              }
+            })
+          
+          setApiSuggestions(filtered)
         } else if (retryCount < 2) {
           setTimeout(() => fetchSuggestions(retryCount + 1), 1000)
         }

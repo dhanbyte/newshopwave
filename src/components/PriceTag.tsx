@@ -3,9 +3,9 @@ import { useAuth } from '../context/ClerkAuthContext'
 export default function PriceTag({ original, discounted, currency = '₹', size = 'md' }: { original: number; discounted?: number; currency?: string; size?: 'sm' | 'md' | 'lg' }) {
   const { user } = useAuth()
   
-  // Price logic: Admin price = Dropshipper price, Normal user = Admin price + 50%
-  const adminOriginal = original || 0
-  const adminDiscounted = discounted || 0
+  // Ensure we have valid numbers
+  const adminOriginal = Number(original) || 0
+  const adminDiscounted = discounted ? Number(discounted) : 0
   const isDropshipper = user?.is_dropshipper === true
   
   // Calculate display prices
@@ -15,7 +15,7 @@ export default function PriceTag({ original, discounted, currency = '₹', size 
   const safeOriginal = displayOriginal
   const safeDiscounted = displayDiscounted
   const price = safeDiscounted || safeOriginal
-  const off = safeDiscounted ? Math.round(((safeOriginal - safeDiscounted) / safeOriginal) * 100) : 0
+  const off = safeDiscounted && safeOriginal > 0 ? Math.round(((safeOriginal - safeDiscounted) / safeOriginal) * 100) : 0
   const savings = safeDiscounted ? safeOriginal - safeDiscounted : 0;
 
   const sizeClasses = {

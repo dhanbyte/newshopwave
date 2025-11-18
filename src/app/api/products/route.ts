@@ -35,7 +35,20 @@ export async function GET(request: Request) {
             const vendorProducts = vendorProductsResult.data || [];
             
             console.log(`Found ${regularProducts.length} regular products and ${vendorProducts.length} vendor products from Supabase`);
-            console.log('Sample vendor products:', vendorProducts.slice(0, 3));
+            if (regularProducts.length > 0) {
+                console.log('Sample regular product prices:', regularProducts.slice(0, 2).map(p => ({ 
+                    name: p.name, 
+                    price: p.price, 
+                    original_price: p.original_price 
+                })));
+            }
+            if (vendorProducts.length > 0) {
+                console.log('Sample vendor product prices:', vendorProducts.slice(0, 2).map(p => ({ 
+                    name: p.name, 
+                    price: p.price, 
+                    original_price: p.original_price 
+                })));
+            }
             
             if (regularProductsResult.error) {
                 console.error('Regular products query error:', regularProductsResult.error);
@@ -51,44 +64,99 @@ export async function GET(request: Request) {
                 console.log('No vendor products found in database');
             }
             
-            // Transform regular products
-            const transformedRegularProducts = regularProducts.map(product => ({
-                ...product,
-                slug: product.slug || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || product.id,
-                shortDescription: product.description?.substring(0, 100) + '...' || '',
-                extraImages: product.extra_images || [],
-                features: product.features || [],
-                specifications: product.specifications || {},
-                ratings: product.ratings || { average: 4.2, count: Math.floor(Math.random() * 50) + 10 },
-                subcategory: product.subcategory || '',
-                isVendorProduct: false
-            }));
+            // Transform regular products - ensure price is Money object
+            const transformedRegularProducts = regularProducts.map(product => {
+                // Handle price transformation with better null/undefined checks
+                let priceObj;
+                const rawPrice = product.price;
+                const rawOriginalPrice = product.original_price;
+                
+                if (typeof rawPrice === 'object' && rawPrice !== null && rawPrice.original) {
+                    // Already in correct Money format
+                    priceObj = rawPrice;
+                } else {
+                    // Convert to Money object
+                    const priceValue = Number(rawPrice) || 0;
+                    const originalPriceValue = Number(rawOriginalPrice) || 0;
+                    
+                    // If we have both original_price and price, and original is higher, show discount
+                    if (originalPriceValue > 0 && priceValue > 0 && originalPriceValue > priceValue) {
+                        priceObj = { 
+                            original: originalPriceValue,
+                            discounted: priceValue,
+                            currency: '₹'
+                        };
+                    } else {
+                        // No discount, just use price
+                        priceObj = { 
+                            original: priceValue || originalPriceValue || 0,
+                            currency: '₹'
+                        };
+                    }
+                }
 
-            // Transform vendor products - include all products (even out of stock)
-            const transformedVendorProducts = vendorProducts
-                .map(product => ({
-                    id: product.id,
-                    name: product.name,
-                    image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/400x400/f3f4f6/9ca3af?text=No+Image',
-                    extraImages: Array.isArray(product.images) ? product.images : [],
+                return {
+                    ...product,
+                    price: priceObj,
+                    slug: product.slug || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || product.id,
                     shortDescription: product.description?.substring(0, 100) + '...' || '',
-                    description: product.description || '',
-                    category: product.category,
+                    extraImages: product.extra_images || [],
+                    features: product.features || [],
+                    specifications: product.specifications || {},
+                    ratings: product.ratings || { average: 4.2, count: Math.floor(Math.random() * 50) + 10 },
                     subcategory: product.subcategory || '',
-                    price: Number(product.price) || 0,
-                    price_original: Number(product.original_price) || Number(product.price) || 0,
-                    price_discounted: Number(product.price) || 0,
-                    originalPrice: Number(product.original_price) || Number(product.price) || 0,
-                    quantity: Number(product.stock) || 0,
-                    stock: Number(product.stock) || 0,
-                    brand: product.brand || 'ShopWave',
-                    features: [],
-                    specifications: {},
-                    ratings: { average: 4.2, count: Math.floor(Math.random() * 50) + 10 },
-                    isVendorProduct: true,
-                    slug: product.slug || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || product.id.toString(),
-                    inStock: (product.stock || 0) > 0
-                }));
+                    isVendorProduct: false
+                };
+            });
+
+            // Transform vendor products - ensure price is Money object
+            const transformedVendorProducts = vendorProducts
+                .map(product => {
+                    const rawPrice = Number(product.price) || 0;
+                    const rawOriginalPrice = Number(product.original_price) || 0;
+                    
+                    // Determine the correct original and discounted prices
+                    let originalPrice, discountedPrice;
+                    
+                    if (rawOriginalPrice > 0 && rawPrice > 0 && rawOriginalPrice > rawPrice) {
+                        // We have a discount
+                        originalPrice = rawOriginalPrice;
+                        discountedPrice = rawPrice;
+                    } else if (rawOriginalPrice > 0) {
+                        // Use original_price as the main price
+                        originalPrice = rawOriginalPrice;
+                        discountedPrice = undefined;
+                    } else {
+                        // Use price as the main price
+                        originalPrice = rawPrice;
+                        discountedPrice = undefined;
+                    }
+                    
+                    return {
+                        id: product.id,
+                        name: product.name,
+                        image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/400x400/f3f4f6/9ca3af?text=No+Image',
+                        extraImages: Array.isArray(product.images) ? product.images : [],
+                        shortDescription: product.description?.substring(0, 100) + '...' || '',
+                        description: product.description || '',
+                        category: product.category,
+                        subcategory: product.subcategory || '',
+                        price: {
+                            original: originalPrice,
+                            discounted: discountedPrice,
+                            currency: '₹'
+                        },
+                        quantity: Number(product.stock) || 0,
+                        stock: Number(product.stock) || 0,
+                        brand: product.brand || 'ShopWave',
+                        features: [],
+                        specifications: {},
+                        ratings: { average: 4.2, count: Math.floor(Math.random() * 50) + 10 },
+                        isVendorProduct: true,
+                        slug: product.slug || product.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || product.id.toString(),
+                        inStock: (product.stock || 0) > 0
+                    };
+                });
 
             // Combine all products
             let allProducts = [...transformedRegularProducts, ...transformedVendorProducts];

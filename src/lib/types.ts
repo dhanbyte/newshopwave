@@ -5,6 +5,7 @@ export type Variant = { color?: string; size?: string; price?: number; quantity?
 
 export type Product = {
   id: string
+  _id?: string // Legacy MongoDB ID
   slug: string
   name: string
   brand: string
@@ -17,6 +18,8 @@ export type Product = {
   quantity: number
   stock?: number
   price: Money
+  price_original?: number // Legacy field for backward compatibility
+  price_discounted?: number // Legacy field for backward compatibility
   weight?: number // Weight in grams
   specifications?: Record<string, string>
   shortDescription?: string
@@ -34,6 +37,7 @@ export type Product = {
   codAvailable?: boolean
   warranty?: string
   isCustomizable?: boolean
+  isVendorProduct?: boolean // Flag to identify vendor products
 }
 
 export type Address = {

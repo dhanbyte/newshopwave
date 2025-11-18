@@ -16,7 +16,7 @@ export default function SearchSuggestions({ items, onPick }:{ items: { id:string
               </div>
               <div className="flex-1 overflow-hidden">
                 <div className="line-clamp-1 text-sm font-medium">{it.name}</div>
-                <PriceTag original={it.price.original} discounted={it.price.discounted} />
+                <PriceTag original={it.price.original} discounted={it.price.discounted} size="sm" />
               </div>
             </Link>
           </li>

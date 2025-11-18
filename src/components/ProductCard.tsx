@@ -23,7 +23,15 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
   const { addNotification, hasNotification } = useNotificationStore();
   
   // Price calculation with dropshipper logic
-  const adminPrice = productData.price || productData.price?.original || productData.price_original || 0;
+  // Handle both Money object and legacy number formats
+  const getPriceValue = (priceData: any): number => {
+    if (typeof priceData === 'number') return priceData;
+    if (priceData?.original) return priceData.original;
+    if (priceData?.discounted) return priceData.discounted;
+    return 0;
+  };
+  
+  const adminPrice = getPriceValue(productData.price) || productData.price_original || 0;
   const isDropshipper = user?.is_dropshipper === true;
   const price = isDropshipper ? adminPrice : Math.round(adminPrice * 1.5);
   
@@ -103,11 +111,18 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
         </Link>
         
         {/* Discount Badge */}
-        {((productData.price?.discounted || productData.price_discounted) && (productData.price?.original || productData.price_original)) && (
-          <div className="absolute left-1 top-1 bg-red-500 text-white px-0.5 md:px-2 py-0.5 md:py-1 rounded-full text-[8px] md:text-xs font-bold z-10">
-            {Math.round((((productData.price?.original || productData.price_original) - (productData.price?.discounted || productData.price_discounted)) / (productData.price?.original || productData.price_original)) * 100)}% OFF
-          </div>
-        )}
+        {(() => {
+          const original = productData.price?.original || getPriceValue(productData.price) || productData.price_original || 0;
+          const discounted = productData.price?.discounted || productData.price_discounted || 0;
+          const hasDiscount = discounted > 0 && original > discounted;
+          const discountPercent = hasDiscount ? Math.round(((original - discounted) / original) * 100) : 0;
+          
+          return hasDiscount && discountPercent > 0 ? (
+            <div className="absolute left-1 top-1 bg-red-500 text-white px-0.5 md:px-2 py-0.5 md:py-1 rounded-full text-[8px] md:text-xs font-bold z-10">
+              {discountPercent}% OFF
+            </div>
+          ) : null;
+        })()}
         
         <div className="absolute right-1 top-1">
           <WishlistButton id={productData.id} />
@@ -124,8 +139,8 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
           </div>
           <div className="mb-2 md:mb-3">
             <PriceTag 
-              original={productData.originalPrice || productData.price_original || productData.price?.original || productData.price} 
-              discounted={productData.price_discounted || productData.price?.discounted || (productData.originalPrice && productData.price !== productData.originalPrice ? productData.price : undefined)} 
+              original={productData.price?.original || getPriceValue(productData.price) || productData.price_original || 0} 
+              discounted={productData.price?.discounted || productData.price_discounted} 
               size="sm" 
             />
           </div>
