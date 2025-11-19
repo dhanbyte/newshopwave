@@ -156,9 +156,13 @@ export default function AccountPage() {
           if (userData.success && userData.user) {
             // Update user context with fresh data
             console.log('Fresh user data:', userData.user)
-            // Force page reload if dropshipper status found
+            // Only reload once if dropshipper status changed
             if (userData.user.is_dropshipper && !user.is_dropshipper) {
-              setTimeout(() => window.location.reload(), 1000)
+              const hasReloaded = sessionStorage.getItem('dropshipper_reload_done')
+              if (!hasReloaded) {
+                sessionStorage.setItem('dropshipper_reload_done', 'true')
+                setTimeout(() => window.location.reload(), 1000)
+              }
             }
           }
         }

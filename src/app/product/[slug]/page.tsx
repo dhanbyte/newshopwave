@@ -510,6 +510,28 @@ function ProductDetailContent() {
             </div>
             {p.brand && <div className="mt-1 text-sm text-gray-500">by {p.brand}</div>}
             {p.ratings && <div className="mt-2"><RatingStars value={p.ratings?.average ?? 0} /></div>}
+            
+            {/* Stock info for dropshippers */}
+            {user?.is_dropshipper && (
+              <div className="mt-3 mb-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-blue-900">Available Stock:</span>
+                  <span className={`text-lg font-bold ${
+                    (p.quantity || p.stock || 0) > 10 
+                      ? 'text-green-600' 
+                      : (p.quantity || p.stock || 0) > 0 
+                        ? 'text-orange-600' 
+                        : 'text-red-600'
+                  }`}>
+                    {p.quantity || p.stock || 0} units
+                  </span>
+                </div>
+                {(p.quantity || p.stock || 0) <= 10 && (p.quantity || p.stock || 0) > 0 && (
+                  <p className="text-xs text-orange-600 mt-1">⚠️ Low stock - Order soon!</p>
+                )}
+              </div>
+            )}
+            
             <div className="mt-3"><PriceTag original={p.price?.original ?? p.price_original ?? p.originalPrice} discounted={p.price?.discounted ?? p.price_discounted ?? p.price} /></div>
             
             {p.shortDescription && <div className="mt-4 text-sm text-gray-700">

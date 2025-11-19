@@ -137,6 +137,22 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
           <div className="mb-1 md:mb-2">
             <RatingStars value={productData.ratings?.average || 0} size="xs" />
           </div>
+          
+          {/* Stock info for dropshippers */}
+          {isDropshipper && (
+            <div className="mb-1 text-[10px] md:text-xs text-gray-600">
+              Stock: <span className={`font-semibold ${
+                (productData.quantity || productData.stock || 0) > 10 
+                  ? 'text-green-600' 
+                  : (productData.quantity || productData.stock || 0) > 0 
+                    ? 'text-orange-600' 
+                    : 'text-red-600'
+              }`}>
+                {productData.quantity || productData.stock || 0} units
+              </span>
+            </div>
+          )}
+          
           <div className="mb-2 md:mb-3">
             <PriceTag 
               original={productData.price?.original || getPriceValue(productData.price) || productData.price_original || 0} 
