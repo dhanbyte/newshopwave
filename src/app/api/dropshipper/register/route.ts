@@ -58,7 +58,8 @@ export async function POST(request: NextRequest) {
       dropshipper_aadhar_photo: aadharPhoto,
       name: name,
       clerk_user_id: userId,
-      email: email
+      email: email,
+      password: null // Clerk handles authentication, no password needed
     }
 
     console.log('Attempting to update/create user with dropshipper data...')

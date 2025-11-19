@@ -1,18 +1,23 @@
 # Dropshipper Registration Fix
 
-## Problem
-After successful payment, dropshipper registration was failing with error:
+## Problems Fixed
+
+### Issue 1: ON CONFLICT Error
 ```
 Failed to create/update user record: there is no unique or 
 exclusion constraint matching the ON CONFLICT specification
 ```
+**Cause:** `clerk_user_id` column lacked UNIQUE constraint
 
-## Root Cause
-The `clerk_user_id` column in the `users` table did not have a UNIQUE constraint, causing the upsert operation to fail.
+### Issue 2: Password NOT NULL Error  
+```
+null value in column "password" of relation "users" violates not-null constraint
+```
+**Cause:** Old schema required password, but Clerk authentication doesn't use passwords
 
 ## Solution
 
-### Step 1: Run Database Migration
+### Step 1: Run Complete Database Migration
 
 **IMPORTANT:** Run this SQL in your Supabase Dashboard → SQL Editor
 
@@ -20,14 +25,15 @@ The `clerk_user_id` column in the `users` table did not have a UNIQUE constraint
 2. Select your project
 3. Navigate to **SQL Editor**
 4. Create a new query
-5. Copy and paste the contents of `fix-clerk-user-id-unique-constraint.sql`
+5. Copy and paste the contents of `fix-dropshipper-registration-complete.sql`
 6. Click **Run**
 
 The migration will:
+- ✅ Make `password` column nullable (for Clerk users)
 - ✅ Handle any duplicate `clerk_user_id` values
 - ✅ Add UNIQUE constraint to `clerk_user_id`
-- ✅ Create index for faster lookups
-- ✅ Verify the constraint was added successfully
+- ✅ Create indexes for faster lookups
+- ✅ Verify all constraints were added successfully
 
 ### Step 2: Verify the Fix
 
@@ -57,10 +63,13 @@ users_clerk_user_id_unique  | UNIQUE
 ## What Changed
 
 ### Database Schema
+- Made `password` column nullable (Clerk handles authentication)
 - Added UNIQUE constraint to `clerk_user_id` column
-- This allows proper upsert operations
+- Created performance indexes
+- This allows proper upsert operations for Clerk users
 
 ### API Code (`src/app/api/dropshipper/register/route.ts`)
+- Added `password: null` to dropshipper data
 - Improved error handling for duplicate key violations
 - Falls back to upsert if insert fails due to duplicates
 - Better logging for debugging
@@ -75,10 +84,14 @@ users_clerk_user_id_unique  | UNIQUE
 
 ## Rollback (if needed)
 
-If you need to rollback the constraint:
+If you need to rollback the changes:
 
 ```sql
+-- Remove unique constraint
 ALTER TABLE users DROP CONSTRAINT IF EXISTS users_clerk_user_id_unique;
+
+-- Make password required again (NOT recommended if using Clerk)
+ALTER TABLE users ALTER COLUMN password SET NOT NULL;
 ```
 
 ## Support
