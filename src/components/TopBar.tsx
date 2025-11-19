@@ -24,7 +24,14 @@ export default function TopBar() {
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
       <div className="container flex items-center gap-4 py-3">
-        <Link href="/" className="text-xl font-bold text-brand">ShopWave</Link>
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-xl font-bold text-brand">ShopWave</span>
+          {user?.is_dropshipper && (
+            <span className="hidden sm:inline-block text-xs font-semibold bg-gradient-to-r from-purple-600 to-blue-600 text-white px-2 py-1 rounded-full">
+              Dropshipper
+            </span>
+          )}
+        </Link>
         <div className="hidden flex-1 md:block md:px-8 lg:px-16">
           <SearchBar />
         </div>
@@ -36,17 +43,19 @@ export default function TopBar() {
         </div>
 
         <nav className="ml-auto flex items-center gap-1 sm:gap-3">
-          <Link href="/wishlist" className="relative rounded-full p-2 hover:bg-gray-100 transition-colors" aria-label="Wishlist">
-            <Heart className="h-5 w-5" />
-            {user && hasNewWishlistItem && (
-              <span className="absolute right-0 top-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white blinking-dot" />
-            )}
-            {user && wishlistIds.length > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-xs text-white">
-                {wishlistIds.length}
-              </span>
-            )}
-          </Link>
+          {user && (
+            <Link href="/wishlist" className="relative rounded-full p-2 hover:bg-gray-100 transition-colors" aria-label="Wishlist">
+              <Heart className="h-5 w-5" />
+              {hasNewWishlistItem && (
+                <span className="absolute right-0 top-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white blinking-dot" />
+              )}
+              {wishlistIds.length > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-xs text-white">
+                  {wishlistIds.length}
+                </span>
+              )}
+            </Link>
+          )}
           
           {user ? (
             <Link href="/account" className="relative rounded-full p-2 hover:bg-gray-100 transition-colors" aria-label="Account">
