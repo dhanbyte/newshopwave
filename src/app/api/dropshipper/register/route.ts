@@ -111,19 +111,48 @@ export async function POST(request: NextRequest) {
       console.error('Error in email update:', updateByEmailError)
     }
 
-    // Strategy 3: User doesn't exist, create new record using UPSERT
-    console.log('Step 3: User not found, attempting INSERT (UPSERT)')
+    // Strategy 3: User doesn't exist, create new record using INSERT
+    console.log('Step 3: User not found, attempting INSERT')
     
     const { data: insertedUser, error: insertError } = await supabase
       .from('users')
-      .upsert(dropshipperData, {
-        onConflict: 'clerk_user_id',
-        ignoreDuplicates: false
-      })
+      .insert(dropshipperData)
       .select()
 
     if (insertError) {
-      console.error('❌ INSERT/UPSERT failed:', insertError)
+      console.error('❌ INSERT failed:', insertError)
+      
+      // If it's a duplicate key error, try one more upsert with clerk_user_id
+      if (insertError.code === '23505') {
+        console.log('Step 3b: Duplicate detected, trying UPSERT with clerk_user_id')
+        const { data: upsertedUser, error: upsertError } = await supabase
+          .from('users')
+          .upsert(dropshipperData, {
+            onConflict: 'clerk_user_id',
+            ignoreDuplicates: false
+          })
+          .select()
+        
+        if (upsertError) {
+          console.error('❌ UPSERT also failed:', upsertError)
+          return NextResponse.json({ 
+            success: false, 
+            error: `Failed to create/update user record: ${upsertError.message}`,
+            details: upsertError
+          }, { status: 500 })
+        }
+        
+        if (upsertedUser && upsertedUser.length > 0) {
+          console.log('✅ SUCCESS: Updated user via UPSERT after duplicate')
+          return NextResponse.json({ 
+            success: true, 
+            dropshipperId,
+            message: 'Dropshipper registration successful!',
+            user: upsertedUser[0]
+          })
+        }
+      }
+      
       return NextResponse.json({ 
         success: false, 
         error: `Failed to create/update user record: ${insertError.message}`,
