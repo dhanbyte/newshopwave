@@ -24,6 +24,7 @@ interface AuthContextType {
   loading: boolean
   updateUserProfile: (profileData: Partial<CustomUser>) => Promise<void>
   logout: () => void
+  refreshUserData: () => Promise<any>
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -31,6 +32,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   updateUserProfile: async () => {},
   logout: () => {},
+  refreshUserData: async () => null,
 });
 
 export const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
@@ -83,6 +85,11 @@ export const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
           dropshipper_earnings: result.user.dropshipper_earnings,
           dropshipper_status: result.user.dropshipper_status
         } : null)
+        
+        console.log('✅ User data loaded:', {
+          is_dropshipper: result.user.is_dropshipper,
+          dropshipper_id: result.user.dropshipper_id
+        })
       } else {
         // Try to find user by email if not found by userId
         const emailResponse = await fetch('/api/user/refresh?email=' + userData.email)
@@ -95,11 +102,46 @@ export const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
             dropshipper_earnings: emailResult.user.dropshipper_earnings,
             dropshipper_status: emailResult.user.dropshipper_status
           } : null)
+          
+          console.log('✅ User data loaded via email:', {
+            is_dropshipper: emailResult.user.is_dropshipper,
+            dropshipper_id: emailResult.user.dropshipper_id
+          })
         }
       }
     } catch (error) {
       console.error('Error saving user:', error)
     }
+  }
+
+  // Add method to force refresh user data
+  const refreshUserData = async () => {
+    if (!user?.id || !user?.email) return
+    
+    try {
+      const response = await fetch(`/api/user/refresh?userId=${user.id}&email=${user.email}`)
+      const result = await response.json()
+      
+      if (result.success && result.user) {
+        setUser(prev => prev ? {
+          ...prev,
+          is_dropshipper: result.user.is_dropshipper,
+          dropshipper_id: result.user.dropshipper_id,
+          dropshipper_earnings: result.user.dropshipper_earnings,
+          dropshipper_status: result.user.dropshipper_status
+        } : null)
+        
+        console.log('✅ User data refreshed:', {
+          is_dropshipper: result.user.is_dropshipper,
+          dropshipper_id: result.user.dropshipper_id
+        })
+        
+        return result.user
+      }
+    } catch (error) {
+      console.error('Error refreshing user data:', error)
+    }
+    return null
   }
 
   const trackReferralSignup = (referralCode: string, newUserId: string) => {
@@ -199,7 +241,8 @@ export const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
       user, 
       loading, 
       updateUserProfile, 
-      logout
+      logout,
+      refreshUserData
     }}>
       {children}
     </AuthContext.Provider>

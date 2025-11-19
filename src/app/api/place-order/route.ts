@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     // Generate order ID
     const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-    // Create new order in admin_orders
+    // Create new order in admin_orders with shipping address
     const { data: order, error: orderError } = await supabase
       .from('admin_orders')
       .insert({
@@ -26,7 +26,10 @@ export async function POST(request: Request) {
         user_id: userId,
         items: JSON.stringify(items),
         total_amount: total,
-        status: 'pending'
+        status: 'pending',
+        shipping_address: JSON.stringify(shippingAddress),
+        payment_method: paymentMethod,
+        payment_id: paymentId
       })
       .select()
       .single()

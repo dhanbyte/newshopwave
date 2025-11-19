@@ -7,6 +7,7 @@ import { FaWhatsapp } from 'react-icons/fa';
 import Link from 'next/link';
 import { Analytics } from '@vercel/analytics/next';
 import SimpleGoogleAuth from '@/components/SimpleGoogleAuth';
+import Script from 'next/script';
 
 
 export const metadata: Metadata = {
@@ -169,7 +170,45 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased bg-white">
-        <ClerkProvider publishableKey={clerkPublishableKey}>
+        <Script id="clerk-error-handler" strategy="beforeInteractive">
+          {`
+            // Handle Clerk chunk loading errors
+            window.addEventListener('error', function(e) {
+              if (e.message && e.message.includes('Loading chunk') && e.message.includes('clerk')) {
+                console.warn('Clerk chunk loading error detected, reloading...');
+                // Clear Clerk cache and reload
+                if (window.localStorage) {
+                  Object.keys(window.localStorage).forEach(key => {
+                    if (key.includes('clerk')) {
+                      window.localStorage.removeItem(key);
+                    }
+                  });
+                }
+                // Reload page once
+                if (!sessionStorage.getItem('clerk_reload_attempted')) {
+                  sessionStorage.setItem('clerk_reload_attempted', 'true');
+                  setTimeout(() => window.location.reload(), 1000);
+                }
+              }
+            }, true);
+            
+            // Clear reload flag after successful load
+            window.addEventListener('load', function() {
+              setTimeout(() => {
+                sessionStorage.removeItem('clerk_reload_attempted');
+              }, 2000);
+            });
+          `}
+        </Script>
+        <ClerkProvider 
+          publishableKey={clerkPublishableKey}
+          appearance={{
+            elements: {
+              rootBox: "mx-auto",
+              card: "shadow-none"
+            }
+          }}
+        >
           <ClerkAuthProvider>
             <RootContent>{children}</RootContent>
             <SimpleGoogleAuth />

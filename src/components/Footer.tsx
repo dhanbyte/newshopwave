@@ -8,7 +8,7 @@ import { useAuth } from '../context/ClerkAuthContext';
 import DropshipperRegistrationModal from './DropshipperRegistrationModal';
 
 export default function Footer() {
-  const { user } = useAuth();
+  const { user, refreshUserData } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [dropshipperPrice, setDropshipperPrice] = useState(113);
@@ -109,40 +109,81 @@ export default function Footer() {
         name: 'ShopWave Dropshipper',
         description: `Dropshipper Registration - ₹${finalAmount}`,
         handler: async (response: any) => {
+          console.log('💳 Payment successful, processing registration...');
+          console.log('Payment ID:', response.razorpay_payment_id);
+          
           try {
+            const registrationPayload = {
+              userId: user.id,
+              email: user.email,
+              paymentId: response.razorpay_payment_id,
+              ...formData,
+              photo: photoUrl,
+              aadharPhoto: aadharPhotoUrl
+            };
+            
+            console.log('Sending registration request:', {
+              userId: user.id,
+              email: user.email,
+              paymentId: response.razorpay_payment_id,
+              hasPhoto: !!photoUrl,
+              hasAadharPhoto: !!aadharPhotoUrl
+            });
+            
             const res = await fetch('/api/dropshipper/register', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                userId: user.id,
-                email: user.email,
-                paymentId: response.razorpay_payment_id,
-                ...formData,
-                photo: photoUrl,
-                aadharPhoto: aadharPhotoUrl
-              })
+              body: JSON.stringify(registrationPayload)
             });
+            
             const data = await res.json();
+            console.log('Registration response:', data);
+            
             if (data.success) {
               alert(`🎉 Success! Your Dropshipper ID: ${data.dropshipperId}\n\nYou now get wholesale prices on all products!`);
               setShowModal(false);
               
-              // Force refresh user data
-              setTimeout(async () => {
+              // Force refresh user data with retry mechanism using context method
+              let retryCount = 0;
+              const maxRetries = 3;
+              
+              const attemptRefresh = async () => {
                 try {
-                  const refreshResponse = await fetch(`/api/user/refresh?userId=${user.id}&email=${user.email}`);
-                  const refreshData = await refreshResponse.json();
-                  console.log('Refresh data:', refreshData);
+                  console.log(`Refreshing user data (attempt ${retryCount + 1}/${maxRetries})...`);
+                  const updatedUser = await refreshUserData();
+                  
+                  if (updatedUser?.is_dropshipper) {
+                    console.log('✅ User data refreshed successfully, reloading page...');
+                    setTimeout(() => window.location.reload(), 500);
+                  } else if (retryCount < maxRetries - 1) {
+                    retryCount++;
+                    setTimeout(attemptRefresh, 2000); // Retry after 2 seconds
+                  } else {
+                    console.log('⚠️ Max retries reached, forcing reload...');
+                    setTimeout(() => window.location.reload(), 500);
+                  }
                 } catch (err) {
                   console.error('Refresh error:', err);
+                  if (retryCount < maxRetries - 1) {
+                    retryCount++;
+                    setTimeout(attemptRefresh, 2000);
+                  } else {
+                    console.log('⚠️ Refresh failed, forcing reload...');
+                    setTimeout(() => window.location.reload(), 500);
+                  }
                 }
-                window.location.reload();
-              }, 1000);
+              };
+              
+              setTimeout(attemptRefresh, 1000);
             } else {
-              alert('Registration failed: ' + data.error);
+              console.error('❌ Registration failed:', data);
+              const errorMessage = data.error || 'Unknown error occurred';
+              const debugInfo = data.debug ? `\n\nDebug Info:\n${JSON.stringify(data.debug, null, 2)}` : '';
+              alert(`❌ Registration failed!\n\nError: ${errorMessage}${debugInfo}\n\nYour payment was successful. Please contact support with Payment ID: ${response.razorpay_payment_id}`);
             }
-          } catch (err) {
-            alert('Registration failed. Please try again.');
+          } catch (err: any) {
+            console.error('❌ Exception during registration:', err);
+            alert(`❌ Registration failed!\n\nError: ${err.message}\n\nYour payment was successful. Please contact support with Payment ID: ${response.razorpay_payment_id}`);
           }
         },
         prefill: {

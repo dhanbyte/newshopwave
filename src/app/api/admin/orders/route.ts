@@ -14,17 +14,18 @@ export async function GET() {
     const adminOrders = adminOrdersResult.data || [];
     const vendorOrders = vendorOrdersResult.data || [];
     
-    // Get dropshipper details for vendor orders
+    // Get dropshipper details for vendor orders from users table
     const vendorOrdersWithDetails = await Promise.all(
       vendorOrders.map(async (order) => {
-        // Get dropshipper details
+        // Get dropshipper details from users table
         const { data: dropshipper } = await supabase
-          .from('dropshippers')
-          .select('name, phone, address, email, dropshipper_id')
+          .from('users')
+          .select('name, phone, dropshipper_address, email, dropshipper_id, dropshipper_phone')
           .eq('dropshipper_id', order.vendor_id)
-          .single();
+          .eq('is_dropshipper', true)
+          .maybeSingle();
         
-        console.log('Dropshipper lookup for vendor_id:', order.vendor_id, 'Found:', dropshipper);
+        console.log('Dropshipper lookup for vendor_id:', order.vendor_id, 'Found:', !!dropshipper);
         
         return {
           ...order,
@@ -40,8 +41,8 @@ export async function GET() {
           orderType: 'vendor',
           shippingAddress: dropshipper ? {
             name: dropshipper.name,
-            phone: dropshipper.phone,
-            address: dropshipper.address,
+            phone: dropshipper.dropshipper_phone || dropshipper.phone,
+            address: dropshipper.dropshipper_address,
             email: dropshipper.email
           } : null
         };
