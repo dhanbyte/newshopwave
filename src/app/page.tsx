@@ -38,7 +38,7 @@ import { MessageCircle, Users } from 'lucide-react';
 
 
 const filterCategories = ['All', 'Electronics', 'Home', 'Fashion', 'New Arrivals'];
-const PRODUCTS_TO_SHOW = 8;
+const PRODUCTS_TO_SHOW = 12; // Optimized: Load 12 products initially instead of 8
 const VISIBLE_COUNT_KEY = 'home_visible_count';
 const SELECTED_CATEGORY_KEY = 'home_selected_category';
 
@@ -122,13 +122,14 @@ export default function Home() {
 
 
 
+  // Optimized: Limit products displayed in each section to improve performance
   const techDeals = useMemo(() => {
     const filtered = products.filter(p => {
       const isCategory = p.category === 'Tech' || p.category === 'Electronics';
       return isCategory;
     });
     console.log('Tech deals found:', filtered.length);
-    return shuffleArray(filtered);
+    return shuffleArray(filtered).slice(0, 20); // Limit to 20 products
   }, [products]);
 
   const homeDeals = useMemo(() => {
@@ -137,7 +138,7 @@ export default function Home() {
       return isCategory;
     });
     console.log('Home deals found:', filtered.length);
-    return shuffleArray(filtered);
+    return shuffleArray(filtered).slice(0, 20); // Limit to 20 products
   }, [products]);
 
   const newArrivals = useMemo(() => {
@@ -147,7 +148,7 @@ export default function Home() {
     const jsonNewArrivals = NEWARRIVALS_PRODUCTS;
     const combined = [...apiNewArrivals, ...jsonNewArrivals];
     console.log('New arrivals found:', combined.length);
-    return shuffleArray(combined);
+    return shuffleArray(combined).slice(0, 20); // Limit to 20 products
   }, [products]);
 
   const fashionDeals = useMemo(() => {
@@ -158,7 +159,7 @@ export default function Home() {
     const jsonFashion = FASHION_PRODUCTS;
     const combined = [...apiFashion, ...jsonFashion];
     console.log('Fashion deals found:', combined.length, 'API:', apiFashion.length, 'JSON:', jsonFashion.length);
-    return shuffleArray(combined);
+    return shuffleArray(combined).slice(0, 20); // Limit to 20 products
   }, [products]);
 
   const filteredProducts = useMemo(() => {
@@ -309,28 +310,28 @@ export default function Home() {
       <section>
         <div className="grid grid-cols-4 gap-2 md:gap-3">
             <Link href="/search?category=Tech" className="relative block h-20 md:h-48 overflow-hidden rounded-lg md:rounded-xl group">
-                <Image src="https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_0748acd3-4797-400f-997d-6cecf6b22f5a.webp?updatedAt=1756628128432" alt="Tech" fill className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="tech gadgets" />
+                <Image src="https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_0748acd3-4797-400f-997d-6cecf6b22f5a.webp?updatedAt=1756628128432" alt="Tech" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="tech gadgets" />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center p-1 md:p-2">
                     <h3 className="text-xs md:text-md font-bold text-white text-center">Tech Accessories</h3>
                 </div>
             </Link>
             <Link href="/search?category=Home" className="relative block h-20 md:h-48 overflow-hidden rounded-lg md:rounded-xl group">
-                <Image src="https://Shopwave.b-cdn.net/new%20arival/17865..1.webp" alt="Home" fill className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="modern living room" />
+                <Image src="https://Shopwave.b-cdn.net/new%20arival/17865..1.webp" alt="Home" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="modern living room" />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center p-1 md:p-2">
                     <h3 className="text-xs md:text-md font-bold text-white text-center">Home & Kitchen</h3>
                 </div>
             </Link>
             <Link href="/search?category=Fashion" className="relative block h-20 md:h-48 overflow-hidden rounded-lg md:rounded-xl group">
-                <Image src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400" alt="Fashion" fill className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="fashion clothing" />
+                <Image src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400" alt="Fashion" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="fashion clothing" />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center p-1 md:p-2">
                     <h3 className="text-xs md:text-md font-bold text-white text-center">Fashion</h3>
                 </div>
             </Link>
             <Link href="/search?category=New%20Arrivals" className="relative block h-20 md:h-48 overflow-hidden rounded-lg md:rounded-xl group">
-                <Image src="https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/02_6d35b019-089f-4949-9571-7a7bd595fccd.webp" alt="New Arrivals" fill className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="new arrivals shopping" />
+                <Image src="https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/02_6d35b019-089f-4949-9571-7a7bd595fccd.webp" alt="New Arrivals" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="new arrivals shopping" />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center p-1 md:p-2">
                     <h3 className="text-xs md:text-md font-bold text-white text-center">New Arrivals</h3>
@@ -438,7 +439,7 @@ export default function Home() {
             
             // Sort by count and take top 20
             const topSubcategories = Object.entries(subcategoryCounts)
-              .sort(([,a], [,b]) => b - a)
+              .sort(([,a], [,b]) => (b as number) - (a as number))
               .slice(0, 20)
               .map(([subcategory]) => subcategory);
             

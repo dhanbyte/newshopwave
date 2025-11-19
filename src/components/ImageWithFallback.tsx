@@ -11,6 +11,7 @@ interface ImageWithFallbackProps {
   fill?: boolean
   priority?: boolean
   sizes?: string
+  loading?: 'lazy' | 'eager'
 }
 
 export default function ImageWithFallback({ 
@@ -21,7 +22,8 @@ export default function ImageWithFallback({
   className = '', 
   fill = false,
   priority = false,
-  sizes
+  sizes,
+  loading = 'lazy'
 }: ImageWithFallbackProps) {
   const [imgSrc, setImgSrc] = useState(src || 'https://via.placeholder.com/400x400/f3f4f6/9ca3af?text=No+Image')
   const [hasError, setHasError] = useState(false)
@@ -47,6 +49,7 @@ export default function ImageWithFallback({
         src={imgSrc}
         alt={alt}
         fill
+        loading={loading}
         className={`object-cover ${className}`}
         onError={handleError}
         priority={priority}

@@ -95,8 +95,8 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
               alt={productData.name}
               fill
               className="group-hover:scale-105 transition-transform duration-200"
-              priority={false}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+              loading="lazy"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           ) : (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center">

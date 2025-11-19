@@ -44,7 +44,7 @@ export const useProductStore = create<ProductState>()((set, get) => ({
       try {
         console.log('Fetching products from Supabase API...');
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // Optimized: Reduced timeout from 10s to 5s
         
         const response = await fetch(`${window.location.origin}/api/products?t=${Date.now()}`, {
           signal: controller.signal,

@@ -59,21 +59,21 @@ export default function DropshipperRegistrationModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg w-[95vw] sm:w-[90vw] md:w-[85vw] lg:max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-bold">🚀 Become a Dropshipper</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded">
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b">
+          <h2 className="text-base sm:text-lg font-bold">🚀 Become a Dropshipper</h2>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded min-w-[44px] min-h-[44px] flex items-center justify-center">
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Progress */}
-        <div className="p-4 border-b">
+        <div className="p-3 sm:p-4 border-b">
           <div className="flex items-center justify-between mb-2">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+              <div key={i} className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-bold ${
                 i <= step ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
               }`}>
                 {i}
@@ -86,7 +86,7 @@ export default function DropshipperRegistrationModal({
         </div>
 
         {/* Form Content */}
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           {/* Step 1: Personal Info */}
           {step === 1 && (
             <div className="space-y-4">
@@ -104,7 +104,7 @@ export default function DropshipperRegistrationModal({
                     <User className="h-8 w-8 text-gray-400" />
                   )}
                 </div>
-                <label className="cursor-pointer bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                <label className="cursor-pointer bg-blue-600 text-white px-4 py-3 rounded text-sm hover:bg-blue-700 inline-block min-h-[48px] flex items-center justify-center">
                   Upload Photo *
                   <input
                     type="file"
@@ -122,6 +122,7 @@ export default function DropshipperRegistrationModal({
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   placeholder="Enter your full name"
+                  className="min-h-[48px]"
                   required
                 />
               </div>
@@ -132,6 +133,7 @@ export default function DropshipperRegistrationModal({
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   placeholder="Enter your phone number"
+                  className="min-h-[48px]"
                   required
                 />
               </div>
@@ -152,7 +154,7 @@ export default function DropshipperRegistrationModal({
                   value={formData.address}
                   onChange={(e) => handleInputChange('address', e.target.value)}
                   placeholder="Enter your complete address with pincode"
-                  className="w-full px-3 py-2 border rounded-lg resize-none h-20"
+                  className="w-full px-3 py-3 border rounded-lg resize-none min-h-[80px]"
                   required
                 />
               </div>
@@ -173,6 +175,7 @@ export default function DropshipperRegistrationModal({
                   value={formData.bankName}
                   onChange={(e) => handleInputChange('bankName', e.target.value)}
                   placeholder="Enter bank name"
+                  className="min-h-[48px]"
                   required
                 />
               </div>
@@ -183,6 +186,7 @@ export default function DropshipperRegistrationModal({
                   value={formData.accountNumber}
                   onChange={(e) => handleInputChange('accountNumber', e.target.value)}
                   placeholder="Enter account number"
+                  className="min-h-[48px]"
                   required
                 />
               </div>
@@ -193,6 +197,7 @@ export default function DropshipperRegistrationModal({
                   value={formData.ifsc}
                   onChange={(e) => handleInputChange('ifsc', e.target.value)}
                   placeholder="Enter IFSC code"
+                  className="min-h-[48px]"
                   required
                 />
               </div>
@@ -213,6 +218,7 @@ export default function DropshipperRegistrationModal({
                   value={formData.aadharNumber}
                   onChange={(e) => handleInputChange('aadharNumber', e.target.value)}
                   placeholder="Enter 12-digit Aadhar number"
+                  className="min-h-[48px]"
                   maxLength={12}
                   required
                 />
@@ -237,7 +243,7 @@ export default function DropshipperRegistrationModal({
                       <p className="text-sm text-gray-500 mb-2">Upload clear photo of Aadhar card</p>
                     </div>
                   )}
-                  <label className="cursor-pointer bg-gray-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-700">
+                  <label className="cursor-pointer bg-gray-600 text-white px-4 py-3 rounded text-sm hover:bg-gray-700 inline-block min-h-[48px] flex items-center justify-center">
                     {formData.aadharPhoto ? 'Change Photo' : 'Upload Aadhar'}
                     <input
                       type="file"
@@ -273,24 +279,25 @@ export default function DropshipperRegistrationModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t flex justify-between">
+        <div className="p-3 sm:p-4 border-t flex justify-between gap-2">
           <Button 
             onClick={handlePrev} 
             variant="outline" 
             disabled={step === 1}
+            className="min-h-[48px] flex-1 sm:flex-initial"
           >
             Previous
           </Button>
           
           {step < 4 ? (
-            <Button onClick={handleNext}>
+            <Button onClick={handleNext} className="min-h-[48px] flex-1 sm:flex-initial">
               Next
             </Button>
           ) : (
             <Button 
               onClick={handleSubmit} 
               disabled={loading || !formData.photo || !formData.aadharPhoto}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 min-h-[48px] flex-1 sm:flex-initial"
             >
               {loading ? 'Processing...' : `Pay ₹${finalAmount}`}
             </Button>
