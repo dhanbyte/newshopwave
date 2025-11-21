@@ -10,7 +10,7 @@ export const liveSearch = (q: string, products: Product[]) => {
     p.subcategory !== 'Ayurvedic' &&
     !p.name?.toLowerCase().includes('ayurvedic')
   )
-  const fuse = new Fuse(filteredProducts, { keys: ['name','brand','category','tags'], includeScore: true, threshold: 0.4 })
+  const fuse = new Fuse(filteredProducts, { keys: ['name','brand','category','tags'], includeScore: true, threshold: 0.6 })
   return fuse.search(q).slice(0, 8).map(r => r.item)
 }
 
@@ -30,7 +30,7 @@ export const filterProducts = (products: Product[], opts: { q?: string; category
   });
 
   if (opts.q) {
-    const fuse = new Fuse(products, { keys: ['name','brand','category','tags'], threshold: 0.4 });
+    const fuse = new Fuse(products, { keys: ['name','brand','category','tags'], threshold: 0.6 });
     list = fuse.search(opts.q).map(result => result.item);
   }
 

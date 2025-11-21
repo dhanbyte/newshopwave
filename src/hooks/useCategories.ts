@@ -32,7 +32,7 @@ const fetchCategoriesOnce = async (): Promise<Category[]> => {
       } else {
         response = await fetch('/api/categories')
         data = await response.json()
-        categoriesCache = Array.isArray(data) ? data : []
+        categoriesCache = data.success && data.categories ? data.categories : (Array.isArray(data) ? data : [])
         return categoriesCache
       }
     } catch (error) {

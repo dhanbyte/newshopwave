@@ -145,7 +145,8 @@ export const getMergedSubcategories = async (categoryName: string): Promise<stri
     // Get database categories
     const response = await fetch('/api/categories');
     if (response.ok) {
-      const dbCategories = await response.json();
+      const data = await response.json();
+      const dbCategories = data.success && data.categories ? data.categories : (Array.isArray(data) ? data : []);
       const dbCategory = dbCategories.find((cat: any) => cat.name === categoryName);
       
       if (dbCategory && dbCategory.subcategories) {
@@ -160,5 +161,5 @@ export const getMergedSubcategories = async (categoryName: string): Promise<stri
   }
   
   // Fallback to JSON categories
-  return CATEGORIES[categoryName as CategoryType] || [];
+  return [...(CATEGORIES[categoryName as CategoryType] || [])];
 };
