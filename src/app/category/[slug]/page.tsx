@@ -118,6 +118,7 @@ export default function CategoryPage() {
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="border rounded px-3 py-1"
+                  aria-label="Sort products"
                 >
                   <option value="relevance">Relevance</option>
                   <option value="price-low">Price: Low to High</option>

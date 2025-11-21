@@ -332,6 +332,7 @@ export default function OrdersPage() {
                 value={selectedOrder.status}
                 onChange={(event) => updateOrderStatus(selectedOrder.orderId, event.target.value)}
                 className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                aria-label="Update order status"
               >
                 {statusOptions.map((status) => (
                   <option key={status} value={status}>

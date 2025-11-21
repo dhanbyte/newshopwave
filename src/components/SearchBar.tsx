@@ -156,7 +156,7 @@ export default function SearchBar(){
           className="w-full bg-transparent px-3 py-2 outline-none"
           aria-label="Search for products"
           role="searchbox"
-          aria-expanded={open}
+          aria-expanded={open ? 'true' : 'false'}
           aria-autocomplete="list"
         />
         {q && (

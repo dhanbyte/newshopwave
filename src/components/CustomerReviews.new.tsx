@@ -364,6 +364,7 @@ export default function CustomerReviews({ product }: { product: Product }) {
                 <select 
                   className="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   defaultValue="most-recent"
+                  aria-label="Sort reviews"
                 >
                   <option value="most-recent">Most Recent</option>
                   <option value="highest-rated">Highest Rated</option>

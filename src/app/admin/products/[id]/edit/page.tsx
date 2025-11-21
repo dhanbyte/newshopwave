@@ -146,12 +146,14 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Category *</label>
+            <label htmlFor="edit-product-category" className="block text-sm font-medium mb-2">Category *</label>
             <select
+              id="edit-product-category"
               value={formData.category}
               onChange={(e) => setFormData({...formData, category: e.target.value})}
               className="w-full px-3 py-2 border rounded-md"
               required
+              aria-label="Select product category"
             >
               {Object.keys(categories).map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
@@ -159,11 +161,13 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Subcategory</label>
+            <label htmlFor="edit-product-subcategory" className="block text-sm font-medium mb-2">Subcategory</label>
             <select
+              id="edit-product-subcategory"
               value={formData.subcategory}
               onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
               className="w-full px-3 py-2 border rounded-md"
+              aria-label="Select product subcategory"
             >
               <option value="">Select Subcategory</option>
               {categories[formData.category as keyof typeof categories]?.map(sub => (

@@ -34,6 +34,7 @@ export default function OrganizedFashionSelector({ value, onChange, className }:
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={className}
+      aria-label="Select fashion subcategory"
     >
       <option value="">Select Fashion Subcategory</option>
       {Object.entries(fashionCategories).map(([section, items]) => (

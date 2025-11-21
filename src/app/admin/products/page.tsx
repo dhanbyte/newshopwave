@@ -654,8 +654,9 @@ export default function ProductsPage() {
                             
                             {/* Category & Subcategory */}
                             <div>
-                              <label className="block text-sm font-medium mb-1">Category *</label>
+                              <label htmlFor="edit-category" className="block text-sm font-medium mb-1">Category *</label>
                               <select
+                                id="edit-category"
                                 value={editForm.category || ''}
                                 onChange={(e) => {
                                   const selectedCategory = availableCategories.find(cat => cat.name === e.target.value)
@@ -663,6 +664,7 @@ export default function ProductsPage() {
                                   setAvailableSubcategories(selectedCategory?.subcategories || [])
                                 }}
                                 className="w-full px-3 py-2 border rounded-lg"
+                                aria-label="Select category"
                               >
                                 <option value="">Select Category</option>
                                 {availableCategories.map(cat => (
@@ -671,12 +673,14 @@ export default function ProductsPage() {
                               </select>
                             </div>
                             <div>
-                              <label className="block text-sm font-medium mb-1">Subcategory *</label>
+                              <label htmlFor="edit-subcategory" className="block text-sm font-medium mb-1">Subcategory *</label>
                               <select
+                                id="edit-subcategory"
                                 value={editForm.subcategory || ''}
                                 onChange={(e) => setEditForm({...editForm, subcategory: e.target.value})}
                                 className="w-full px-3 py-2 border rounded-lg"
                                 disabled={!editForm.category}
+                                aria-label="Select subcategory"
                               >
                                 <option value="">Select Subcategory</option>
                                 {availableSubcategories.filter(sub => !sub.startsWith('---')).map(sub => (
@@ -854,6 +858,7 @@ export default function ProductsPage() {
                         onChange={(event) =>
                           updateProductStatus(product.id, event.target.value, product.isVendorProduct)
                         }
+                        aria-label={`Change status for ${product.name}`}
                         className={`px-2 py-1 rounded text-xs border ${
                           product.status === 'active'
                             ? 'bg-green-100 text-green-800'
@@ -944,8 +949,9 @@ export default function ProductsPage() {
                 
                 {/* Category & Subcategory */}
                 <div>
-                  <label className="block text-sm font-medium mb-1">Category *</label>
+                  <label htmlFor="bulk-edit-category" className="block text-sm font-medium mb-1">Category *</label>
                   <select
+                    id="bulk-edit-category"
                     value={editForm.category || ''}
                     onChange={(e) => {
                       const selectedCategory = availableCategories.find(cat => cat.name === e.target.value)
@@ -953,6 +959,7 @@ export default function ProductsPage() {
                       setAvailableSubcategories(selectedCategory?.subcategories || [])
                     }}
                     className="w-full px-3 py-2 border rounded-lg"
+                    aria-label="Select category for bulk edit"
                   >
                     <option value="">Select Category</option>
                     {availableCategories.map(cat => (
@@ -961,12 +968,14 @@ export default function ProductsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Subcategory *</label>
+                  <label htmlFor="bulk-edit-subcategory" className="block text-sm font-medium mb-1">Subcategory *</label>
                   <select
+                    id="bulk-edit-subcategory"
                     value={editForm.subcategory || ''}
                     onChange={(e) => setEditForm({...editForm, subcategory: e.target.value})}
                     className="w-full px-3 py-2 border rounded-lg"
                     disabled={!editForm.category}
+                    aria-label="Select subcategory for bulk edit"
                   >
                     <option value="">Select Subcategory</option>
                     {availableSubcategories.filter(sub => !sub.startsWith('---')).map(sub => (

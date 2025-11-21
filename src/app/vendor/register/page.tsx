@@ -312,12 +312,14 @@ export default function VendorRegister() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Business Type *</label>
+                    <label htmlFor="reg-business-type" className="block text-sm font-medium mb-2">Business Type *</label>
                     <select
+                      id="reg-business-type"
                       value={formData.businessType}
                       onChange={(e) => updateFormData('businessType', e.target.value)}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                       required
+                      aria-label="Select business type"
                     >
                       <option value="Individual">Individual</option>
                       <option value="Partnership">Partnership</option>
@@ -455,11 +457,13 @@ export default function VendorRegister() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-2">Account Type</label>
+                    <label htmlFor="account-type" className="block text-sm font-medium mb-2">Account Type</label>
                     <select
+                      id="account-type"
                       value={formData.accountType}
                       onChange={(e) => updateFormData('accountType', e.target.value)}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                      aria-label="Select account type"
                     >
                       <option value="Savings">Savings</option>
                       <option value="Current">Current</option>

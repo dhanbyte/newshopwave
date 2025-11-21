@@ -436,12 +436,14 @@ export default function VendorProfile() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Business Type</label>
+                <label htmlFor="business-type" className="block text-sm font-medium mb-1">Business Type</label>
                 {editing ? (
                   <select
+                    id="business-type"
                     value={formData.businessType}
                     onChange={(e) => setFormData({...formData, businessType: e.target.value})}
                     className="w-full px-3 py-2 border rounded-lg"
+                    aria-label="Select business type"
                   >
                     <option value="Individual">Individual</option>
                     <option value="Partnership">Partnership</option>
@@ -634,12 +636,14 @@ export default function VendorProfile() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Account Type</label>
+                <label htmlFor="profile-account-type" className="block text-sm font-medium mb-1">Account Type</label>
                 {editing ? (
                   <select
+                    id="profile-account-type"
                     value={formData.accountType}
                     onChange={(e) => setFormData({...formData, accountType: e.target.value})}
                     className="w-full px-3 py-2 border rounded-lg"
+                    aria-label="Select account type"
                   >
                     <option value="Savings">Savings</option>
                     <option value="Current">Current</option>

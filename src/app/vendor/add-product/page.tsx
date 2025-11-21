@@ -333,10 +333,6 @@ export default function AddProductPage() {
           ? product.weight
           : '',
       imageUrls: coerceImageUrls(product.images),
-      length: typeof product.length === 'number' ? product.length.toString() : typeof product.length === 'string' ? product.length : '',
-      width: typeof product.width === 'number' ? product.width.toString() : typeof product.width === 'string' ? product.width : '',
-      height: typeof product.height === 'number' ? product.height.toString() : typeof product.height === 'string' ? product.height : '',
-      weight: typeof product.weight === 'number' ? product.weight.toString() : typeof product.weight === 'string' ? product.weight : '',
     }
     setProducts([normalised])
   }
@@ -846,6 +842,7 @@ export default function AddProductPage() {
                     className="rounded-lg border px-3 py-2"
                     required
                     disabled={!currentProduct.category}
+                    aria-label="Select product subcategory"
                   >
                     <option value="">Select Subcategory</option>
                     {currentProduct.category &&
@@ -1103,7 +1100,7 @@ export default function AddProductPage() {
                       type="button"
                       className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50"
                       disabled={currentProduct.imageUrls.length >= 10 || currentProduct.uploadingImages}
-                      onClick={() => document.querySelector('input[type="file"][multiple]')?.click()}
+                      onClick={() => (document.querySelector('input[type="file"][multiple]') as HTMLInputElement)?.click()}
                     >
                       {currentProduct.imageUrls.length >= 10 ? 'Maximum 10 images' : 'Choose Multiple'}
                     </button>

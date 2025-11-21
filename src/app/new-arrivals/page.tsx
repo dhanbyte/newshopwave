@@ -195,6 +195,7 @@ export default function NewArrivalsPage() {
               value={sortBy} 
               onChange={(e) => setSortBy(e.target.value)}
               className="px-4 py-2.5 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all duration-200 shadow-sm hover:shadow-md"
+              aria-label="Sort new arrivals"
             >
               <option value="default">🔄 Sort by</option>
               <option value="price-low">💰 Price: Low to High</option>

@@ -76,7 +76,7 @@ export default function Filters(){
                 />
                 All
               </label>
-            {availableSubcategories.map(sub => (
+            {availableSubcategories.map((sub: string) => (
               <label key={sub} className="flex items-center gap-2 text-sm">
                 <input 
                   type="radio" 
@@ -96,7 +96,7 @@ export default function Filters(){
         <div className="rounded-xl border p-3">
           <div className="mb-2 text-sm font-medium">Type</div>
           <div className="space-y-2">
-            {availableTertiaryCategories.map(sub => (
+            {availableTertiaryCategories.map((sub: string) => (
               <label key={sub} className="flex items-center gap-2 text-sm">
                 <input 
                   type="radio" 
@@ -122,8 +122,8 @@ export default function Filters(){
       </div>
 
       <div className="rounded-xl border p-3">
-        <div className="mb-2 text-sm font-medium">Rating</div>
-        <select className="w-full rounded-lg border px-2 py-1 text-sm" defaultValue={sp.get('rating')||''} onChange={e=>set({ rating: e.target.value||undefined })}>
+        <label htmlFor="rating-filter" className="mb-2 text-sm font-medium block">Rating</label>
+        <select id="rating-filter" aria-label="Filter by rating" className="w-full rounded-lg border px-2 py-1 text-sm" defaultValue={sp.get('rating')||''} onChange={e=>set({ rating: e.target.value||undefined })}>
           <option value="">Any</option>
           <option value="4">4★ & up</option>
           <option value="3">3★ & up</option>

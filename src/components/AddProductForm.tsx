@@ -97,14 +97,16 @@ export default function AddProductForm() {
 
         {/* Category */}
         <div>
-          <label className="block text-sm font-medium mb-2">
+          <label htmlFor="product-category" className="block text-sm font-medium mb-2">
             Category *
           </label>
           <select
+            id="product-category"
             value={selectedCategory}
-            onChange={(e) => handleCategoryChange(e.target.value as CategoryType | '')}
+            onChange={(e) => handleCategoryChange(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
+            aria-label="Select product category"
           >
             <option value="">Select Category</option>
             {categories.map((category) => (
@@ -118,14 +120,16 @@ export default function AddProductForm() {
         {/* Subcategory - Only show when category is selected */}
         {selectedCategory && (
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label htmlFor="product-subcategory" className="block text-sm font-medium mb-2">
               Subcategory *
             </label>
             <select
+              id="product-subcategory"
               value={selectedSubcategory}
               onChange={(e) => setSelectedSubcategory(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
+              aria-label="Select product subcategory"
             >
               <option value="">Select Subcategory</option>
               {getSubcategories(selectedCategory).map((subcategory) => (

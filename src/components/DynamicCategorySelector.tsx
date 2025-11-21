@@ -44,14 +44,16 @@ export default function DynamicCategorySelector({
     <div className="space-y-4">
       {/* Category */}
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label htmlFor="category-select" className="block text-sm font-medium mb-2">
           Category {required && '*'}
         </label>
         <select
+          id="category-select"
           value={selectedCategory}
           onChange={(e) => handleCategoryChange(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           required={required}
+          aria-label="Select category"
         >
           <option value="">Select Category</option>
           {categories.map((category) => (
@@ -65,14 +67,16 @@ export default function DynamicCategorySelector({
       {/* Subcategory - Only show when category is selected */}
       {selectedCategory && (
         <div>
-          <label className="block text-sm font-medium mb-2">
+          <label htmlFor="subcategory-select" className="block text-sm font-medium mb-2">
             Subcategory {required && '*'}
           </label>
           <select
+            id="subcategory-select"
             value={selectedSubcategory}
             onChange={(e) => onSubcategoryChange(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required={required}
+            aria-label="Select subcategory"
           >
             <option value="">Select Subcategory</option>
             {getSubcategories(selectedCategory).map((subcategory) => (
