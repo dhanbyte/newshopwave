@@ -3,12 +3,10 @@
 
 import { useState } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
-import styles from '../../admin/customers/page.module.css'; // reuse admin styles
-
 export default function AddFreeDropshipper() {
   const [emailOrId, setEmailOrId] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{type: 'success' | 'error'; text: string} | null;
+  const [message, setMessage] = useState<{type: 'success' | 'error'; text: string} | null>(null);
 
   const handleAdd = async () => {
     if (!emailOrId.trim()) {
@@ -38,10 +36,10 @@ export default function AddFreeDropshipper() {
   };
 
   return (
-    <main className={styles.main || 'min-h-screen bg-gray-50 flex items-center justify-center'}>
-      <div className={styles.card || 'bg-white p-6 rounded-lg shadow-lg max-w-md w-full'}>
-        <h2 className={styles.title || 'text-2xl font-bold mb-4'}>Add Free Dropshipper</h2>
-        <p className={styles.subtitle || 'mb-4 text-gray-600'}>
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Add Free Dropshipper</h2>
+        <p className="mb-4 text-gray-600">
           Upgrade any existing user to a dropshipper without any payment required.
         </p>
         <input
@@ -49,18 +47,18 @@ export default function AddFreeDropshipper() {
           placeholder="User email or ID"
           value={emailOrId}
           onChange={e => setEmailOrId(e.target.value)}
-          className="w-full border rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
           disabled={loading}
         />
         <button
           onClick={handleAdd}
           disabled={loading}
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors disabled:opacity-50"
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors disabled:opacity-50 font-semibold"
         >
           {loading ? 'Processing…' : 'Add as Free Dropshipper'}
         </button>
         {message && (
-          <div className={`mt-4 flex items-center gap-2 text-sm ${message.type === 'success' ? 'text-green-800' : 'text-red-800'}`}>
+          <div className={`mt-4 flex items-center gap-2 text-sm p-3 rounded ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
             {message.type === 'success' ? <CheckCircle size={16} /> : <XCircle size={16} />}
             <span>{message.text}</span>
           </div>
