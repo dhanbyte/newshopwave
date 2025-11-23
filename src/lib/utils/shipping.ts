@@ -2,14 +2,14 @@ import type { ShippingRate } from '../types'
 
 // Shipping rates based on weight (in grams)
 export const SHIPPING_RATES: ShippingRate[] = [
-  { minWeight: 0, maxWeight: 500, rate: 49 },
-  { minWeight: 501, maxWeight: 1000, rate: 69 },
-  { minWeight: 1001, maxWeight: 2000, rate: 89 },
-  { minWeight: 2001, maxWeight: 3000, rate: 109 },
-  { minWeight: 3001, maxWeight: 4000, rate: 129 },
-  { minWeight: 4001, maxWeight: 5000, rate: 149 },
-  { minWeight: 5001, maxWeight: 10000, rate: 199 },
-  { minWeight: 10001, maxWeight: Infinity, rate: 299 } // For very heavy items
+  { minWeight: 0, maxWeight: 500, rate: 40 },
+  { minWeight: 501, maxWeight: 1000, rate: 70 },
+  { minWeight: 1001, maxWeight: 2000, rate: 90 },
+  { minWeight: 2001, maxWeight: 3000, rate: 100 },
+  { minWeight: 3001, maxWeight: 4000, rate: 120 },
+  { minWeight: 4001, maxWeight: 5000, rate: 140 },
+  { minWeight: 5001, maxWeight: 10000, rate: 200 },
+  { minWeight: 10001, maxWeight: Infinity, rate: 250 } // For very heavy items
 ]
 
 // COD charge
@@ -218,8 +218,14 @@ export const DEFAULT_WEIGHTS: Record<string, number> = {
   'zip': 20,
   'velcro': 30,
   
-  // Default fallback - reduced
-  'default': 150
+  // Toys - Light items
+  'fidget': 50,
+  'pop it': 50,
+  'stress': 40,
+  'squeeze': 60,
+  
+  // Default fallback - very light for unknown items
+  'default': 100
 }
 
 // Packaging weight (in grams) - reduced for lighter items
@@ -242,31 +248,31 @@ export function estimateProductWeight(productName: string, category?: string): n
   if (category) {
     const cat = category.toLowerCase()
     if (cat.includes('electronic') || cat.includes('mobile') || cat.includes('tech')) {
-      return 200 // Reduced from 300
-    }
-    if (cat.includes('fashion') || cat.includes('clothing') || cat.includes('apparel')) {
-      return 180 // Reduced from 250
-    }
-    if (cat.includes('home') || cat.includes('kitchen')) {
-      return 300 // Reduced from 400
-    }
-    if (cat.includes('beauty') || cat.includes('personal') || cat.includes('cosmetic')) {
-      return 120 // Reduced from 150
-    }
-    if (cat.includes('book') || cat.includes('stationery')) {
       return 150 // Reduced from 200
     }
+    if (cat.includes('fashion') || cat.includes('clothing') || cat.includes('apparel')) {
+      return 150 // Reduced from 180
+    }
+    if (cat.includes('home') || cat.includes('kitchen')) {
+      return 250 // Reduced from 300
+    }
+    if (cat.includes('beauty') || cat.includes('personal') || cat.includes('cosmetic')) {
+      return 100 // Reduced from 120
+    }
+    if (cat.includes('book') || cat.includes('stationery')) {
+      return 120 // Reduced from 150
+    }
     if (cat.includes('sports') || cat.includes('fitness')) {
-      return 400 // Reduced from 500
+      return 300 // Reduced from 400
     }
     if (cat.includes('toy') || cat.includes('game')) {
-      return 200 // Reduced from 300
+      return 100 // Reduced from 200 - toys are generally light
     }
     if (cat.includes('accessory') || cat.includes('accessories')) {
-      return 80 // New category for light accessories
+      return 60 // Reduced from 80
     }
     if (cat.includes('jewelry') || cat.includes('jewellery')) {
-      return 50 // New category for jewelry
+      return 30 // Reduced from 50
     }
   }
   

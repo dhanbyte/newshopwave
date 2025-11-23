@@ -71,15 +71,8 @@ const calculateTotals = (items: CartItem[], paymentMethod: 'COD' | 'Online' = 'O
     }))
   )
 
-  const estimatedShipping = calculateShippingCost(
-    items.map((item) => ({
-      id: item.id,
-      qty: item.qty,
-      weight: item.weight ?? 0,
-      name: item.name,
-      category: item.category ?? 'general',
-    }))
-  )
+  // Calculate shipping cost based on total weight in grams
+  const estimatedShipping = calculateShippingCost(totalWeightKg)
 
   // Dropshipper logic: Pay same delivery charge as customer (weight-based), COD = ₹25
   // Customer: Free delivery if cart >= ₹399, else weight-based charge
