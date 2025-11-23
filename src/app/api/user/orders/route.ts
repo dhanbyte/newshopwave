@@ -59,6 +59,26 @@ export async function GET(request: NextRequest) {
       } else {
         console.log('📦 Found vendor orders:', vendorOrders?.length || 0)
         
+        // Get order IDs to fetch addresses from admin_orders
+        const orderIds = vendorOrders.map(o => o.order_id).filter(Boolean);
+        
+        // Fetch corresponding admin_orders to get shipping addresses
+        const { data: adminOrders, error: adminError } = await supabase
+          .from('admin_orders')
+          .select('order_id, shipping_address')
+          .in('order_id', orderIds);
+          
+        // Create address map
+        const addressMap = new Map();
+        if (adminOrders) {
+          adminOrders.forEach(o => {
+            if (o.shipping_address) {
+              const parsedAddr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address;
+              addressMap.set(o.order_id, parsedAddr);
+            }
+          });
+        }
+        
         // Transform vendor orders to match the format
         const transformedVendorOrders = (vendorOrders || []).map(order => ({
           order_id: order.order_id,
@@ -68,7 +88,7 @@ export async function GET(request: NextRequest) {
           status: order.status,
           created_at: order.created_at,
           isDropshipperOrder: true,
-          shipping_address: order.shipping_address,
+          shipping_address: addressMap.get(order.order_id) || order.shipping_address,
           dropshipperProfit: (order.customer_total || 0) - (order.vendor_total || 0)
         }))
         

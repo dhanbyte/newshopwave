@@ -1,0 +1,571 @@
+/* src/app/dropshipper/register/page.module.css */
+
+.registerPage {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Hero Section */
+.hero {
+    padding: 3rem 1.5rem 2rem;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, transparent 100%);
+}
+
+.heroContent {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.heroTitle {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+}
+
+.highlight {
+    background: linear-gradient(90deg, #ffd700, #ffed4e);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.heroSubtitle {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 1rem;
+}
+
+/* Video Section */
+.videoSection {
+    padding: 3rem 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.sectionTitle {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 800;
+    text-align: center;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.sectionSubtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+}
+
+.videoContainer {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.videoIframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 16px;
+}
+
+/* Product Showcase */
+.productShowcase {
+    padding: 3rem 1.5rem;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.productsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.productCard {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.productCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.productImage {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+.productImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.savingsBadge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.productInfo {
+    padding: 1.25rem;
+}
+
+.productName {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+    min-height: 2.5rem;
+}
+
+.priceComparison {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.priceBox {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    text-align: center;
+}
+
+.dropshipperBox {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border-color: #10b981;
+    position: relative;
+}
+
+.winBadge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #10b981;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 800;
+}
+
+.priceLabel {
+    font-size: 0.7rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.customerPrice {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ef4444;
+    text-decoration: line-through;
+}
+
+.dropshipperPrice {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #059669;
+}
+
+.priceNote {
+    font-size: 0.65rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.profitNote {
+    font-size: 0.7rem;
+    color: #059669;
+    margin-top: 0.25rem;
+    font-weight: 600;
+}
+
+.vs {
+    font-weight: 800;
+    color: #3b82f6;
+    font-size: 1rem;
+}
+
+/* Registration Section */
+.registrationSection {
+    padding: 3rem 1.5rem 4rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.formContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.formTitle {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Progress Bar */
+.progressBar {
+    margin-bottom: 2rem;
+}
+
+.progressSteps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.progressSteps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #e5e7eb;
+    z-index: 0;
+}
+
+.progressStep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.stepCircle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.progressStep.active .stepCircle {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.stepLabel {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.progressStep.active .stepLabel {
+    color: #3b82f6;
+}
+
+.progressText {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Form Content */
+.formContent {
+    min-height: 400px;
+}
+
+.formStep {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stepTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* Photo Upload */
+.photoUpload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.photoPreview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px dashed #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #f9fafb;
+}
+
+.photoPreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.uploadButton {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.uploadButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.fileInput {
+    display: none;
+}
+
+/* Form Groups */
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.input,
+.textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.input:focus,
+.textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Terms & Conditions */
+.termsBox {
+    background: #f0f9ff;
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1.5rem;
+}
+
+.termsLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.termsCheckbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+}
+
+.termsLink {
+    color: #3b82f6;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.termsLink:hover {
+    color: #2563eb;
+}
+
+/* Form Actions */
+.formActions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #e5e7eb;
+}
+
+.button {
+    flex: 1;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.buttonSecondary {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.buttonSecondary:hover:not(:disabled) {
+    background: #e5e7eb;
+}
+
+.buttonSecondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.buttonPrimary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.buttonPrimary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.buttonSuccess {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.buttonSuccess:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.buttonSuccess:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero {
+        padding: 2rem 1rem 1.5rem;
+    }
+
+    .videoSection,
+    .productShowcase,
+    .registrationSection {
+        padding: 2rem 1rem;
+    }
+
+    .formContainer {
+        padding: 1.5rem;
+    }
+
+    .productsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .priceComparison {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .vs {
+        transform: rotate(90deg);
+    }
+
+    .formActions {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+    }
+}

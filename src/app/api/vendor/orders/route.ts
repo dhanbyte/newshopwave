@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '../../../../lib/supabase'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 15
@@ -19,17 +19,81 @@ export async function GET(request: NextRequest) {
 
     console.log('Fetching orders for vendorId:', vendorId)
     
-    // Return empty orders for now since table doesn't exist
+    // Fetch vendor orders
+    const { data: vendorOrders, error: vendorError } = await supabase
+      .from('vendor_orders')
+      .select('*')
+      .eq('vendor_id', vendorId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (vendorError) {
+      console.error('Error fetching vendor orders:', vendorError);
+      throw vendorError;
+    }
+
+    if (!vendorOrders || vendorOrders.length === 0) {
+      return NextResponse.json({ 
+        success: true,
+        orders: []
+      });
+    }
+
+    // Get order IDs to fetch addresses
+    const orderIds = vendorOrders.map(o => o.order_id).filter(Boolean);
+
+    // Fetch corresponding admin_orders to get shipping addresses
+    const { data: adminOrders, error: adminError } = await supabase
+      .from('admin_orders')
+      .select('order_id, shipping_address')
+      .in('order_id', orderIds);
+
+    // Create address map
+    const addressMap = new Map();
+    if (adminOrders) {
+      adminOrders.forEach(o => {
+        if (o.shipping_address) {
+          const parsedAddr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address;
+          addressMap.set(o.order_id, parsedAddr);
+        }
+      });
+    }
+
+    // Combine data
+    const ordersWithDetails = vendorOrders.map(order => {
+      let shippingAddress = addressMap.get(order.order_id);
+      
+      // Normalize address structure for vendor dashboard
+      if (shippingAddress) {
+        shippingAddress = {
+          ...shippingAddress,
+          street: shippingAddress.street || shippingAddress.address || shippingAddress.line1 || '',
+          city: shippingAddress.city || '',
+          state: shippingAddress.state || '',
+          pincode: shippingAddress.pincode || shippingAddress.zip || ''
+        };
+      }
+
+      return {
+        ...order,
+        _id: order.id,
+        orderId: order.order_id,
+        total: order.vendor_total,
+        createdAt: order.created_at,
+        shippingAddress: shippingAddress || null
+      };
+    });
+
     return NextResponse.json({ 
       success: true,
-      orders: []
+      orders: ordersWithDetails
     })
 
   } catch (error) {
     console.error('Error fetching vendor orders:', error)
     return NextResponse.json({ 
-      success: true,
-      orders: []
+      success: false,
+      error: 'Failed to fetch vendor orders'
     })
   }
 }

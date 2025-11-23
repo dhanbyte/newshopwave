@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart3, Package, Users, ShoppingCart, ArrowLeft, Home, Grid3X3 } from 'lucide-react'
+import { BarChart3, Package, Users, ShoppingCart, ArrowLeft, Home, Grid3X3, CreditCard } from 'lucide-react'
 
 const menuItems = [
   { icon: BarChart3, label: 'Dashboard', href: '/admin', emoji: '📊' },
@@ -12,6 +12,7 @@ const menuItems = [
   { icon: Users, label: 'Vendors', href: '/admin/vendors', emoji: '🏪' },
   { icon: Users, label: 'Dropshippers', href: '/admin/dropshippers', emoji: '🏷️' },
   { icon: Package, label: 'Dropshipper Settings', href: '/admin/dropshipper-settings', emoji: '⚙️' },
+  { icon: CreditCard, label: 'Dropshipper Plans', href: '/admin/dropshipper-plans', emoji: '💳' },
   { icon: BarChart3, label: 'Analytics', href: '/admin/analytics', emoji: '📈' },
   { icon: Package, label: 'Import CSV', href: '/vendor/import-csv', emoji: '📄' },
 ]

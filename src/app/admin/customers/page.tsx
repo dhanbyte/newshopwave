@@ -31,6 +31,7 @@ interface Customer {
   joinedDate: string
   lastActivity?: string
   lastOrder?: string
+  is_dropshipper?: boolean
 }
 
 interface CustomersResponse {
@@ -70,6 +71,29 @@ export default function CustomersPage() {
       setCustomers([])
     } finally {
       setLoading(false)
+    }
+  }
+
+  const makeDropshipper = async (customer: Customer) => {
+    if (!confirm(`Are you sure you want to make ${customer.name} a dropshipper for free?`)) return
+
+    try {
+      const response = await fetch('/api/admin/customers/make-dropshipper', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // @ts-ignore
+        body: JSON.stringify({ userId: customer.userId })
+      })
+      const data = await response.json()
+      if (data.success) {
+        alert('User is now a dropshipper!')
+        fetchCustomers()
+        setSelectedCustomer(null)
+      } else {
+        alert('Failed: ' + data.error)
+      }
+    } catch (err) {
+      alert('Error: ' + (err as Error).message)
     }
   }
 
@@ -183,6 +207,24 @@ export default function CustomersPage() {
               <div className="text-2xl font-bold text-orange-600">
                 {selectedCustomer.isAdmin ? 'Admin' : 'Customer'}
               </div>
+            </div>
+
+            <div className="bg-indigo-50 p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="h-5 w-5 text-indigo-600" />
+                <span className="font-medium">Dropshipper Status</span>
+              </div>
+              <div className="text-2xl font-bold text-indigo-600">
+                {selectedCustomer.is_dropshipper ? 'Active' : 'Inactive'}
+              </div>
+              {!selectedCustomer.is_dropshipper && (
+                <button 
+                  onClick={() => makeDropshipper(selectedCustomer)}
+                  className="mt-2 text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700"
+                >
+                  Make Dropshipper (Free)
+                </button>
+              )}
             </div>
           </div>
 

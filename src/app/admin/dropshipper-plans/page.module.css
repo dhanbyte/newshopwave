@@ -1,0 +1,118 @@
+/* Premium Dropshipper Plans page styling */
+
+:root {
+  --primary-bg: #0a0a0a;
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-blur: 12px;
+  --primary-color: #e0e0e0;
+  --accent-color: #ff7e5f;
+  /* gradient start */
+  --accent-color-2: #feb47b;
+  /* gradient end */
+  --button-bg: #ff7e5f;
+  --button-hover: #ff9e80;
+}
+
+/* Global page container */
+.plansPage {
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-color-2));
+  color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin: 0;
+  background: linear-gradient(90deg, #fff, #ddd);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+}
+
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.planCard {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--card-blur));
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.planCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.planName {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  color: var(--button-bg);
+}
+
+.interval {
+  font-size: 1rem;
+  opacity: 0.85;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.ctaButton {
+  background: var(--button-bg);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.ctaButton:hover {
+  background: var(--button-hover);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-bg: #111;
+    --primary-color: #e0e0e0;
+  }
+}

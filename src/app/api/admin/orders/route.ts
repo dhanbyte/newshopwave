@@ -14,6 +14,18 @@ export async function GET() {
     const adminOrders = adminOrdersResult.data || [];
     const vendorOrders = vendorOrdersResult.data || [];
     
+    // Create a map of order_id to shipping address from admin_orders and regular orders
+    const addressMap = new Map();
+    [...regularOrders, ...adminOrders].forEach(o => {
+      const addr = o.shipping_address || o.address;
+      if (addr) {
+        // Handle both string and object formats
+        const parsedAddr = typeof addr === 'string' ? JSON.parse(addr) : addr;
+        if (o.order_id) addressMap.set(o.order_id, parsedAddr);
+        if (o.id) addressMap.set(o.id.toString(), parsedAddr);
+      }
+    });
+
     // Get dropshipper details for vendor orders from users table
     const vendorOrdersWithDetails = await Promise.all(
       vendorOrders.map(async (order) => {
@@ -27,6 +39,9 @@ export async function GET() {
         
         console.log('Dropshipper lookup for vendor_id:', order.vendor_id, 'Found:', !!dropshipper);
         
+        // Use the address from the main order record (admin_orders)
+        const shippingAddress = addressMap.get(order.order_id);
+
         return {
           ...order,
           _id: order.id,
@@ -39,12 +54,12 @@ export async function GET() {
           dropshipperSellingPrice: order.customer_total || order.selling_price,
           isVendorOrder: true,
           orderType: 'vendor',
-          shippingAddress: dropshipper ? {
+          shippingAddress: shippingAddress || (dropshipper ? {
             name: dropshipper.name,
             phone: dropshipper.dropshipper_phone || dropshipper.phone,
             address: dropshipper.dropshipper_address,
             email: dropshipper.email
-          } : null
+          } : null)
         };
       })
     );
@@ -60,7 +75,8 @@ export async function GET() {
       total: order.total,
       createdAt: order.created_at,
       isDropshipperOrder: false,
-      orderType: 'regular'
+      orderType: 'regular',
+      shippingAddress: order.shipping_address || order.address || null
     }));
     
     // Mark admin orders with a flag
@@ -73,7 +89,8 @@ export async function GET() {
       createdAt: order.created_at,
       items: order.items ? JSON.parse(order.items) : [],
       isDropshipperOrder: false,
-      orderType: 'admin'
+      orderType: 'admin',
+      shippingAddress: order.shipping_address || order.address || null
     }));
     
     // Combine and sort by creation date

@@ -46,7 +46,8 @@ export async function GET() {
           status,
           joinedDate: user.created_at,
           lastActivity: lastOrder || user.updated_at,
-          addresses: user.addresses || []
+          addresses: user.addresses || [],
+          is_dropshipper: user.is_dropshipper || false
         }
       })
     )
