@@ -1,0 +1,31 @@
+{
+  "vendor_orders": {
+    "count": 2,
+    "sample": {
+      "id": 1,
+      "vendor_id": 1,
+      "order_id": "ORD001",
+      "status": "pending",
+      "vendor_total": 299.99,
+      "total": 299.99,
+      "customer_email": "customer@example.com",
+      "created_at": "2025-11-11T07:43:24.829925",
+      "updated_at": "2025-11-11T07:43:24.829925"
+    },
+    "error": null
+  },
+  "admin_orders": {
+    "count": 2,
+    "sample": {
+      "id": 1,
+      "user_id": "user_32E8jCINs6pz0hGjARnIAtvGGY4",
+      "order_id": "ORD-1763287202706-umgayw78i",
+      "items": "[{\"productId\":78537,\"name\":\"VR BOX Virtual Reality 3D Glasses Headset (1 Pc)\",\"price\":299,\"quantity\":1,\"image\":\"https://cdn.shopify.com/s/files/1/0782/3284/6646/files/VRBox-WOSKU-01.jpg?v=1761799147\"}]",
+      "total_amount": 339,
+      "status": "pending",
+      "created_at": "2025-11-16T10:00:02.166479",
+      "updated_at": "2025-11-16T10:00:02.166479"
+    },
+    "error": null
+  }
+}

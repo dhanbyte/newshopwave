@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getDatabase } from '../../../../lib/db'
+
+const supabase = getDatabase
 
 export async function GET() {
   try {
@@ -11,14 +13,13 @@ export async function GET() {
         clerk_user_id,
         email,
         name,
-        phone,
         is_dropshipper,
         dropshipper_id,
         dropshipper_status,
         dropshipper_earnings,
-        dropshipper_payment_id,
         dropshipper_phone,
         dropshipper_address,
+        dropshipper_payment_id,
         dropshipper_account_number,
         dropshipper_ifsc,
         dropshipper_bank_name,

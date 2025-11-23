@@ -34,6 +34,7 @@ export default function CartPage(){
       <h1 className="mb-4 text-2xl font-bold">Your Cart</h1>
       {!user?.is_dropshipper && <ProgressOfferBar />}
       <CartOfferBanner />
+      
       {items.length === 0 && (
         <div className="card p-8 text-center">
           <h2 className="text-lg font-medium text-gray-700">Your cart is empty.</h2>
@@ -64,6 +65,11 @@ export default function CartPage(){
                     <div className="text-lg font-bold text-gray-900">
                       ₹{it.price?.toLocaleString('en-IN') || '0'}
                     </div>
+                    {user?.is_dropshipper && (
+                      <div className="text-xs text-blue-600 font-medium">
+                        Dropshipper Price
+                      </div>
+                    )}
                   </div>
                   <div className="mt-2"><QtyCounter value={it.qty} onChange={n=>handleSetQty(it.id, n)} /></div>
                 </div>
@@ -95,10 +101,12 @@ export default function CartPage(){
                 <span>Shipping</span>
                 <span>{totalShipping > 0 ? `₹${totalShipping.toLocaleString('en-IN')}`: 'Free'}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Platform Fee</span>
-                <span>₹{totalTax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              </div>
+              {totalTax > 0 && (
+                <div className="flex justify-between">
+                  <span>Platform Fee</span>
+                  <span>₹{totalTax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+              )}
             </div>
             <div className="mt-3 flex justify-between font-semibold">
                 <span>Total Amount</span>

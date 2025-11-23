@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getDatabase } from '../../../../lib/db'
+
+const supabase = getDatabase
 
 export const dynamic = 'force-dynamic'
 
@@ -66,6 +68,7 @@ export async function GET(request: NextRequest) {
           status: order.status,
           created_at: order.created_at,
           isDropshipperOrder: true,
+          shipping_address: order.shipping_address,
           dropshipperProfit: (order.customer_total || 0) - (order.vendor_total || 0)
         }))
         

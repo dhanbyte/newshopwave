@@ -1,0 +1,14 @@
+{
+  "columns": [
+    "id",
+    "vendor_id",
+    "order_id",
+    "status",
+    "vendor_total",
+    "total",
+    "customer_email",
+    "created_at",
+    "updated_at"
+  ],
+  "sample_address_type": "undefined"
+}

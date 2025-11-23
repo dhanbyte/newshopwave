@@ -110,15 +110,15 @@ export default function DroppshippersPage() {
               <h3 className="font-semibold mb-3">Contact Information</h3>
               <div className="space-y-2">
                 <p><strong>Email:</strong> {selectedDropshipper.email}</p>
-                <p><strong>Phone:</strong> {selectedDropshipper.phone}</p>
-                <p><strong>Address:</strong> {selectedDropshipper.address || 'N/A'}</p>
+                <p><strong>Phone:</strong> {selectedDropshipper.dropshipper_phone || selectedDropshipper.phone || 'N/A'}</p>
+                <p><strong>Address:</strong> {selectedDropshipper.dropshipper_address || selectedDropshipper.address || 'N/A'}</p>
               </div>
             </div>
             <div>
               <h3 className="font-semibold mb-3">Account Details</h3>
               <div className="space-y-2">
                 <p><strong>Joined:</strong> {new Date(selectedDropshipper.created_at).toLocaleDateString()}</p>
-                <p><strong>Payment ID:</strong> {selectedDropshipper.payment_id || 'N/A'}</p>
+                <p><strong>Payment ID:</strong> {selectedDropshipper.dropshipper_payment_id || selectedDropshipper.payment_id || 'N/A'}</p>
                 <p><strong>User ID:</strong> {selectedDropshipper.user_id || 'N/A'}</p>
               </div>
             </div>
@@ -217,9 +217,9 @@ export default function DroppshippersPage() {
                     </h3>
                     <p className="text-gray-600">{dropshipper.name}</p>
                     <p className="text-sm text-gray-500">{dropshipper.email}</p>
-                    <p className="text-sm text-gray-500">{dropshipper.phone}</p>
-                    {dropshipper.address && (
-                      <p className="text-sm text-gray-500">{dropshipper.address}</p>
+                    <p className="text-sm text-gray-500">{dropshipper.dropshipper_phone || dropshipper.phone || 'No Phone'}</p>
+                    {dropshipper.dropshipper_address && (
+                      <p className="text-sm text-gray-500">{dropshipper.dropshipper_address}</p>
                     )}
                   </div>
                   <div className="text-right">

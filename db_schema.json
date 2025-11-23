@@ -1,0 +1,32 @@
+{
+  "tables_error": "Could not find the function public.exec_sql(sql) in the schema cache",
+  "user_columns": [
+    "id",
+    "email",
+    "password",
+    "name",
+    "referred_by",
+    "referral_code",
+    "referral_balance",
+    "total_earned",
+    "total_withdrawn",
+    "has_made_purchase",
+    "referral_count",
+    "created_at",
+    "updated_at",
+    "is_dropshipper",
+    "dropshipper_id",
+    "dropshipper_earnings",
+    "dropshipper_payment_id",
+    "dropshipper_status",
+    "clerk_user_id",
+    "dropshipper_photo",
+    "dropshipper_phone",
+    "dropshipper_address",
+    "dropshipper_account_number",
+    "dropshipper_ifsc",
+    "dropshipper_bank_name",
+    "dropshipper_aadhar_photo",
+    "dropshipper_aadhar_number"
+  ]
+}

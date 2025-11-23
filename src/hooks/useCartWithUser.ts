@@ -15,7 +15,12 @@ export function useCartWithUser() {
     // Recalculate delivery charges for dropshippers
     const cartTotal = cart.items.reduce((sum, item) => sum + item.qty * item.price, 0)
     
-    const deliveryCharge = isDropshipper ? 40 : (cartTotal >= 399 ? 0 : 40)
+    // Use weight-based shipping from cart.deliveryInfo.estimatedShipping
+    // Dropshipper pays actual shipping cost, customer gets free over ₹399
+    const deliveryCharge = isDropshipper 
+      ? cart.deliveryInfo.estimatedShipping  // Dropshipper pays weight-based charge
+      : (cartTotal >= 399 ? 0 : cart.deliveryInfo.estimatedShipping)  // Customer gets free delivery
+    
     const codCharge = cart.paymentMethod === 'COD' ? (isDropshipper ? 25 : 19) : 0
     const isFreeDelivery = isDropshipper ? false : cartTotal >= 399
     

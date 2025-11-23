@@ -60,20 +60,14 @@ const calculateTotals = (items: CartItem[], paymentMethod: 'COD' | 'Online' = 'O
 
   const cartTotal = items.reduce((sum, item) => sum + item.qty * item.price, 0)
 
-  // Dropshipper logic: Always pay delivery charges, COD = ₹25
-  const deliveryCharge = isDropshipper ? 40 : (cartTotal >= 399 ? 0 : 40)
-  const codCharge = paymentMethod === 'COD' ? (isDropshipper ? 25 : 19) : 0
-  const isFreeDelivery = isDropshipper ? false : cartTotal >= 399
-
-  // Dropshippers don't get gifts
-  const giftTier = isDropshipper ? 0 : getGiftTier(cartTotal)
-  const gifts = isDropshipper ? [] : getGiftsForTier(giftTier)
-
+  // Calculate weight-based shipping for all users
   const totalWeightKg = calculateTotalWeight(
     items.map((item) => ({
       id: item.id,
       qty: item.qty,
       weight: item.weight ?? 0,
+      name: item.name,
+      category: item.category ?? 'general',
     }))
   )
 
@@ -86,6 +80,19 @@ const calculateTotals = (items: CartItem[], paymentMethod: 'COD' | 'Online' = 'O
       category: item.category ?? 'general',
     }))
   )
+
+  // Dropshipper logic: Pay same delivery charge as customer (weight-based), COD = ₹25
+  // Customer: Free delivery if cart >= ₹399, else weight-based charge
+  const deliveryCharge = isDropshipper 
+    ? estimatedShipping  // Dropshipper pays actual weight-based charge
+    : (cartTotal >= 399 ? 0 : estimatedShipping)  // Customer gets free delivery over ₹399
+  
+  const codCharge = paymentMethod === 'COD' ? (isDropshipper ? 25 : 19) : 0
+  const isFreeDelivery = isDropshipper ? false : cartTotal >= 399
+
+  // Dropshippers don't get gifts
+  const giftTier = isDropshipper ? 0 : getGiftTier(cartTotal)
+  const gifts = isDropshipper ? [] : getGiftsForTier(giftTier)
 
   const deliveryInfo: DeliveryInfo = {
     deliveryCharge,

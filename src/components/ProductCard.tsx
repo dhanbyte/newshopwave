@@ -50,6 +50,15 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
     if (!requireAuth('add items to cart')) {
       return;
     }
+    
+    console.log('🛒 Adding to cart:', {
+      productName: productData.name,
+      adminPrice,
+      isDropshipper,
+      finalPrice: price,
+      userId: user.id
+    });
+    
     add(user.id, { 
       id: productData.id, 
       qty: 1, 

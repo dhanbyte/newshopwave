@@ -31,6 +31,8 @@ type OrderSummary = {
     pincode: string
   }
   createdAt: string | number | Date
+  isDropshipperOrder?: boolean
+  dropshipperProfit?: number
 }
 
 type OrdersResponse = {
@@ -144,6 +146,9 @@ export default function OrdersPage() {
                 <div>
                   <div className="font-semibold">
                     Order <span className="text-brand">#{order.id}</span>
+                    {order.isDropshipperOrder && (
+                      <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Dropshipper</span>
+                    )}
                   </div>
                   {placedOn && (
                     <div className="text-xs text-gray-500">
@@ -151,8 +156,24 @@ export default function OrdersPage() {
                     </div>
                   )}
                 </div>
-                <div className="mt-2 text-sm font-medium sm:mt-0">
-                  Total: �,1{order.total.toLocaleString('en-IN')}
+                <div className="mt-2 text-sm sm:mt-0">
+                  {order.isDropshipperOrder && order.dropshipperProfit && order.dropshipperProfit > 0 ? (
+                    <div className="text-right">
+                      <div className="font-medium text-gray-900">
+                        Customer Total: ₹{order.total.toLocaleString('en-IN')}
+                      </div>
+                      <div className="text-xs text-gray-600">
+                        Your Cost: ₹{(order.total - order.dropshipperProfit).toLocaleString('en-IN')}
+                      </div>
+                      <div className="text-xs font-semibold text-green-600">
+                        Profit: ₹{order.dropshipperProfit.toLocaleString('en-IN')}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="font-medium">
+                      Total: ₹{order.total.toLocaleString('en-IN')}
+                    </div>
+                  )}
                 </div>
               </div>
 
