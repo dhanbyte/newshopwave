@@ -58,6 +58,29 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Creating product for vendorId:', vendorId)
+    
+    // First, verify that the vendor exists
+    const { data: vendor, error: vendorError } = await supabase
+      .from('vendors')
+      .select('id, status')
+      .eq('id', parseInt(vendorId))
+      .single()
+
+    if (vendorError || !vendor) {
+      console.error('Vendor not found:', vendorError)
+      return NextResponse.json({
+        success: false,
+        message: 'Vendor not found. Please make sure you are logged in as a registered vendor.'
+      }, { status: 404 })
+    }
+
+    if (vendor.status !== 'approved') {
+      return NextResponse.json({
+        success: false,
+        message: 'Your vendor account is not approved yet. Please wait for admin approval.'
+      }, { status: 403 })
+    }
+
     console.log('Product images:', productData.images)
     console.log('Images length:', productData.images?.length || 0)
 
@@ -80,6 +103,15 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Supabase insert error:', error)
+      
+      // Provide more specific error messages
+      if (error.message.includes('foreign key constraint')) {
+        return NextResponse.json({
+          success: false,
+          message: 'Failed to save product: Vendor account not found in database. Please contact support.'
+        }, { status: 500 })
+      }
+      
       throw new Error(error.message || 'Failed to create product')
     }
 
