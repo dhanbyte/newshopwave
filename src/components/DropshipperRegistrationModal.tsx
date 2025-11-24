@@ -86,7 +86,7 @@ export default function DropshipperRegistrationModal({
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6">
                 {/* Video Button */}
                 <button
-                  onClick={() => window.open('https://www.youtube.com/watch?v=I-U1NwHyGGI', '_blank')}
+                  onClick={() => window.open('https://youtu.be/1uBBLhBGjPg', '_blank')}
                   className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-[1.02] mb-4 flex items-center justify-center gap-3"
                 >
                   <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
