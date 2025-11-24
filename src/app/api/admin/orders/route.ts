@@ -74,9 +74,18 @@ export async function GET() {
       userId: order.user_id,
       total: order.total,
       createdAt: order.created_at,
+      trackingId: order.tracking_id,
       isDropshipperOrder: false,
       orderType: 'regular',
-      shippingAddress: order.shipping_address || order.address || null
+      shippingAddress: order.shipping_address 
+        ? (typeof order.shipping_address === 'string' 
+            ? JSON.parse(order.shipping_address) 
+            : order.shipping_address)
+        : (order.address 
+            ? (typeof order.address === 'string' 
+                ? JSON.parse(order.address) 
+                : order.address)
+            : null)
     }));
     
     // Mark admin orders with a flag
@@ -87,10 +96,19 @@ export async function GET() {
       userId: order.user_id,
       total: order.total_amount,
       createdAt: order.created_at,
+      trackingId: order.tracking_id,
       items: order.items ? JSON.parse(order.items) : [],
       isDropshipperOrder: false,
       orderType: 'admin',
-      shippingAddress: order.shipping_address || order.address || null
+      shippingAddress: order.shipping_address 
+        ? (typeof order.shipping_address === 'string' 
+            ? JSON.parse(order.shipping_address) 
+            : order.shipping_address)
+        : (order.address 
+            ? (typeof order.address === 'string' 
+                ? JSON.parse(order.address) 
+                : order.address)
+            : null)
     }));
     
     // Combine and sort by creation date

@@ -82,6 +82,13 @@ export default function Checkout(){
     }
   }, [addresses.length]);
 
+  // Auto-select Prepaid (UPI) for dropshippers
+  useEffect(() => {
+    if (user?.is_dropshipper && paymentMethod === 'Online') {
+      setPaymentMethod('UPI'); // Prepaid option
+    }
+  }, [user?.is_dropshipper]);
+
   // Fetch user coins - always ensure 5 coins minimum
   useEffect(() => {
     const fetchUserCoins = async () => {
@@ -110,6 +117,36 @@ export default function Checkout(){
     }
     fetchUserCoins()
   }, [user])
+
+  // Track wallet balance separately for real-time updates
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  // Refresh wallet balance for dropshippers
+  useEffect(() => {
+    const refreshWalletBalance = async () => {
+      if (user?.is_dropshipper && user?.id) {
+        try {
+          // Fetch latest balance from Supabase
+          const response = await fetch(`/api/user/balance?userId=${user.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setWalletBalance(data.balance || user.dropshipper_earnings || 0);
+          } else {
+            // Fallback to user object
+            setWalletBalance(user.dropshipper_earnings || 0);
+          }
+        } catch (error) {
+          console.error('Error refreshing wallet balance:', error);
+          setWalletBalance(user.dropshipper_earnings || 0);
+        }
+      }
+    };
+    refreshWalletBalance();
+    
+    // Refresh every 5 seconds while on checkout page
+    const interval = setInterval(refreshWalletBalance, 5000);
+    return () => clearInterval(interval);
+  }, [user?.id, user?.is_dropshipper, user?.dropshipper_earnings]);
 
   const handleCoinsChange = (value: number) => {
     const maxCoins = Math.min(userCoins, Math.floor(total))
@@ -493,19 +530,58 @@ undefined
     }
 
     try {
-      console.log('📝 Creating COD order for user:', user?.id);
+      console.log('📝 Processing COD order for user:', user?.id);
+
+      // 1. Call API First (Handles Wallet Deduction & Supabase Order)
+      // This is critical for Dropshippers to ensure funds are deducted BEFORE order is confirmed locally
+      const apiResponse = await fetch('/api/place-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user!.id,
+          items: items.map(item => ({
+            productId: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.qty,
+            image: item.image
+          })),
+          total: finalTotal,
+          paymentMethod: 'COD',
+          paymentId: 'cod_order',
+          shippingAddress: {
+            name: addr.fullName,
+            phone: addr.phone,
+            address: addr.line1,
+            city: addr.city,
+            state: addr.state,
+            pincode: addr.pincode
+          }
+        })
+      });
+
+      const apiResult = await apiResponse.json();
+
+      if (!apiResult.success) {
+        throw new Error(apiResult.error || 'Failed to place order');
+      }
+
+      console.log('✅ API Order created:', apiResult.orderId);
+
+      // 2. Create Firebase Order (For UI/Client State)
+      // We pass the orderId from API to keep them in sync
       const newOrder = await placeOrder(
         user!.id, 
         items, 
         addr, 
         finalTotal, 
         'COD' as any, 
-        undefined
+        apiResult.orderId
       )
       
       console.log('✅ COD Order created:', newOrder.id);
       
-      // Register user in admin system
+      // Register user in admin system (Background)
       try {
         await fetch('/api/register-user', {
           method: 'POST',
@@ -519,37 +595,6 @@ undefined
         })
       } catch (error) {
         console.error('Error registering user:', error)
-      }
-      
-      // Save order to admin system
-      try {
-        await fetch('/api/place-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: user!.id,
-            items: items.map(item => ({
-              productId: item.id,
-              name: item.name,
-              price: item.price,
-              quantity: item.qty,
-              image: item.image
-            })),
-            total: finalTotal,
-            paymentMethod: 'COD',
-            paymentId: 'cod_order',
-            shippingAddress: {
-              name: addr.fullName,
-              phone: addr.phone,
-              address: addr.line1,
-              city: addr.city,
-              state: addr.state,
-              pincode: addr.pincode
-            }
-          })
-        })
-      } catch (error) {
-        console.error('Error saving order to admin:', error)
       }
       
       // Deduct coins if applied
@@ -580,15 +625,17 @@ undefined
       
       console.log('✅ COD Order process completed successfully');
       toast({ 
-        title: "🎉 COD Order Placed Successfully!", 
-        description: `Order #${newOrder.id} confirmed. Pay ₹${finalTotal} on delivery!` 
+        title: "🎉 Order Placed Successfully!", 
+        description: user?.is_dropshipper 
+          ? `Order #${newOrder.id} confirmed. Amount deducted from wallet.`
+          : `Order #${newOrder.id} confirmed. Pay ₹${finalTotal} on delivery!` 
       });
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('💥 COD Order placement failed:', error);
       toast({ 
         title: "Order Failed", 
-        description: "COD order creation failed. Please try again.", 
+        description: error.message || "COD order creation failed. Please try again.", 
         variant: 'destructive' 
       });
       setIsProcessing(false);
@@ -596,10 +643,13 @@ undefined
   }
 
   const handleAction = () => {
-    if (paymentMethod === 'COD') {
-      handleCODOrder()
+    // For dropshippers, always use wallet-based flow (both Prepaid and COD)
+    if (user?.is_dropshipper) {
+      handleCODOrder(); // This already handles wallet deduction
+    } else if (paymentMethod === 'COD') {
+      handleCODOrder();
     } else {
-      handleOnlinePayment()
+      handleOnlinePayment(); // Razorpay for regular customers
     }
   }
 
@@ -730,7 +780,12 @@ undefined
             </div>
              <div className="flex justify-between">
                   <span>Shipping ({shippingDetails.totalWeightKg}kg)</span>
-                  <span>{totalShipping > 0 ? `₹${totalShipping}` : 'Free'}</span>
+                  <span>
+                    {user?.is_dropshipper 
+                      ? `₹${shippingDetails.shippingCost}` 
+                      : (totalShipping > 0 ? `₹${totalShipping}` : 'Free')
+                    }
+                  </span>
               </div>
               {codCharge > 0 && (
                 <div className="flex justify-between text-orange-600">
@@ -756,19 +811,86 @@ undefined
           
           <div className="mt-4">
               <h3 className="text-md font-semibold mb-2">Payment Method</h3>
+              
+              {user?.is_dropshipper && (
+                <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-blue-800 font-medium">Wallet Balance</span>
+                    <span className="text-lg font-bold text-blue-900">₹{walletBalance.toLocaleString()}</span>
+                  </div>
+                  
+                  {paymentMethod === 'COD' && walletBalance < finalTotal && (
+                    <div className="mt-2 bg-red-50 p-2 rounded border border-red-100">
+                        <p className="text-xs text-red-600 font-semibold mb-1">Insufficient Balance!</p>
+                        <p className="text-xs text-red-500 mb-2">Required: ₹{finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        <Link href="/account" className="block w-full text-center text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition-colors">
+                            Recharge Wallet Now
+                        </Link>
+                    </div>
+                  )}
+
+                  {paymentMethod === 'COD' && walletBalance >= finalTotal && (
+                    <p className="text-xs text-blue-600 mt-1">
+                      Note: For COD orders, the full amount will be deducted from your wallet upfront.
+                    </p>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-2">
-                  {paymentOptions.map(opt => (
-                      <div key={opt.id}>
-                          <label className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-all ${paymentMethod === opt.id ? 'border-brand ring-2 ring-brand/20' : 'border-gray-200 hover:border-gray-400'}`}>
-                              <input type="radio" name="paymentMethod" value={opt.id} checked={paymentMethod === opt.id} onChange={() => setPaymentMethod(opt.id)} className="h-4 w-4 text-brand focus:ring-brand" />
-                              <opt.icon className="h-6 w-6 text-gray-600" />
-                              <div>
-                                  <div className="font-semibold text-sm">{opt.title}</div>
-                                  <div className="text-xs text-gray-500">{opt.description}</div>
-                              </div>
-                          </label>
+                  {user?.is_dropshipper ? (
+                    // Dropshipper-specific payment options
+                    <>
+                      <div>
+                        <label className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-all ${paymentMethod !== 'COD' ? 'border-brand ring-2 ring-brand/20' : 'border-gray-200 hover:border-gray-400'}`}>
+                          <input 
+                            type="radio" 
+                            name="paymentMethod" 
+                            value="Prepaid" 
+                            checked={paymentMethod !== 'COD'} 
+                            onChange={() => setPaymentMethod('UPI')} 
+                            className="h-4 w-4 text-brand focus:ring-brand" 
+                          />
+                          <CreditCard className="h-6 w-6 text-gray-600" />
+                          <div>
+                            <div className="font-semibold text-sm">Prepaid (Wallet Pay)</div>
+                            <div className="text-xs text-gray-500">Pay from wallet, no COD charges</div>
+                          </div>
+                        </label>
                       </div>
-                  ))}
+                      <div>
+                        <label className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-brand ring-2 ring-brand/20' : 'border-gray-200 hover:border-gray-400'}`}>
+                          <input 
+                            type="radio" 
+                            name="paymentMethod" 
+                            value="COD" 
+                            checked={paymentMethod === 'COD'} 
+                            onChange={() => setPaymentMethod('COD')} 
+                            className="h-4 w-4 text-brand focus:ring-brand" 
+                          />
+                          <Banknote className="h-6 w-6 text-gray-600" />
+                          <div>
+                            <div className="font-semibold text-sm">COD (Wallet Pay + ₹25)</div>
+                            <div className="text-xs text-gray-500">Deduct from wallet, collect cash on delivery</div>
+                          </div>
+                        </label>
+                      </div>
+                    </>
+                  ) : (
+                    // Regular customer payment options
+                    paymentOptions.map(opt => (
+                      <div key={opt.id}>
+                        <label className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-all ${paymentMethod === opt.id ? 'border-brand ring-2 ring-brand/20' : 'border-gray-200 hover:border-gray-400'}`}>
+                          <input type="radio" name="paymentMethod" value={opt.id} checked={paymentMethod === opt.id} onChange={() => setPaymentMethod(opt.id)} className="h-4 w-4 text-brand focus:ring-brand" />
+                          <opt.icon className="h-6 w-6 text-gray-600" />
+                          <div>
+                            <div className="font-semibold text-sm">{opt.title}</div>
+                            <div className="text-xs text-gray-500">{opt.description}</div>
+                          </div>
+                        </label>
+                      </div>
+                    ))
+                  )}
               </div>
           </div>
 
@@ -780,12 +902,14 @@ undefined
               {isProcessing ? (
                 <div className="flex items-center gap-2">
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                  {paymentMethod === 'COD' ? 'Placing Order...' : 'Processing Payment...'}
+                  {user?.is_dropshipper ? 'Processing Wallet Payment...' : (paymentMethod === 'COD' ? 'Placing Order...' : 'Processing Payment...')}
                 </div>
               ) : (
-                paymentMethod === 'COD' 
-                  ? `Place COD Order - ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
-                  : `Pay ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                user?.is_dropshipper
+                  ? `Pay from Wallet & Place Order - ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                  : (paymentMethod === 'COD' 
+                      ? `Place COD Order - ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                      : `Pay ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
               )}
           </Button>
           

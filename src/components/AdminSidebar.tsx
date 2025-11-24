@@ -13,6 +13,7 @@ const menuItems = [
   { icon: Users, label: 'Dropshippers', href: '/admin/dropshippers', emoji: '🏷️' },
   { icon: Package, label: 'Dropshipper Settings', href: '/admin/dropshipper-settings', emoji: '⚙️' },
   { icon: CreditCard, label: 'Dropshipper Plans', href: '/admin/dropshipper-plans', emoji: '💳' },
+  { icon: CreditCard, label: 'Withdrawals', href: '/admin/withdrawals', emoji: '💸' },
   { icon: BarChart3, label: 'Analytics', href: '/admin/analytics', emoji: '📈' },
   { icon: Package, label: 'Import CSV', href: '/vendor/import-csv', emoji: '📄' },
 ]

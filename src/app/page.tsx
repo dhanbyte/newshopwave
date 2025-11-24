@@ -126,7 +126,7 @@ export default function Home() {
   const techDeals = useMemo(() => {
     const filtered = products.filter(p => {
       const isCategory = p.category === 'Tech' || p.category === 'Electronics';
-      return isCategory;
+      return isCategory && (p.quantity || p.stock || 0) > 0;
     });
     console.log('Tech deals found:', filtered.length);
     return shuffleArray(filtered).slice(0, 20); // Limit to 20 products
@@ -135,7 +135,7 @@ export default function Home() {
   const homeDeals = useMemo(() => {
     const filtered = products.filter(p => {
       const isCategory = p.category === 'Home' || p.category === 'Home & Kitchen';
-      return isCategory;
+      return isCategory && (p.quantity || p.stock || 0) > 0;
     });
     console.log('Home deals found:', filtered.length);
     return shuffleArray(filtered).slice(0, 20); // Limit to 20 products
@@ -143,9 +143,9 @@ export default function Home() {
 
   const newArrivals = useMemo(() => {
     const apiNewArrivals = products.filter(p => {
-      return p.category === 'New Arrivals';
+      return p.category === 'New Arrivals' && (p.quantity || p.stock || 0) > 0;
     });
-    const jsonNewArrivals = NEWARRIVALS_PRODUCTS;
+    const jsonNewArrivals = NEWARRIVALS_PRODUCTS.filter(p => (p.quantity || p.stock || 0) > 0);
     const combined = [...apiNewArrivals, ...jsonNewArrivals];
     console.log('New arrivals found:', combined.length);
     return shuffleArray(combined).slice(0, 20); // Limit to 20 products
@@ -154,9 +154,9 @@ export default function Home() {
   const fashionDeals = useMemo(() => {
     const apiFashion = products.filter(p => {
       const isCategory = p.category === 'Fashion';
-      return isCategory;
+      return isCategory && (p.quantity || p.stock || 0) > 0;
     });
-    const jsonFashion = FASHION_PRODUCTS;
+    const jsonFashion = FASHION_PRODUCTS.filter(p => (p.quantity || p.stock || 0) > 0);
     const combined = [...apiFashion, ...jsonFashion];
     console.log('Fashion deals found:', combined.length, 'API:', apiFashion.length, 'JSON:', jsonFashion.length);
     return shuffleArray(combined).slice(0, 20); // Limit to 20 products
@@ -505,6 +505,14 @@ export default function Home() {
                 <SafeProductCard p={product} />
               </div>
             ))}
+            <Link href="/search?category=Tech" className="flex-shrink-0 w-32 md:w-48 flex flex-col items-center justify-center bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors group">
+                <div className="p-4 bg-white rounded-full shadow-sm mb-2 group-hover:scale-110 transition-transform">
+                    <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">View All Electronics</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -527,6 +535,14 @@ export default function Home() {
                 <SafeProductCard p={product} />
               </div>
             ))}
+            <Link href="/search?category=Home" className="flex-shrink-0 w-32 md:w-48 flex flex-col items-center justify-center bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors group">
+                <div className="p-4 bg-white rounded-full shadow-sm mb-2 group-hover:scale-110 transition-transform">
+                    <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">View All Home</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -549,6 +565,14 @@ export default function Home() {
                 <SafeProductCard p={product} />
               </div>
             ))}
+            <Link href="/search?category=Fashion" className="flex-shrink-0 w-32 md:w-48 flex flex-col items-center justify-center bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors group">
+                <div className="p-4 bg-white rounded-full shadow-sm mb-2 group-hover:scale-110 transition-transform">
+                    <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">View All Fashion</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -571,41 +595,18 @@ export default function Home() {
                 <SafeProductCard p={product} />
               </div>
             ))}
+            <Link href="/new-arrivals" className="flex-shrink-0 w-32 md:w-48 flex flex-col items-center justify-center bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors group">
+                <div className="p-4 bg-white rounded-full shadow-sm mb-2 group-hover:scale-110 transition-transform">
+                    <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">View All New Arrivals</span>
+            </Link>
           </div>
         </div>
       </section>
 
-
-
-      {/* Explore by Price Section */}
-      {/* <section className="mb-8">
-        <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 px-4">💰 Explore Our Prices</h2>
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-3 px-4">
-          <Link href="/search?maxPrice=49" className="bg-gradient-to-r from-green-400 to-green-500 text-white p-4 rounded-lg text-center hover:shadow-md transition-shadow">
-            <div className="text-lg font-bold">₹49</div>
-            <div className="text-xs opacity-90">Under ₹49</div>
-          </Link>
-          <Link href="/search?maxPrice=99" className="bg-gradient-to-r from-blue-400 to-blue-500 text-white p-4 rounded-lg text-center hover:shadow-md transition-shadow">
-            <div className="text-lg font-bold">₹99</div>
-            <div className="text-xs opacity-90">Under ₹99</div>
-          </Link>
-          <Link href="/search?maxPrice=299" className="bg-gradient-to-r from-purple-400 to-purple-500 text-white p-4 rounded-lg text-center hover:shadow-md transition-shadow">
-            <div className="text-lg font-bold">₹299</div>
-            <div className="text-xs opacity-90">Under ₹299</div>
-          </Link>
-          <Link href="/search?maxPrice=399" className="bg-gradient-to-r from-orange-400 to-orange-500 text-white p-4 rounded-lg text-center hover:shadow-md transition-shadow">
-            <div className="text-lg font-bold">₹399</div>
-            <div className="text-xs opacity-90">Under ₹399</div>
-          </Link>
-          <Link href="/search?maxPrice=499" className="bg-gradient-to-r from-red-400 to-red-500 text-white p-4 rounded-lg text-center hover:shadow-md transition-shadow">
-            <div className="text-lg font-bold">₹499</div>
-            <div className="text-xs opacity-90">Under ₹499</div>
-          </Link>
-        </div>
-      </section>
-
-      {/* All Products Section */}
- 
 
 
 

@@ -11,7 +11,7 @@ import RatingStars from '@/components/RatingStars'
 import QtyCounter from '@/components/QtyCounter'
 import { useCart } from '@/lib/cartStore'
 import WishlistButton from '@/components/WishlistButton'
-import { ChevronLeft, Share2, ShieldCheck, RotateCw, BellRing, Check } from 'lucide-react'
+import { ChevronLeft, Share2, ShieldCheck, RotateCw, BellRing, Check, Truck } from 'lucide-react'
 
 import ProductReviews from '@/components/ProductReviews'
 import RelatedProducts from '@/components/RelatedProducts'
@@ -158,7 +158,14 @@ function ProductDetailContent() {
 
   const price = p.price?.discounted ?? p.price_discounted ?? p.price?.original ?? p.price_original ?? p.price ?? 0
   const images = [p.image, ...(p.extraImages||[])]
-  const related = products.filter(x => x.category===p.category && x.id!==p.id).slice(0,8)
+  const related = products.filter(x => {
+    if (x.id === p.id) return false;
+    // Prefer subcategory match if available
+    if (p.subcategory && x.subcategory) {
+        return x.subcategory === p.subcategory;
+    }
+    return x.category === p.category;
+  }).slice(0, 8);
 
   const handleAddToCart = () => {
     if (!requireAuth('add items to cart')) {
@@ -359,6 +366,29 @@ function ProductDetailContent() {
     return keywords;
   };
 
+  const TrustBadges = () => (
+    <div className="grid grid-cols-3 gap-2 md:gap-4 mt-6 py-4 border-t border-b border-gray-100">
+      <div className="flex flex-col items-center text-center">
+        <div className="p-2 bg-green-50 rounded-full mb-2">
+          <ShieldCheck className="w-5 h-5 text-green-600" />
+        </div>
+        <span className="text-xs font-medium text-gray-600">Secure Payment</span>
+      </div>
+      <div className="flex flex-col items-center text-center">
+        <div className="p-2 bg-blue-50 rounded-full mb-2">
+          <RotateCw className="w-5 h-5 text-blue-600" />
+        </div>
+        <span className="text-xs font-medium text-gray-600">Easy Returns</span>
+      </div>
+      <div className="flex flex-col items-center text-center">
+        <div className="p-2 bg-purple-50 rounded-full mb-2">
+          <Truck className="w-5 h-5 text-purple-600" />
+        </div>
+        <span className="text-xs font-medium text-gray-600">Free Delivery</span>
+      </div>
+    </div>
+  )
+
   return (
     <>
       <Head>
@@ -531,6 +561,14 @@ function ProductDetailContent() {
                 )}
               </div>
             )}
+
+            {/* Stock info for regular users if low */}
+            {!user?.is_dropshipper && (p.quantity || p.stock || 0) <= 5 && (p.quantity || p.stock || 0) > 0 && (
+               <div className="mt-3 mb-2 flex items-center gap-2 text-red-600 animate-pulse">
+                  <div className="h-2 w-2 rounded-full bg-red-600"></div>
+                  <span className="text-xs font-bold">Hurry! Only {p.quantity || p.stock || 0} left in stock</span>
+               </div>
+            )}
             
             <div className="mt-3"><PriceTag original={p.price?.original ?? p.price_original ?? p.originalPrice} discounted={p.price?.discounted ?? p.price_discounted ?? p.price} /></div>
             
@@ -550,6 +588,8 @@ function ProductDetailContent() {
             )}
             
             <ActionButtons />
+            
+            <TrustBadges />
 
           <div className="mt-8 space-y-6">
             {p.description && 

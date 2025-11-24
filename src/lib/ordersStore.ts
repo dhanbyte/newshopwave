@@ -12,7 +12,7 @@ type OrdersState = {
   isLoading: boolean
   hasNewOrder: boolean
   init: (userId: string | null) => () => void
-  placeOrder: (userId: string, items: CartItem[], address: Address, total: number, payment: PaymentMethod) => Promise<Order>
+  placeOrder: (userId: string, items: CartItem[], address: Address, total: number, payment: PaymentMethod, orderId?: string) => Promise<Order>
   updateOrderStatus: (orderId: string, status: Order['status']) => Promise<void>
   clearNewOrderStatus: (userId: string) => Promise<void>
   clear: () => void
@@ -72,13 +72,15 @@ export const useOrders = create<OrdersState>()((set, get) => ({
         return () => {}; // Return an empty unsubscribe function
     }
   },
-  placeOrder: async (userId, items, address, total, payment) => {
+  placeOrder: async (userId, items, address, total, payment, orderId) => {
     const docRef = getOrderDocRef(userId);
     const { clearCartFromDB } = useCart.getState();
 
     const order: Order = {
-      id: 'O' + Date.now().toString().slice(-6),
+      id: orderId || 'O' + Date.now().toString().slice(-6),
+      userId,
       createdAt: Date.now(),
+      updatedAt: Date.now(),
       items: items.map(it => ({ 
         productId: it.id, 
         qty: it.qty, 

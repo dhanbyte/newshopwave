@@ -123,6 +123,7 @@ export default function Footer() {
               <li><Link href="/return-policy" className="text-gray-400 hover:text-white">Return Policy</Link></li>
               <li><Link href="/terms" className="text-gray-400 hover:text-white">Terms and Conditions</Link></li>
               <li><Link href="/privacy" className="text-gray-400 hover:text-white">Privacy Policy</Link></li>
+              <li><Link href="/withdrawal-policy" className="text-gray-400 hover:text-white">Withdrawal Policy</Link></li>
             </ul>
           </div>
           <div>

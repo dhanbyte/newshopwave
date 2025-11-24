@@ -12,13 +12,39 @@ export async function POST(request: Request) {
         error: 'Missing required fields' 
       }, { status: 400 });
     }
+
+    // Step 1: Check wallet balance first (DON'T deduct yet!)
+    let isDropshipper = false;
+    let currentBalance = 0;
+    
+    if (paymentMethod === 'COD') {
+      const { data: user } = await supabase
+        .from('users')
+        .select('is_dropshipper, dropshipper_earnings')
+        .eq('clerk_user_id', userId)
+        .single();
+
+      if (user?.is_dropshipper) {
+        isDropshipper = true;
+        currentBalance = user.dropshipper_earnings || 0;
+        console.log(`💰 Dropshipper Wallet Check: Balance ₹${currentBalance}, Required ₹${total}`);
+
+        if (currentBalance < total) {
+          return NextResponse.json({ 
+            success: false, 
+            error: `Insufficient wallet balance (₹${currentBalance}). Required: ₹${total}. Please recharge your wallet.` 
+          }, { status: 400 });
+        }
+        console.log('✅ Wallet balance sufficient - will deduct AFTER order creation');
+      }
+    }
     
     console.log('📦 Creating order with userId:', userId)
     
-    // Generate order ID
+    // Step 2: Generate order ID
     const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-    // Create new order in admin_orders with shipping address
+    // Step 3: Create order in database FIRST
     const { data: order, error: orderError } = await supabase
       .from('admin_orders')
       .insert({
@@ -35,12 +61,43 @@ export async function POST(request: Request) {
       .single()
 
     if (orderError) {
-      throw orderError
+      console.error('❌ Order creation failed:', orderError);
+      // Don't deduct wallet since order failed!
+      throw orderError;
+    }
+
+    console.log('✅ Order created successfully:', order.order_id);
+
+    // Step 4: ONLY NOW deduct from wallet (after successful order creation)
+    if (isDropshipper && paymentMethod === 'COD') {
+      const { error: deductionError } = await supabase
+        .from('users')
+        .update({ dropshipper_earnings: currentBalance - total })
+        .eq('clerk_user_id', userId);
+
+      if (deductionError) {
+        console.error('❌ Wallet deduction failed:', deductionError);
+        
+        // Rollback: Delete the order since wallet deduction failed
+        await supabase
+          .from('admin_orders')
+          .delete()
+          .eq('order_id', orderId);
+        
+        console.log('🔄 Order rolled back due to wallet deduction failure');
+        
+        return NextResponse.json({ 
+          success: false, 
+          error: 'Failed to process wallet payment. Order cancelled. Please try again.' 
+        }, { status: 500 });
+      }
+      
+      console.log('✅ Wallet deduction successful');
     }
 
     console.log('✅ Order saved with userId:', order.user_id)
 
-    // Create vendor orders for vendor products
+    // Step 5: Create vendor orders for vendor products
     const vendorOrders = [];
     console.log('🔍 Checking items for vendor products:', items.map(i => ({ id: i.id, name: i.name })));
     

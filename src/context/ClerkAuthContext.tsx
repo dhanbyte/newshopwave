@@ -17,6 +17,7 @@ export interface CustomUser {
   dropshipper_id?: string
   dropshipper_earnings?: number
   dropshipper_status?: string
+  phone?: string
 }
 
 interface AuthContextType {

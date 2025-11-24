@@ -37,6 +37,7 @@ interface Order {
   createdAt: string
   total: number
   paymentId?: string
+  trackingId?: string
   shippingAddress?: ShippingAddress
   items?: OrderItem[]
   isDropshipperOrder?: boolean
@@ -75,6 +76,8 @@ export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [activeTab, setActiveTab] = useState<'customer' | 'dropshipper'>('customer')
+  const [isEditingTracking, setIsEditingTracking] = useState(false)
+  const [trackingIdInput, setTrackingIdInput] = useState('')
 
   useEffect(() => {
     void fetchOrders()
@@ -125,6 +128,33 @@ export default function OrdersPage() {
         alert(`Error updating order status: ${error.message}`)
       } else {
         alert('Error updating order status')
+      }
+    }
+  }
+
+  const updateTrackingId = async (orderId: string, trackingId: string) => {
+    try {
+      const response = await fetch('/api/admin/orders/tracking', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, trackingId })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        alert('Tracking ID updated successfully!')
+        await fetchOrders()
+        setSelectedOrder((prev) => (prev && prev.orderId === orderId ? { ...prev, trackingId } : prev))
+        setIsEditingTracking(false)
+      } else {
+        alert('Error updating tracking ID')
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(`Error updating tracking ID: ${error.message}`)
+      } else {
+        alert('Error updating tracking ID')
       }
     }
   }
@@ -225,6 +255,102 @@ export default function OrdersPage() {
                 {getStatusIcon(selectedOrder.status)}
                 {selectedOrder.status}
               </div>
+            </div>
+          </div>
+
+
+          {/* Transaction ID Section */}
+          <div className="mb-6 pb-4 border-b">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-semibold text-gray-700">Order ID (Auto-generated)</p>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(selectedOrder.orderId);
+                    alert('Order ID copied!');
+                  }}
+                  className="flex items-center gap-1 px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
+                >
+                  <Copy className="h-3 w-3" />
+                  Copy
+                </button>
+              </div>
+              <p className="text-sm font-mono text-gray-600">
+                {selectedOrder.orderId}
+              </p>
+            </div>
+
+            {/* Editable Tracking ID */}
+            <div className="bg-green-50 p-4 rounded-lg mt-3">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-semibold text-gray-700">
+                  📦 Courier Tracking ID {selectedOrder.trackingId && '✓'}
+                </p>
+                {!isEditingTracking && selectedOrder.trackingId && (
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedOrder.trackingId!);
+                      alert('Tracking ID copied!');
+                    }}
+                    className="flex items-center gap-1 px-3 py-1 bg-green-200 text-green-800 rounded hover:bg-green-300 text-sm"
+                  >
+                    <Copy className="h-3 w-3" />
+                    Copy
+                  </button>
+                )}
+              </div>
+
+              {isEditingTracking ? (
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={trackingIdInput}
+                    onChange={(e) => setTrackingIdInput(e.target.value)}
+                    placeholder="Enter real tracking ID (e.g., DTDC12345)"
+                    className="w-full px-3 py-2 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        if (trackingIdInput.trim()) {
+                          updateTrackingId(selectedOrder.orderId, trackingIdInput.trim());
+                        }
+                      }}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    >
+                      Save Tracking ID
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsEditingTracking(false);
+                        setTrackingIdInput('');
+                      }}
+                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <p className="text-lg font-mono font-bold text-green-900">
+                    {selectedOrder.trackingId || 'Not set yet'}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setIsEditingTracking(true);
+                      setTrackingIdInput(selectedOrder.trackingId || '');
+                    }}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
+                    {selectedOrder.trackingId ? 'Edit' : 'Add'} Tracking ID
+                  </button>
+                </div>
+              )}
+
+              <p className="text-xs text-gray-500 mt-2">
+                💡 Add the real courier tracking ID here to share with dropshipper
+              </p>
             </div>
           </div>
 

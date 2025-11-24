@@ -126,16 +126,31 @@ export const useCart = create<CartState>()((set, get) => ({
   },
   paymentMethod: 'Online',
   init: (userId: string) => {
-    const totals = calculateTotals([], get().paymentMethod)
+    // Check if user is dropshipper from localStorage or fetch from API
+    const checkDropshipperStatus = async () => {
+      try {
+        const response = await fetch(`/api/user/status?userId=${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          return data.is_dropshipper || false;
+        }
+      } catch (error) {
+        console.warn('Failed to check dropshipper status:', error);
+      }
+      return false;
+    };
+
+    const totals = calculateTotals([], get().paymentMethod, false)
     set({ items: [], ...totals })
 
     setTimeout(async () => {
       try {
+        const isDropshipper = await checkDropshipperStatus();
         const response = await fetch(`/api/user-data?userId=${encodeURIComponent(userId)}&type=cart`)
         if (response.ok) {
           const serverCart = await response.json()
           if (serverCart && Array.isArray(serverCart)) {
-            const totals = calculateTotals(serverCart, get().paymentMethod)
+            const totals = calculateTotals(serverCart, get().paymentMethod, isDropshipper)
             set({ items: serverCart, ...totals })
           }
         }

@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       const { data: userData } = await supabase
         .from('user_data')
         .select('data')
-        .eq('userId', userId.trim())
+        .eq('user_id', userId.trim())
         .eq('type', type.trim())
         .single()
       
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
       const { error } = await supabase
         .from('user_data')
         .upsert({
-          userId: userId.trim(),
+          user_id: userId.trim(),
           type: type.trim(),
           data,
           updated_at: new Date().toISOString()
