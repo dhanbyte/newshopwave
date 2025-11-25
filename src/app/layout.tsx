@@ -28,12 +28,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: '/',
+    url: 'https://www.shopwave.social/',
     title: 'ShopWave - India\'s #1 Dropshipping Platform | Start Your Business Today',
     description: 'Join India\'s leading dropshipping platform! Get 50-70% wholesale discounts, free product videos, Meta ads support. No inventory needed. Start earning from home. 10,000+ active dropshippers.',
     siteName: 'ShopWave Dropshipping',
     images: [{
-      url: '/logo.png',
+      url: 'https://www.shopwave.social/logo.png',
       width: 1200,
       height: 630,
       alt: 'ShopWave - Dropshipping Platform India',
@@ -147,11 +147,11 @@ export default function RootLayout({
               "@type": "WebSite",
               "name": "ShopWave Dropshipping",
               "alternateName": ["ShopWave India", "Shop Wave", "Shop Wave India", "ShopWave Dropshipping Platform"],
-              "url": "/",
+              "url": "https://www.shopwave.social",
               "description": "India's #1 dropshipping platform - Start your online business with wholesale prices, free product videos, Meta ads support. No inventory needed.",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "/search?q={search_term_string}",
+                "target": "https://www.shopwave.social/search?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             })
@@ -166,9 +166,9 @@ export default function RootLayout({
               "name": "ShopWave",
               "legalName": "ShopWave Dropshipping Platform",
               "brand": "ShopWave",
-              "url": "https://shopwave.in",
-              "logo": "https://shopwave.in/logo.png",
-              "image": "https://shopwave.in/logo.png",
+              "url": "https://www.shopwave.social",
+              "logo": "https://www.shopwave.social/logo.png",
+              "image": "https://www.shopwave.social/logo.png",
               "description": "ShopWave - India's #1 dropshipping platform. Start your online business with 50-70% wholesale discounts, free product videos, Meta ads support, and profit sharing. Join 10,000+ successful dropshippers.",
               "slogan": "India's #1 Dropshipping Platform - Start Your Business Today",
               "foundingDate": "2024",
@@ -223,7 +223,7 @@ export default function RootLayout({
                 "https://wa.me/919157499884",
                 "https://www.facebook.com/shopwave",
                 "https://twitter.com/shopwave",
-                "https://shopwave.in"
+                "https://www.shopwave.social"
               ],
               "aggregateRating": {
                 "@type": "AggregateRating",

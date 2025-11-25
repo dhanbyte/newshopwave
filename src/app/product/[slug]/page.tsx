@@ -474,7 +474,7 @@ function ProductDetailContent() {
                 "seller": {
                   "@type": "Organization",
                   "name": "ShopWave",
-                  "url": "",
+                  "url": "https://www.shopwave.social",
                   "description": "India's #1 Dropshipping Platform - Wholesale Supplier",
                   "brand": "ShopWave Dropshipping",
                   "sameAs": [
@@ -498,7 +498,7 @@ function ProductDetailContent() {
                 "@type": "Organization",
                 "name": "ShopWave Dropshipping",
                 "description": "Leading dropshipping supplier in India with wholesale prices",
-                "url": "",
+                "url": "https://www.shopwave.social",
                 "areaServed": "IN",
                 "priceRange": "₹"
               },

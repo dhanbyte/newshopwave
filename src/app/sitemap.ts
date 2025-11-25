@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://shopwave.in'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.shopwave.social'
 
   // Static pages with absolute URLs
   const staticPages = [
