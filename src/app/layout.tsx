@@ -11,33 +11,33 @@ import Script from 'next/script';
 
 
 export const metadata: Metadata = {
-  title: 'ShopWave - India\'s #1 Online Shopping Site | Cheapest Prices | Free Delivery | Best Deals',
-  description: 'ShopWave - India\'s #1 Online Shopping Site! Cheapest prices guaranteed, free delivery, best deals on tech, home & ayurvedic products. 50% off sale! Shop now and save more!',
-  keywords: 'ShopWave, shop wave, shopwave, online shopping India, best online shopping, cheapest prices, free delivery, tech accessories, home products, ayurvedic products, best deals India, discount shopping, mobile accessories, kitchen items, buy online India, ecommerce India, shopping website India, best price India, fast delivery shopping',
+  title: 'ShopWave - India\'s #1 Dropshipping Platform | Start Your Online Business | Wholesale Prices',
+  description: 'ShopWave - India\'s leading dropshipping platform! Start your online business with 50-70% wholesale discounts. No inventory needed. Free product videos, Meta ads support, profit sharing. Join 10,000+ dropshippers earning daily. Best dropshipping site in India 2024.',
+  keywords: 'dropshipping India, dropshipping business India, start dropshipping India, best dropshipping platform India, dropshipping website India, wholesale dropshipping, dropshipping suppliers India, online business India, ecommerce dropshipping, dropshipping products India, dropshipping without investment, dropshipping training India, dropshipping course India, how to start dropshipping, dropshipping for beginners, dropshipping profit, dropshipping wholesale prices, Indian dropshipping, dropshipping marketplace India, reselling business India, online selling India, work from home India, business opportunity India, ShopWave dropshipping, shopwave India, online shopping India, cheapest prices, free delivery, tech accessories, home products, ayurvedic products, best deals India, discount shopping, mobile accessories, kitchen items, buy online India, ecommerce India, shopping website India, best price India, fast delivery shopping',
   authors: [{ name: 'ShopWave' }],
   creator: 'ShopWave',
   publisher: 'ShopWave',
-  applicationName: 'ShopWave',
+  applicationName: 'ShopWave - Dropshipping Platform',
   generator: 'ShopWave',
   robots: 'index, follow',
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: '/',
-    title: 'ShopWave - India\'s #1 Online Shopping Site | Cheapest Prices',
-    description: 'ShopWave - India\'s #1 online shopping site! Cheapest prices guaranteed, free delivery, 50% off deals on tech, home & ayurvedic products.',
-    siteName: 'ShopWave',
+    title: 'ShopWave - India\'s #1 Dropshipping Platform | Start Your Business Today',
+    description: 'Join India\'s leading dropshipping platform! Get 50-70% wholesale discounts, free product videos, Meta ads support. No inventory needed. Start earning from home. 10,000+ active dropshippers.',
+    siteName: 'ShopWave Dropshipping',
     images: [{
       url: '/logo.png',
       width: 1200,
       height: 630,
-      alt: 'ShopWave - Online Shopping',
+      alt: 'ShopWave - Dropshipping Platform India',
     }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ShopWave - India\'s #1 Online Shopping | Cheapest Prices | Free Delivery',
-    description: 'ShopWave - India\'s #1 online shopping site! Cheapest prices guaranteed, free delivery, 50% off deals. Shop now and save more!',
+    title: 'ShopWave - India\'s #1 Dropshipping Platform | Wholesale Prices | Start Business',
+    description: 'Start your dropshipping business in India! 50-70% discounts, free videos, Meta ads support. No inventory. Join 10,000+ dropshippers earning daily.',
     creator: '@shopwave',
     site: '@shopwave',
   },
@@ -123,18 +123,15 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "ShopWave",
-              "alternateName": ["ShopWave India", "Shop Wave", "Shop Wave India"],
+              "name": "ShopWave Dropshipping",
+              "alternateName": ["ShopWave India", "Shop Wave", "Shop Wave India", "ShopWave Dropshipping Platform"],
               "url": "/",
-              "description": "Best online shopping in India for tech accessories, home essentials & ayurvedic products",
+              "description": "India's #1 dropshipping platform - Start your online business with wholesale prices, free product videos, Meta ads support. No inventory needed.",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": "/search?q={search_term_string}",
                 "query-input": "required name=search_term_string"
-              },
-              "sameAs": [
-                "/"
-              ]
+              }
             })
           }}
         />
@@ -145,14 +142,22 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "ShopWave",
-              "legalName": "ShopWave",
+              "legalName": "ShopWave Dropshipping Platform",
               "brand": "ShopWave",
               "url": "/",
               "logo": "/logo.png",
-              "description": "ShopWave - India's #1 online shopping platform with cheapest prices guaranteed, free delivery, and best deals",
-              "slogan": "India's #1 Online Shopping Site - Cheapest Prices Guaranteed",
+              "description": "ShopWave - India's #1 dropshipping platform. Start your online business with 50-70% wholesale discounts, free product videos, Meta ads support, and profit sharing. Join 10,000+ successful dropshippers.",
+              "slogan": "India's #1 Dropshipping Platform - Start Your Business Today",
               "priceRange": "₹",
               "hasOfferCatalog": true,
+              "makesOffer": {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Dropshipping Business Platform",
+                  "description": "Complete dropshipping solution with wholesale prices, product videos, Meta ads support"
+                }
+              },
               "address": {
                 "@type": "PostalAddress",
                 "addressCountry": "IN"

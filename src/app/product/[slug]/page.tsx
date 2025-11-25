@@ -344,26 +344,43 @@ function ProductDetailContent() {
 
   // Generate comprehensive keywords
   const generateKeywords = (product: Product) => {
-    const keywords = [
+    const baseKeywords = [
       product.name,
       product.brand,
       product.category,
       product.subcategory,
+      // Dropshipping keywords
+      'dropshipping India',
+      'wholesale price',
+      'dropship product',
+      'resell online',
+      'online business',
+      // Shopping keywords
       'buy online',
       'best price',
       'ShopWave',
       'online shopping',
       'India',
+      'cheapest price',
+      'free delivery',
+      'best deals',
+      'discount',
+      'offer',
       ...(product.features || []),
       ...(product.name.split(' ')),
       `${product.brand} ${product.category}`,
       `buy ${product.name}`,
       `${product.name} price`,
       `${product.name} online`,
+      `${product.name} India`,
       `best ${product.category}`,
       `${product.category} accessories`,
+      `${product.name} wholesale`,
+      `${product.name} dropship`,
+      `${product.category} for reselling`,
+      `${product.category} dropshipping`,
     ].filter(Boolean).join(', ');
-    return keywords;
+    return baseKeywords;
   };
 
   const TrustBadges = () => (
@@ -392,8 +409,8 @@ function ProductDetailContent() {
   return (
     <>
       <Head>
-        <title>{p.name} - ShopWave | Cheapest Price India | Free Delivery | Best Deals</title>
-        <meta name="description" content={`${p.name} by ${p.brand} at cheapest price ₹${price} on ShopWave! ${p.shortDescription || p.description.substring(0, 100)}. Free delivery, best deals India!`} />
+        <title>{p.name} - ShopWave | Wholesale Price | Dropshipping India | Best Deals</title>
+        <meta name="description" content={`${p.name} by ${p.brand} at wholesale price ₹${price} on ShopWave! Perfect for dropshipping & reselling. ${p.shortDescription || p.description.substring(0, 100)}. 50-70% discount, free delivery, best deals India!`} />
         <meta name="keywords" content={generateKeywords(p)} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         
@@ -457,11 +474,51 @@ function ProductDetailContent() {
                 "seller": {
                   "@type": "Organization",
                   "name": "ShopWave",
-                  "url": ""
+                  "url": "",
+                  "description": "India's #1 Dropshipping Platform - Wholesale Supplier",
+                  "brand": "ShopWave Dropshipping",
+                  "sameAs": [
+                    "https://shopwave.in"
+                  ]
                 },
                 "url": `/product/${p.slug}`,
-                "priceValidUntil": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                "priceValidUntil": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                "eligibleRegion": {
+                  "@type": "Place",
+                  "name": "India"
+                },
+                "businessFunction": "http://purl.org/goodrelations/v1#Sell",
+                "availableDeliveryMethod": "http://purl.org/goodrelations/v1#DeliveryModeDirectDownload"
               },
+              "manufacturer": {
+                "@type": "Organization",
+                "name": p.brand
+              },
+              "supplier": {
+                "@type": "Organization",
+                "name": "ShopWave Dropshipping",
+                "description": "Leading dropshipping supplier in India with wholesale prices",
+                "url": "",
+                "areaServed": "IN",
+                "priceRange": "₹"
+              },
+              "additionalProperty": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "Dropshipping Available",
+                  "value": "Yes"
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "Wholesale Price",
+                  "value": "50-70% discount"
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "Supplier Type",
+                  "value": "Dropshipping Supplier India"
+                }
+              ],
               "aggregateRating": p.ratings ? {
                 "@type": "AggregateRating",
                 "ratingValue": p.ratings.average,
