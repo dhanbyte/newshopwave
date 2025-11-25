@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
 
     // Calculate statistics from real data
     try {
+      // Get product count
       const { data: products } = await supabase
         .from('vendor_products')
         .select('id')
@@ -43,16 +44,34 @@ export async function GET(request: NextRequest) {
       
       const productCount = products?.length || 0
       
+      // Get orders data
+      const { data: orders } = await supabase
+        .from('vendor_orders')
+        .select('id, status, vendor_total, created_at')
+        .eq('vendor_id', vendor.id)
+      
+      // Calculate order stats
+      const totalOrders = orders?.length || 0
+      const pendingOrders = orders?.filter(o => 
+        o.status === 'pending' || o.status === 'processing'
+      ).length || 0
+      
+      // Calculate total earnings
+      const totalEarnings = orders?.reduce((sum, order) => {
+        const vendorTotal = parseFloat(order.vendor_total) || 0
+        return sum + vendorTotal
+      }, 0) || 0
+      
       const vendorWithStats = {
         _id: vendor.id.toString(),
         email: vendor.email,
         businessName: vendor.business_name,
         totalProducts: productCount,
-        totalOrders: 0, // No orders table yet
-        pendingOrders: 0,
-        totalEarnings: 0,
-        totalRevenue: 0,
-        pendingPayments: 0,
+        totalOrders: totalOrders,
+        pendingOrders: pendingOrders,
+        totalEarnings: Math.round(totalEarnings * 100) / 100, // Round to 2 decimals
+        totalRevenue: Math.round(totalEarnings * 100) / 100,
+        pendingPayments: 0, // Can be calculated if needed
         rating: vendor.rating || 4.2,
         reviewCount: vendor.review_count || 0
       }
