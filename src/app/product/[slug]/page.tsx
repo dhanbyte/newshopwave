@@ -478,7 +478,7 @@ function ProductDetailContent() {
                   "description": "India's #1 Dropshipping Platform - Wholesale Supplier",
                   "brand": "ShopWave Dropshipping",
                   "sameAs": [
-                    "https://shopwave.in"
+                    "https://www.shopwave.social"
                   ]
                 },
                 "url": `/product/${p.slug}`,

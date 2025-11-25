@@ -463,12 +463,12 @@ export default function DropshippingPage() {
               "name": "ShopWave Dropshipping",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://shopwave.in/logo.png"
+                "url": "https://www.shopwave.social/logo.png"
               }
             },
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": "https://shopwave.in/dropshipping"
+              "@id": "https://www.shopwave.social/dropshipping"
             }
           })
         }}
