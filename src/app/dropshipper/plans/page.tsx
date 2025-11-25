@@ -32,26 +32,43 @@ const loadRazorpayScript = () => {
 // Get features based on plan
 const getPlanFeatures = (planId: string) => {
   const baseFeatures = [
-    { icon: Check, text: 'Wholesale pricing' },
+    { icon: Check, text: '🎁 50-70% discount on all products' },
+    { icon: Check, text: 'Wholesale pricing access' },
     { icon: Check, text: 'No inventory needed' },
-    { icon: Check, text: '24/7 support' },
+    { icon: Check, text: '24/7 customer support' },
   ]
 
-  // Yearly plans get customer support
-  if (planId === 'plan_yearly') {
+  // Monthly Plan (₹299) - Videos + 30% Ad Share
+  if (planId === 'plan_monthly') {
     return [
       ...baseFeatures,
-      { icon: Check, text: 'Priority customer support' },
+      { icon: Check, text: '📹 Product promotion videos' },
+      { icon: Check, text: '💰 30% profit share from ads' },
+      { icon: Check, text: 'Priority support' },
     ]
   }
 
+  // Yearly Plan (₹999) - Full Business Solution
+  if (planId === 'plan_yearly') {
+    return [
+      ...baseFeatures,
+      { icon: Check, text: '📹 Product promotion videos' },
+      { icon: Check, text: '📱 Meta Ads support + 20% profit share' },
+      { icon: Check, text: 'Dedicated account manager' },
+      { icon: Check, text: 'Custom branding options' },
+    ]
+  }
+
+  // Premium Plan - Enterprise
   if (planId === 'plan_premium') {
     return [
       ...baseFeatures,
-      { icon: Check, text: 'Priority customer support' },
+      { icon: Check, text: '📹 Product promotion videos' },
+      { icon: Check, text: '📱 Meta Ads support + 20% profit share' },
       { icon: Store, text: 'Shopify store setup' },
       { icon: Globe, text: 'Free subdomain' },
       { icon: Package, text: 'Product listing service' },
+      { icon: Check, text: 'Advanced analytics dashboard' },
     ]
   }
 
@@ -177,8 +194,8 @@ export default function PublicPlansPage() {
                 key={plan.id} 
                 className={`${styles.planCard} ${popular ? styles.popular : ''} ${plan.id === 'plan_premium' ? styles.premium : ''}`}
               >
-                {/* Discount Badge */}
-                {plan.discount && (
+                {/* Discount Badge - Only show if discount > 0 */}
+                {plan.discount > 0 && (
                   <div className={styles.discountBadge}>{plan.discount}% OFF</div>
                 )}
                 

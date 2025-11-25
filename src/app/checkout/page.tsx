@@ -895,15 +895,35 @@ undefined
           </div>
 
           <Button 
-              onClick={handleAction} 
+              onClick={() => {
+                // Check if address exists
+                if (addresses.length === 0) {
+                  // Show address form
+                  setShowForm(true);
+                  // Scroll to address section
+                  const addressSection = document.querySelector('h2');
+                  addressSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  // Show toast
+                  toast({
+                    title: "📍 Address Required",
+                    description: "Please add a delivery address to continue",
+                    variant: "destructive"
+                  });
+                  return;
+                }
+                // Proceed with payment
+                handleAction();
+              }} 
               className="mt-4 w-full" 
-              disabled={isProcessing || addresses.length === 0}
+              disabled={isProcessing}
           >
               {isProcessing ? (
                 <div className="flex items-center gap-2">
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
                   {user?.is_dropshipper ? 'Processing Wallet Payment...' : (paymentMethod === 'COD' ? 'Placing Order...' : 'Processing Payment...')}
                 </div>
+              ) : addresses.length === 0 ? (
+                '📍 Add Delivery Address First'
               ) : (
                 user?.is_dropshipper
                   ? `Pay from Wallet & Place Order - ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`

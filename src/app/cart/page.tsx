@@ -9,8 +9,7 @@ import { Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/context/ClerkAuthContext'
 import { useProductStore } from '@/lib/productStore'
-import ProgressOfferBar from '@/components/ProgressOfferBar'
-import CartOfferBanner from '@/components/CartOfferBanner'
+import CartProgressBar from '@/components/CartProgressBar'
 
 export default function CartPage(){
   const { user } = useAuth()
@@ -32,8 +31,13 @@ export default function CartPage(){
   return (
     <div>
       <h1 className="mb-4 text-2xl font-bold">Your Cart</h1>
-      {!user?.is_dropshipper && <ProgressOfferBar />}
-      <CartOfferBanner />
+      
+      {/* Simplified Progress & Gifts - Only show when cart has items */}
+      {items.length > 0 && !user?.is_dropshipper && total >= 399 && (
+        <div className="mb-4">
+          <CartProgressBar cartValue={total} />
+        </div>
+      )}
       
       {items.length === 0 && (
         <div className="card p-8 text-center">

@@ -214,10 +214,49 @@ export default function AddressForm({ action, initial, onCancel }: { action: (a:
             placeholder="Pincode (6 digits)*" 
             value={formData.pincode}
             type="text"
+            maxLength={6}
             autoComplete="off"
-            onChange={(e) => updateField('pincode', e.target.value)}
+            onChange={(e) => {
+              const pincode = e.target.value
+              updateField('pincode', pincode)
+              
+              // Auto-fill city/state when 6 digits entered
+              if (pincode.length === 6) {
+                // Import and use pincode lookup
+                import('@/lib/pincode-data').then(({ getPincodeServiceability }) => {
+                  const result = getPincodeServiceability(pincode)
+                  
+                  if (result.serviceable && result.data) {
+                    // Auto-fill city and state
+                    setFormData(prev => ({
+                      ...prev,
+                      city: result.data!.city,
+                      state: result.data!.state,
+                      pincode: pincode
+                    }))
+                    
+                    // Show serviceability message
+                    toast({
+                      title: result.message,
+                      description: `${result.data.district}, ${result.data.state}`
+                    })
+                  } else {
+                    // Clear city/state if not serviceable
+                    toast({
+                      title: result.message,
+                      description: "Please check the pincode or contact support"
+                    })
+                  }
+                })
+              }
+            }}
           />
           {errors.pincode && <div className="mt-1 text-xs text-red-600">{errors.pincode}</div>}
+          {formData.pincode.length === 6 && (
+            <div className="mt-1 text-xs text-blue-600">
+              🔍 Checking delivery availability...
+            </div>
+          )}
         </div>
         
         <div>

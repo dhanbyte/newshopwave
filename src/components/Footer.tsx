@@ -59,15 +59,12 @@ export default function Footer() {
                 </h3>
                 <p className="text-blue-100 mt-1">Start earning with wholesale prices - Just ₹{dropshipperPrice}!</p>
               </div>
-              <Button 
-                onClick={() => {
-                  // Redirect to proper registration page instead of modal
-                  window.location.href = '/dropshipper/register'
-                }}
-                className="bg-white text-blue-600 hover:bg-gray-100 font-bold px-6 py-3"
+              <Link 
+                href="/dropshipper/plans"
+                className="inline-block bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
               >
-                Join Now - ₹{dropshipperPrice}
-              </Button>
+                Join Now
+              </Link>
             </div>
           </div>
         </div>

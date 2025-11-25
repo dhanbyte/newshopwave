@@ -606,15 +606,12 @@ export default function AccountPage() {
                         Earn profits on every sale
                       </li>
                     </ul>
-                    <button 
-                      onClick={() => {
-                        sessionStorage.setItem('openDropshipperModal', 'true')
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
-                      }}
-                      className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
+                    <Link 
+                      href="/dropshipper/plans"
+                      className="inline-block bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
                     >
-                      Join Now - Only ₹{dropshipperPrice}
-                    </button>
+                      View Plans & Join Now
+                    </Link>
                   </div>
                 </div>
               </div>

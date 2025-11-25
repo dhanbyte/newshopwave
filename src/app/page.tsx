@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Head from 'next/head';
@@ -15,6 +16,8 @@ import { useProductStore } from '../lib/productStore';
 import { NEWARRIVALS_PRODUCTS } from '../lib/data/newarrivals';
 import { FASHION_PRODUCTS } from '../lib/data/fashion';
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import VideoCard from '../components/VideoCard';
+import VideoModal from '../components/VideoModal';
 
 // Utility function to shuffle array
 const shuffleArray = <T,>(array: T[]): T[] => {
@@ -84,6 +87,11 @@ export default function Home() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const observerRef = useRef<HTMLDivElement>(null);
 
+  // Video state
+  const [videos, setVideos] = useState<any[]>([]);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -99,6 +107,24 @@ export default function Home() {
     if (savedCategory) {
       setSelectedCategory(savedCategory);
     }
+  }, []);
+
+  // Fetch videos
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        console.log('Fetching videos from /api/videos...');
+        const response = await fetch('/api/videos');
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Videos data received:', data);
+        console.log('Number of videos:', data.videos?.length || 0);
+        setVideos(data.videos || []);
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      }
+    };
+    fetchVideos();
   }, []);
 
   useEffect(() => {
@@ -304,7 +330,6 @@ export default function Home() {
 
       
       <BannerSlider />
-
 
 
       <section>
@@ -608,7 +633,38 @@ export default function Home() {
       </section>
 
 
+      {/* Video Showcase Section - Before Footer */}
+      {videos.length > 0 && (
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-4 px-4">
+            <h2 className="text-lg md:text-xl font-bold text-gray-800">🎥 Featured Videos</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <div className="flex gap-4 pb-2 px-3" style={{width: 'max-content'}}>
+              {videos.map((video, index) => (
+                <VideoCard
+                  key={video.id}
+                  video={video}
+                  onClick={() => {
+                    setCurrentVideoIndex(index);
+                    setShowVideoModal(true);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
+      {/* Video Modal */}
+      {showVideoModal && videos.length > 0 && (
+        <VideoModal
+          videos={videos}
+          currentIndex={currentVideoIndex}
+          onClose={() => setShowVideoModal(false)}
+          onNavigate={setCurrentVideoIndex}
+        />
+      )}
 
       <BusinessOpportunityBanner />
 

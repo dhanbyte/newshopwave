@@ -108,21 +108,71 @@ export async function POST(request: Request) {
       .eq('clerk_user_id', userId)
 
     if (updateError) {
-      console.error('Error updating user subscription:', updateError)
-      // Attempt refund since payment succeeded but DB update failed
-      try {
-        await (razorpay as any).refunds.create({
-          payment_id: razorpay_payment_id,
-          amount: amount,
+      console.error('❌ Error updating user subscription:', {
+        error: updateError,
+        errorMessage: updateError.message,
+        errorDetails: updateError.details,
+        errorHint: updateError.hint,
+        userId: userId,
+        dbUserId: dbUser.id,
+        planId: planId,
+        interval: interval
+      })
+      
+      // ⚠️ CRITICAL: Payment succeeded but DB update failed
+      // Before refunding, let's try one more time with a retry mechanism
+      console.log('🔄 Attempting retry for database update...')
+      
+      const { error: retryError } = await supabase
+        .from('users')
+        .update({
+          is_dropshipper: true,
+          dropshipper_status: 'active',
+          dropshipper_plan_id: planId,
+          dropshipper_plan_interval: interval,
+          dropshipper_subscription_start: now.toISOString(),
+          dropshipper_subscription_end: subscriptionEndDate.toISOString(),
+          dropshipper_payment_id: razorpay_payment_id,
+          updated_at: now.toISOString(),
         })
-        console.log('Refund initiated for failed subscription activation')
-      } catch (refundErr) {
-        console.error('Refund failed:', refundErr)
+        .eq('clerk_user_id', userId)
+      
+      if (!retryError) {
+        console.log('✅ Retry successful! Subscription activated.')
+        // Continue to success response
+      } else {
+        console.error('❌ Retry also failed:', retryError)
+        
+        // ⚠️ WARNING: Commenting out automatic refund for now
+        // Manual admin intervention required
+        console.error('🚨 MANUAL ACTION REQUIRED: Payment successful but database update failed')
+        console.error('Payment ID:', razorpay_payment_id)
+        console.error('User ID:', userId)
+        console.error('Amount:', amount)
+        
+        // DON'T REFUND AUTOMATICALLY - Contact admin first
+        /* 
+        try {
+          await (razorpay as any).refunds.create({
+            payment_id: razorpay_payment_id,
+            amount: amount,
+          })
+          console.log('Refund initiated for failed subscription activation')
+        } catch (refundErr) {
+          console.error('Refund failed:', refundErr)
+        }
+        */
+        
+        return NextResponse.json(
+          { 
+            success: false, 
+            error: 'Database update failed. Payment received. Please contact support with payment ID: ' + razorpay_payment_id,
+            paymentId: razorpay_payment_id,
+            dbError: retryError.message || 'Unknown database error'
+          },
+          { status: 500 }
+        )
       }
-      return NextResponse.json(
-        { success: false, error: 'Failed to activate subscription. Refund has been processed if possible.' },
-        { status: 500 }
-      )
     }
 
     // Try to log the transaction in payments table

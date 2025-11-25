@@ -9,6 +9,7 @@ const menuItems = [
   { icon: Users, label: 'Customers', href: '/admin/customers', emoji: '👥' },
   { icon: Package, label: 'Products', href: '/admin/products', emoji: '🛍️' },
   { icon: Grid3X3, label: 'Categories', href: '/admin/categories', emoji: '📂' },
+  { icon: Package, label: 'Videos', href: '/admin/videos', emoji: '🎥' },
   { icon: Users, label: 'Vendors', href: '/admin/vendors', emoji: '🏪' },
   { icon: Users, label: 'Dropshippers', href: '/admin/dropshippers', emoji: '🏷️' },
   { icon: Package, label: 'Dropshipper Settings', href: '/admin/dropshipper-settings', emoji: '⚙️' },
