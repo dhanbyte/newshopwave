@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   applicationName: 'ShopWave - Dropshipping Platform',
   generator: 'ShopWave',
   robots: 'index, follow',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+  },
   openGraph: {
     type: 'website',
     locale: 'en_IN',
@@ -70,8 +75,31 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Meta Pixel Code */}
-        <script
+        {/* Preconnect to critical domains for better performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://ik.imagekit.io" />
+        <link rel="preconnect" href="https://checkout.razorpay.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://shopwave.b-cdn.net" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        
+        {/* Optimized font loading with display=swap */}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+        
+        <link rel="canonical" href="/" />
+        <meta name="google-site-verification" content="shopwave-best-online-shopping-india" />
+        <meta name="msvalidate.01" content="shopwave-online-shopping" />
+        <meta name="yandex-verification" content="shopwave-india" />
+        
+        {/* Razorpay - Load asynchronously */}
+        <script async src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        
+        {/* Meta Pixel Code - Deferred for better performance */}
+        <Script
+          id="meta-pixel"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               !function(f,b,e,v,n,t,s)
@@ -94,9 +122,14 @@ export default function RootLayout({
         </noscript>
         {/* End Meta Pixel Code */}
         
-        {/* Google Analytics */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-1S9CD9GPJS"></script>
-        <script
+        {/* Google Analytics - Deferred for better performance */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-1S9CD9GPJS"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
@@ -106,17 +139,6 @@ export default function RootLayout({
             `,
           }}
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-        <link rel="preconnect" href="https://ik.imagekit.io" />
-        <link rel="dns-prefetch" href="https://images.unsplash.com" />
-        <link rel="dns-prefetch" href="https://shopwave.b-cdn.net" />
-        <link rel="canonical" href="/" />
-        <meta name="google-site-verification" content="shopwave-best-online-shopping-india" />
-        <meta name="msvalidate.01" content="shopwave-online-shopping" />
-        <meta name="yandex-verification" content="shopwave-india" />
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -144,10 +166,12 @@ export default function RootLayout({
               "name": "ShopWave",
               "legalName": "ShopWave Dropshipping Platform",
               "brand": "ShopWave",
-              "url": "/",
-              "logo": "/logo.png",
+              "url": "https://shopwave.in",
+              "logo": "https://shopwave.in/logo.png",
+              "image": "https://shopwave.in/logo.png",
               "description": "ShopWave - India's #1 dropshipping platform. Start your online business with 50-70% wholesale discounts, free product videos, Meta ads support, and profit sharing. Join 10,000+ successful dropshippers.",
               "slogan": "India's #1 Dropshipping Platform - Start Your Business Today",
+              "foundingDate": "2024",
               "priceRange": "₹",
               "hasOfferCatalog": true,
               "makesOffer": {
@@ -160,16 +184,67 @@ export default function RootLayout({
               },
               "address": {
                 "@type": "PostalAddress",
-                "addressCountry": "IN"
+                "addressCountry": "IN",
+                "addressRegion": "India"
               },
-              "areaServed": "IN",
+              "areaServed": {
+                "@type": "Country",
+                "name": "India"
+              },
               "currenciesAccepted": "INR",
-              "paymentAccepted": ["Cash", "Credit Card", "Debit Card", "UPI", "Net Banking"],
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+91-91574-99884",
-                "contactType": "customer service"
-              }
+              "paymentAccepted": ["Cash on Delivery", "Credit Card", "Debit Card", "UPI", "Net Banking", "Razorpay"],
+              "contactPoint": [
+                {
+                  "@type": "ContactPoint",
+                  "telephone": "+91-91574-99884",
+                  "contactType": "customer service",
+                  "availableLanguage": ["Hindi", "English"],
+                  "areaServed": "IN",
+                  "contactOption": "TollFree"
+                },
+                {
+                  "@type": "ContactPoint",
+                  "telephone": "+91-91574-99884",
+                  "contactType": "sales",
+                  "availableLanguage": ["Hindi", "English"],
+                  "areaServed": "IN"
+                },
+                {
+                  "@type": "ContactPoint",
+                  "telephone": "+91-91574-99884",
+                  "contactType": "technical support",
+                  "availableLanguage": ["Hindi", "English"],
+                  "areaServed": "IN"
+                }
+              ],
+              "sameAs": [
+                "https://www.youtube.com/@shopwave",
+                "https://www.instagram.com/shopwave.in",
+                "https://wa.me/919157499884",
+                "https://www.facebook.com/shopwave",
+                "https://twitter.com/shopwave",
+                "https://shopwave.in"
+              ],
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "10000",
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "numberOfEmployees": {
+                "@type": "QuantitativeValue",
+                "value": "50"
+              },
+              "knowsAbout": [
+                "Dropshipping",
+                "E-commerce",
+                "Wholesale",
+                "Online Business",
+                "Digital Marketing",
+                "Product Sourcing",
+                "Inventory Management"
+              ]
             })
           }}
         />

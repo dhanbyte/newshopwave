@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://shopwave.in'
 
-  // Static pages
+  // Static pages with absolute URLs
   const staticPages = [
     '',
     '/search',
@@ -20,14 +20,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/terms',
     '/privacy',
     '/withdrawal-policy',
+    '/dropshipping',
     '/dropshipper/plans',
     '/dropshipper/join',
     '/vendor/login',
+    '/new-arrivals',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'daily' as const,
-    priority: route === '' ? 1.0 : 0.8,
+    priority: route === '' ? 1.0 : route.includes('dropship') ? 0.9 : 0.8,
   }))
 
   // Fetch all products for sitemap
@@ -43,15 +45,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error fetching products for sitemap:', error)
   }
 
-  // Product pages
-  const productPages = products.map((product) => ({
-    url: `${baseUrl}/product/${product.slug || product.id}`,
-    lastModified: new Date(product.updated_at || product.created_at || Date.now()),
-    changeFrequency: 'weekly' as const,
-    priority: 0.9,
-  }))
+  // Product pages with absolute URLs and metadata
+  const productPages = products
+    .filter(product => product.slug || product.id) // Only include products with slug/id
+    .map((product) => ({
+      url: `${baseUrl}/product/${product.slug || product.id}`,
+      lastModified: new Date(product.updated_at || product.created_at || Date.now()),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    }))
 
-  // Category pages
+  // Category pages with absolute URLs
   const categories = [...new Set(products.map(p => p.category).filter(Boolean))]
   const categoryPages = categories.map((category) => ({
     url: `${baseUrl}/search?category=${encodeURIComponent(category)}`,
@@ -60,5 +64,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  return [...staticPages, ...productPages, ...categoryPages]
+  // Subcategory pages
+  const subcategories = [...new Set(products.map(p => p.subcategory).filter(Boolean))]
+  const subcategoryPages = subcategories.map((subcategory) => ({
+    url: `${baseUrl}/search?subcategory=${encodeURIComponent(subcategory)}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }))
+
+  return [...staticPages, ...productPages, ...categoryPages, ...subcategoryPages]
 }

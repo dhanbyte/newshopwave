@@ -335,28 +335,28 @@ export default function Home() {
       <section>
         <div className="grid grid-cols-4 gap-2 md:gap-3">
             <Link href="/search?category=Tech" className="relative block h-20 md:h-48 overflow-hidden rounded-lg md:rounded-xl group">
-                <Image src="https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_0748acd3-4797-400f-997d-6cecf6b22f5a.webp?updatedAt=1756628128432" alt="Tech" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="tech gadgets" />
+                <Image src="https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_0748acd3-4797-400f-997d-6cecf6b22f5a.webp?updatedAt=1756628128432" alt="Tech Accessories - Mobile Chargers, Cables, Audio" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center p-1 md:p-2">
                     <h3 className="text-xs md:text-md font-bold text-white text-center">Tech Accessories</h3>
                 </div>
             </Link>
             <Link href="/search?category=Home" className="relative block h-20 md:h-48 overflow-hidden rounded-lg md:rounded-xl group">
-                <Image src="https://Shopwave.b-cdn.net/new%20arival/17865..1.webp" alt="Home" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="modern living room" />
+                <Image src="https://Shopwave.b-cdn.net/new%20arival/17865..1.webp" alt="Home & Kitchen - Kitchenware, Appliances, Storage" fill loading="lazy" className="object-cover transition-transform duration-300 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center p-1 md:p-2">
                     <h3 className="text-xs md:text-md font-bold text-white text-center">Home & Kitchen</h3>
                 </div>
             </Link>
             <Link href="/search?category=Fashion" className="relative block h-20 md:h-48 overflow-hidden rounded-lg md:rounded-xl group">
-                <Image src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400" alt="Fashion" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="fashion clothing" />
+                <Image src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400" alt="Fashion - Men, Women, Kids Clothing & Accessories" fill loading="lazy" className="object-cover transition-transform duration-300 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center p-1 md:p-2">
                     <h3 className="text-xs md:text-md font-bold text-white text-center">Fashion</h3>
                 </div>
             </Link>
             <Link href="/search?category=New%20Arrivals" className="relative block h-20 md:h-48 overflow-hidden rounded-lg md:rounded-xl group">
-                <Image src="https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/02_6d35b019-089f-4949-9571-7a7bd595fccd.webp" alt="New Arrivals" fill priority className="object-cover transition-transform duration-300 group-hover:scale-105" data-ai-hint="new arrivals shopping" />
+                <Image src="https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/02_6d35b019-089f-4949-9571-7a7bd595fccd.webp" alt="New Arrivals - Latest Products & Trending Items" fill loading="lazy" className="object-cover transition-transform duration-300 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center p-1 md:p-2">
                     <h3 className="text-xs md:text-md font-bold text-white text-center">New Arrivals</h3>
@@ -493,9 +493,10 @@ export default function Home() {
                   <div className="relative w-full mx-auto mb-2 aspect-square overflow-hidden rounded-lg shadow-sm bg-gray-100">
                     <Image 
                       src={image} 
-                      alt={subcategory} 
+                      alt={`${subcategory} - Shop ${label} Products Online`} 
                       fill 
                       loading="lazy" 
+                      sizes="(max-width: 768px) 20vw, 10vw"
                       className="object-cover" 
                       onError={(e) => {
                         e.currentTarget.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&q=80';

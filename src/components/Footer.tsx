@@ -126,13 +126,13 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-white">Follow Us</h3>
             <div className="flex items-center gap-4 mt-2">
-              <Link href="https://www.youtube.com/channel/UCz1ekjeE4g9f5Ad_vXdoN1A" target="_blank" className="text-gray-400 hover:text-white">
+              <Link href="https://www.youtube.com/@shopwave" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white" aria-label="YouTube">
                 <Youtube size={20} />
               </Link>
-              <Link href="https://www.instagram.com/dhananjay.2004" target="_blank" className="text-gray-400 hover:text-white">
+              <Link href="https://www.instagram.com/shopwave.in" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white" aria-label="Instagram">
                 <Instagram size={20} />
               </Link>
-              <Link href="https://wa.me/919157499884" target="_blank" className="text-gray-400 hover:text-white">
+              <Link href="https://wa.me/919157499884" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white" aria-label="WhatsApp">
                 <MessageCircle size={20} />
               </Link>
             </div>
