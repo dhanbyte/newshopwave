@@ -41,7 +41,7 @@ import { MessageCircle, Users } from 'lucide-react';
 
 
 const filterCategories = ['All', 'Electronics', 'Home', 'Fashion', 'New Arrivals'];
-const PRODUCTS_TO_SHOW = 12; // Optimized: Load 12 products initially instead of 8
+const PRODUCTS_TO_SHOW = 20; // Load 20 products initially, then load more on scroll
 const VISIBLE_COUNT_KEY = 'home_visible_count';
 const SELECTED_CATEGORY_KEY = 'home_selected_category';
 

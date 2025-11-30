@@ -93,7 +93,31 @@ export async function POST(request: Request) {
     }
 
     console.log('✅ Successfully updated user:', result.data);
-    return NextResponse.json({ success: true, dropshipperId, user: result.data })
+    
+    // Initialize wallet with 0 balance if not exists
+    try {
+      const walletCheck = await supabase
+        .from('users')
+        .select('dropshipper_earnings')
+        .eq('clerk_user_id', result.data.clerk_user_id || userId)
+        .single();
+      
+      if (!walletCheck.data?.dropshipper_earnings) {
+        await supabase
+          .from('users')
+          .update({ dropshipper_earnings: 0 })
+          .eq('clerk_user_id', result.data.clerk_user_id || userId);
+      }
+    } catch (walletError) {
+      console.warn('⚠️ Wallet initialization warning:', walletError);
+    }
+    
+    return NextResponse.json({ 
+      success: true, 
+      dropshipperId, 
+      user: result.data,
+      message: 'User successfully activated as dropshipper! They may need to refresh their page or re-login to see changes.'
+    })
   } catch (error: any) {
     console.error('❌ Error in make-dropshipper:', error)
     return NextResponse.json({ success: false, error: error.message || 'Internal Server Error' }, { status: 500 })

@@ -23,7 +23,10 @@ export default function AddFreeDropshipper() {
       });
       const data = await response.json();
       if (data.success) {
-        setMessage({type: 'success', text: 'User has been upgraded to a free dropshipper!'});
+        setMessage({
+          type: 'success', 
+          text: `✅ User activated as dropshipper! Dropshipper ID: ${data.dropshipperId}. Note: User needs to refresh page or re-login to see changes.`
+        });
         setEmailOrId('');
       } else {
         setMessage({type: 'error', text: data.error || 'Failed to add dropshipper'});
