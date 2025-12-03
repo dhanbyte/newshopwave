@@ -353,7 +353,11 @@ const DropshipperPage: React.FC = () => {
           dropshippers.map((d) => {
             console.log('🎨 Rendering card for:', d.name, 'ID:', d.dropshipper_id);
             return (
-              <div key={d.dropshipper_id || d.id} className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-105">
+              <div 
+                key={d.dropshipper_id || d.id} 
+                onClick={() => router.push(`/admin/dropshippers/${d.dropshipper_id}`)}
+                className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-105 cursor-pointer"
+              >
                 <div className="relative h-48 w-full bg-gray-200">
                   {d.dropshipper_photo ? (
                     <Image src={d.dropshipper_photo} alt={d.name} fill className="object-cover" />
