@@ -2,7 +2,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Play, TrendingUp, Package, DollarSign, Users, Shield, Zap, CheckCircle } from 'lucide-react'
+import { Play, TrendingUp, Package, DollarSign, Users, Shield, Zap, CheckCircle, MessageCircle, Phone } from 'lucide-react'
+import DropshipperLeadForm from './DropshipperLeadForm'
 import styles from './page.module.css'
 
 interface Product {
@@ -18,10 +19,24 @@ export default function JoinDropshipperPage() {
   const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [videoUrl, setVideoUrl] = useState('https://www.youtube.com/watch?v=I-U1NwHyGGI')
 
   useEffect(() => {
     fetchSampleProducts()
+    fetchVideoUrl()
   }, [])
+
+  const fetchVideoUrl = async () => {
+    try {
+      const res = await fetch('/api/public/settings?key=how_it_works_video')
+      const data = await res.json()
+      if (data.success && data.value) {
+        setVideoUrl(data.value)
+      }
+    } catch (err) {
+      console.error('Error fetching video url:', err)
+    }
+  }
 
   const fetchSampleProducts = async () => {
     try {
@@ -89,16 +104,16 @@ export default function JoinDropshipperPage() {
             🚀 Become a <span className={styles.highlight}>Dropshipper</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Start your own business with ZERO investment. Earn up to ₹50,000/month!
+            Start your own business with LOW investment. Earn up to ₹50,000/month!
           </p>
           
           {/* Video Button */}
           <button
-            onClick={() => window.open('https://www.youtube.com/watch?v=I-U1NwHyGGI', '_blank')}
+            onClick={() => window.open(videoUrl, '_blank')}
             className={styles.videoButton}
           >
             <Play className="w-6 h-6" fill="white" />
-            <span>🎥 Watch How It Works (2 min)</span>
+            <span>🎥 Watch How It Works</span>
           </button>
 
           {/* CTA Button */}
@@ -111,55 +126,161 @@ export default function JoinDropshipperPage() {
         </div>
       </section>
 
+      {/* Lead Form Section */}
+      <section className="py-12 bg-gray-50 flex justify-center px-4">
+        <div className="w-full max-w-3xl">
+          <DropshipperLeadForm />
+        </div>
+      </section>
+
       {/* Product Showcase */}
       <section className={styles.productShowcase}>
         <h2 className={styles.sectionTitle}>
           💰 See Your Profit Potential
         </h2>
         <p className={styles.sectionSubtitle}>
-          Here's how much you can save and earn on every product
+          We give you wholesale prices (up to 40% OFF). You sell at market price and keep the profit!
         </p>
 
-        <div className={styles.productsGrid}>
-          {loading ? (
-            <div className={styles.loading}>Loading products...</div>
-          ) : products.length > 0 ? (
-            products.map((product) => (
-              <div key={product.id} className={styles.productCard}>
-                <div className={styles.productImage}>
-                  <img src={product.image} alt={product.name} />
-                  <div className={styles.savingsBadge}>
-                    Save ₹{product.savings}
-                  </div>
+        {/* Products Grid Redesigned */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 px-4">
+          
+          {/* Example Product 1 */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2">
+            <div className="relative h-64 bg-gray-50 p-4 flex items-center justify-center">
+              <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60" alt="Premium Sneakers" className="object-contain h-full drop-shadow-lg" />
+              <span className="absolute top-4 right-4 bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full animate-bounce">
+                HOT SELLER
+              </span>
+            </div>
+            
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Premium Sport Sneakers</h3>
+              <div className="flex gap-2 mb-4 text-xs font-semibold text-gray-500">
+                <span className="bg-gray-100 px-2 py-1 rounded">Shoe</span>
+                <span className="bg-gray-100 px-2 py-1 rounded">Fashion</span>
+              </div>
+
+              <div className="flex justify-between items-center mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                <div className="text-center">
+                  <p className="text-[10px] uppercase font-bold text-gray-500">Dropship Price</p>
+                  <p className="text-2xl font-black text-blue-600">₹799</p>
                 </div>
-                
-                <div className={styles.productInfo}>
-                  <h3 className={styles.productName}>{product.name}</h3>
-                  
-                  <div className={styles.priceComparison}>
-                    <div className={styles.priceBox}>
-                      <div className={styles.priceLabel}>Customer Price</div>
-                      <div className={styles.customerPrice}>₹{product.customerPrice}</div>
-                      <div className={styles.priceNote}>Normal Users</div>
-                    </div>
-                    
-                    <div className={styles.vs}>VS</div>
-                    
-                    <div className={`${styles.priceBox} ${styles.dropshipperBox}`}>
-                      <div className={styles.winBadge}>WIN</div>
-                      <div className={styles.priceLabel}>Your Price</div>
-                      <div className={styles.dropshipperPrice}>₹{product.dropshipperPrice}</div>
-                      <div className={styles.priceNote}>💰 Your Profit: ₹{product.savings}</div>
-                    </div>
-                  </div>
+                <div className="h-8 w-px bg-gray-300"></div>
+                <div className="text-center">
+                  <p className="text-[10px] uppercase font-bold text-gray-500">Market Price</p>
+                  <p className="text-2xl font-black text-gray-400 line-through decoration-red-500 decoration-2">₹1,999</p>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className={styles.noProducts}>
-              <p>Sample products will be displayed here</p>
+
+              <div className="bg-green-600 rounded-xl p-4 text-white text-center mb-4 shadow-lg shadow-green-200">
+                 <p className="text-xs font-bold opacity-90 mb-1 tracking-wider uppercase">Your Net Profit</p>
+                 <p className="text-3xl font-black">₹1,200</p>
+                 <p className="text-[10px] mt-1 opacity-80">Per Sale • Keep 100%</p>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-500 font-bold mb-2 uppercase text-center">Sell easily on:</p>
+                <div className="flex justify-center gap-4 text-gray-400">
+                  <span className="text-xl" title="Instagram">📸</span>
+                  <span className="text-xl" title="WhatsApp">💬</span>
+                  <span className="text-xl" title="Facebook">📘</span>
+                  <span className="text-xl" title="Amazon">📦</span>
+                </div>
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Example Product 2 */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2">
+            <div className="relative h-64 bg-gray-50 p-4 flex items-center justify-center">
+              <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60" alt="Wireless Headphones" className="object-contain h-full drop-shadow-lg" />
+              <span className="absolute top-4 right-4 bg-blue-500 text-white text-xs font-black px-3 py-1 rounded-full">
+                BEST TECH
+              </span>
+            </div>
+            
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Noise Cancelling Headphones</h3>
+              <div className="flex gap-2 mb-4 text-xs font-semibold text-gray-500">
+                <span className="bg-gray-100 px-2 py-1 rounded">Electronics</span>
+                <span className="bg-gray-100 px-2 py-1 rounded">Audio</span>
+              </div>
+
+              <div className="flex justify-between items-center mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                <div className="text-center">
+                  <p className="text-[10px] uppercase font-bold text-gray-500">Dropship Price</p>
+                  <p className="text-2xl font-black text-blue-600">₹1,200</p>
+                </div>
+                <div className="h-8 w-px bg-gray-300"></div>
+                <div className="text-center">
+                  <p className="text-[10px] uppercase font-bold text-gray-500">Market Price</p>
+                  <p className="text-2xl font-black text-gray-400 line-through decoration-red-500 decoration-2">₹3,499</p>
+                </div>
+              </div>
+
+              <div className="bg-green-600 rounded-xl p-4 text-white text-center mb-4 shadow-lg shadow-green-200">
+                 <p className="text-xs font-bold opacity-90 mb-1 tracking-wider uppercase">Your Net Profit</p>
+                 <p className="text-3xl font-black">₹2,299</p>
+                 <p className="text-[10px] mt-1 opacity-80">Per Sale • Keep 100%</p>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-500 font-bold mb-2 uppercase text-center">Sell easily on:</p>
+                <div className="flex justify-center gap-4 text-gray-400">
+                  <span className="text-xl" title="Instagram">📸</span>
+                  <span className="text-xl" title="WhatsApp">💬</span>
+                  <span className="text-xl" title="Flipkart">🛒</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Example Product 3 */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2">
+            <div className="relative h-64 bg-gray-50 p-4 flex items-center justify-center">
+              <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60" alt="Smart Watch" className="object-contain h-full drop-shadow-lg" />
+              <span className="absolute top-4 right-4 bg-purple-500 text-white text-xs font-black px-3 py-1 rounded-full animate-pulse">
+                TRENDING
+              </span>
+            </div>
+            
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Fitness Smart Watch Series 5</h3>
+              <div className="flex gap-2 mb-4 text-xs font-semibold text-gray-500">
+                <span className="bg-gray-100 px-2 py-1 rounded">Gadget</span>
+                <span className="bg-gray-100 px-2 py-1 rounded">Fitness</span>
+              </div>
+
+              <div className="flex justify-between items-center mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                <div className="text-center">
+                  <p className="text-[10px] uppercase font-bold text-gray-500">Dropship Price</p>
+                  <p className="text-2xl font-black text-blue-600">₹450</p>
+                </div>
+                <div className="h-8 w-px bg-gray-300"></div>
+                <div className="text-center">
+                  <p className="text-[10px] uppercase font-bold text-gray-500">Market Price</p>
+                  <p className="text-2xl font-black text-gray-400 line-through decoration-red-500 decoration-2">₹1,499</p>
+                </div>
+              </div>
+
+              <div className="bg-green-600 rounded-xl p-4 text-white text-center mb-4 shadow-lg shadow-green-200">
+                 <p className="text-xs font-bold opacity-90 mb-1 tracking-wider uppercase">Your Net Profit</p>
+                 <p className="text-3xl font-black">₹1,049</p>
+                 <p className="text-[10px] mt-1 opacity-80">Per Sale • Keep 100%</p>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-500 font-bold mb-2 uppercase text-center">Sell easily on:</p>
+                <div className="flex justify-center gap-4 text-gray-400">
+                  <span className="text-xl" title="Instagram">📸</span>
+                  <span className="text-xl" title="WhatsApp">💬</span>
+                  <span className="text-xl" title="Telegram">✈️</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* Profit Calculator */}
@@ -262,7 +383,7 @@ export default function JoinDropshipperPage() {
           <div className={styles.testimonialCard}>
             <div className={styles.stars}>⭐⭐⭐⭐⭐</div>
             <p className={styles.testimonialText}>
-              "Zero investment, high returns. The support team is amazing and always helpful."
+              "Low investment, high returns. The support team is amazing and always helpful."
             </p>
             <div className={styles.testimonialAuthor}>- Priya K., Delhi</div>
           </div>
@@ -291,9 +412,37 @@ export default function JoinDropshipperPage() {
         >
           View Plans & Get Started →
         </button>
-        <p className={styles.noRefundNote}>
-          ⚠️ Note: All subscription plans are non-refundable. Choose wisely!
-        </p>
+        
+        {/* Customer Care Section */}
+        <div className="mt-8 pt-8 border-t border-gray-200">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-2">
+            <Phone className="w-6 h-6 text-green-600" />
+            Need Help? Contact Customer Care
+          </h3>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a
+              href="https://wa.me/919157499884"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl"
+            >
+              <MessageCircle className="w-5 h-5" />
+              <span>WhatsApp: +91 9157499884</span>
+            </a>
+            <a
+              href="https://wa.me/916392348674"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl"
+            >
+              <MessageCircle className="w-5 h-5" />
+              <span>WhatsApp: +91 6392 348 674</span>
+            </a>
+          </div>
+          <p className="text-sm text-gray-600 mt-4 text-center">
+            Our team is available 24/7 to assist you with any queries
+          </p>
+        </div>
       </section>
     </main>
   )

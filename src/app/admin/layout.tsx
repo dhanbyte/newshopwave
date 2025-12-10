@@ -25,7 +25,11 @@ export default function AdminLayout({
   }, [])
   
   if (!mounted) {
-    return null
+    return (
+      <div className="min-h-screen items-center justify-center bg-gray-50 flex" suppressHydrationWarning>
+         {/* Empty or simple loader to match until client takes over */}
+      </div>
+    )
   }
   
   return (

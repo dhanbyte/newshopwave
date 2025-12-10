@@ -5,40 +5,31 @@ import { getDatabase } from '../../../../lib/db'
 // Public endpoint that returns the same static plans as admin
 const plans = [
   { 
-    id: 'plan_weekly', 
+    id: 'plan_starter', 
     name: 'Starter', 
-    interval: 'weekly', 
-    price: 49, 
-    description: 'Perfect for testing the waters', 
-    discount: 50,
-    features: ['Wholesale Pricing', 'Basic Support', 'Product Catalog Access']
-  },
-  { 
-    id: 'plan_monthly', 
-    name: 'Growth', 
-    interval: 'monthly', 
-    price: 299, 
-    description: 'Videos + 30% Profit Share from Ads', 
-    discount: 70,
-    features: ['All Starter Features', 'Product Videos', '30% Ad Revenue Share', 'Priority Support']
-  },
-  { 
-    id: 'plan_yearly', 
-    name: 'Business', 
     interval: 'yearly', 
     price: 999, 
-    description: 'Complete Solution - Products + Videos + Meta Ads + 20% Profit Share', 
-    discount: 85,
-    features: ['All Growth Features', 'Meta Ads Campaign Support', '20% Profit Share', 'Dedicated Account Manager', 'Custom Branding']
+    description: 'Perfect for beginners. Pay ads cost after profit!', 
+    discount: 50,
+    features: ['High Profit Margins', 'Pay Ads Charge After Earning', '25% Ads Commission on Profit', 'No Upfront Ads Cost']
   },
   { 
-    id: 'plan_premium', 
-    name: 'Enterprise', 
+    id: 'plan_scaling', 
+    name: 'Scaling', 
     interval: 'yearly', 
     price: 1999, 
-    description: 'Full Business Setup with Maximum Support', 
-    discount: 90,
-    features: ['All Business Features', 'Shopify Store Setup', 'Free Subdomain', 'Product Listing Service', 'Advanced Analytics']
+    description: 'Safe scaling with lower commissions.', 
+    discount: 60,
+    features: ['All Starter Features', 'Lower Ads Commission (18%)', 'Safe Scaling Strategy', 'Priority Support']
+  },
+  { 
+    id: 'plan_dominance', 
+    name: 'Dominance', 
+    interval: 'yearly', 
+    price: 2999, 
+    description: 'Maximum profit with premium support.', 
+    discount: 70,
+    features: ['All Scaling Features', 'Dedicated Account Manager', 'Advanced Analytics', 'Lowest Commission Rate']
   },
 ]
 

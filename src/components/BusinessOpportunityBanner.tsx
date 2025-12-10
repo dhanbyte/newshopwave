@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, MessageCircle, Users } from 'lucide-react'
+import { X, MessageCircle, Users, FileText } from 'lucide-react'
+import Link from 'next/link'
 
 export default function BusinessOpportunityBanner() {
   const [showBanner, setShowBanner] = useState(false)
@@ -37,6 +38,15 @@ export default function BusinessOpportunityBanner() {
         <p className="text-sm text-gray-600 mb-3 text-center sm:text-left">Join our dropshipping & wholesale program</p>
         
         <div className="space-y-2">
+          <Link
+            href="/dropshipper/join"
+            className="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded text-sm transition-colors font-semibold"
+            onClick={handleClose}
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            Apply for Dropshipping
+          </Link>
+          
           <a
             href="https://wa.me/919157499884?text=Hi, I'm interested in Dropshipping business opportunity"
             target="_blank"
@@ -45,7 +55,7 @@ export default function BusinessOpportunityBanner() {
             onClick={handleClose}
           >
             <MessageCircle className="w-4 h-4 mr-2" />
-            Dropshipping
+            Chat on WhatsApp
           </a>
           
           <a
@@ -56,7 +66,7 @@ export default function BusinessOpportunityBanner() {
             onClick={handleClose}
           >
             <Users className="w-4 h-4 mr-2" />
-            Wholesale
+            Wholesale Inquiry
           </a>
         </div>
       </div>
