@@ -3,64 +3,62 @@ import { supabase } from '@/lib/supabase'
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const key = searchParams.get('key')
-    
-    if (!key) {
-      return NextResponse.json({ success: false, error: 'Key is required' }, { status: 400 })
-    }
-
     const { data, error } = await supabase
       .from('settings')
-      .select('value')
-      .eq('key', key)
-      .single()
+      .select('key, value')
     
-    if (error && error.code !== 'PGRST116') {
-      console.error(`Error fetching setting ${key}:`, error)
-      return NextResponse.json({ success: false, error: 'Failed to fetch setting' }, { status: 500 })
+    if (error) {
+      console.error('Error fetching all settings:', error)
+      // Return empty if table doesn't exist yet to prevent crash in UI
+      return NextResponse.json({ success: true, settings: {} })
     }
+    
+    // Convert array to object
+    const settingsMap: Record<string, string> = {}
+    data?.forEach(item => {
+      settingsMap[item.key] = item.value
+    })
     
     return NextResponse.json({ 
       success: true, 
-      value: data?.value || '' 
+      settings: settingsMap
     })
   } catch (error) {
-    console.error('Error in GET config:', error)
+    console.error('Error in GET settings:', error)
     return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { key, value } = await request.json()
+    const settings = await request.json()
     
-    if (!key) {
-      return NextResponse.json({ success: false, error: 'Key is required' }, { status: 400 })
+    // Prepare upsert data
+    const upsertData = Object.entries(settings).map(([key, value]) => ({
+      key,
+      value: String(value),
+      updated_at: new Date().toISOString()
+    }))
+    
+    if (upsertData.length === 0) {
+      return NextResponse.json({ success: true })
     }
-    
-    // Upsert the setting
+
     const { error } = await supabase
       .from('settings')
-      .upsert({ 
-        key, 
-        value: value?.toString() || '',
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'key'
-      })
+      .upsert(upsertData, { onConflict: 'key' })
     
     if (error) {
-      console.error(`Error updating setting ${key}:`, error)
-      return NextResponse.json({ success: false, error: 'Failed to update setting' }, { status: 500 })
+      console.error('Error updating settings:', error)
+      return NextResponse.json({ success: false, error: 'Failed to update settings' }, { status: 500 })
     }
     
     return NextResponse.json({ 
       success: true, 
-      message: 'Setting updated successfully'
+      message: 'Settings updated successfully'
     })
   } catch (error) {
-    console.error('Error in POST config:', error)
+    console.error('Error in POST settings:', error)
     return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 })
   }
 }

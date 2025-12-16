@@ -53,11 +53,23 @@ export default function AdminSidebar() {
       </nav>
 
       <div className="absolute bottom-6 left-6 right-6">
+        <button
+          onClick={() => {
+            if (window.confirm('Are you sure you want to logout?')) {
+              localStorage.removeItem('adminAuth')
+              window.location.href = '/admin/login'
+            }
+          }}
+          className="flex items-center px-4 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors mb-2 w-full"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2 rotate-180" />
+          Logout
+        </button>
         <Link
           href="/"
           className="flex items-center px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <Home className="h-4 w-4 mr-2" />
           Back to Website
         </Link>
       </div>

@@ -494,10 +494,6 @@ export default function PublicPlansPage() {
             Start Your Journey Now
             <ArrowRight className="w-6 h-6 ml-2" />
           </Button>
-
-          <p className="text-blue-100 text-sm mt-6">
-            No credit card required • Cancel anytime • 100% Money-back guarantee
-          </p>
         </div>
       </section>
     </main>

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getDatabase } from '../../../../../lib/db'
 
+// ... keep imports
 export async function POST(request: Request) {
   try {
     const { 
@@ -21,6 +22,56 @@ export async function POST(request: Request) {
     }
 
     console.log('🔍 Making dropshipper for userId:', userId);
+
+    let user = null;
+    let errors = [];
+
+    // Strategy 1: Search by clerk_user_id
+    if (!user) {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('clerk_user_id', userId)
+        .single();
+      
+      if (data) user = data;
+      else if (error) errors.push(`clerk_user_id: ${error.message}`);
+    }
+
+    // Strategy 2: Search by email
+    if (!user) {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', userId)
+        .single();
+      
+      if (data) user = data;
+      else if (error) errors.push(`email: ${error.message}`);
+    }
+
+    // Strategy 3: Search by user_id
+    if (!user) {
+      // Only try if it looks like a UUID or just try and catch error
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+      
+      if (data) user = data;
+      else if (error) errors.push(`user_id: ${error.message}`);
+    }
+
+    if (!user) {
+      console.error('❌ User lookup failed. Errors:', errors);
+      return NextResponse.json({ 
+        success: false, 
+        error: `User not found with input: ${userId}. searched in clerk_user_id, email, user_id.` 
+      }, { status: 404 })
+    }
+
+    console.log('✅ Found user:', user.email, user.id);
 
     // Calculate 1 year subscription dates
     const startDate = new Date();
@@ -54,59 +105,31 @@ export async function POST(request: Request) {
 
     console.log('📝 Update data:', JSON.stringify(updateData, null, 2));
 
-    // Try 1: Update by clerk_user_id
-    let result = await supabase
+    // Update the found user by primary ID
+    const { data: updatedUser, error: updateError } = await supabase
       .from('users')
       .update(updateData)
-      .eq('clerk_user_id', userId)
+      .eq('id', user.id)
       .select()
       .single()
 
-    if (result.error) {
-      console.warn('⚠️ clerk_user_id failed, trying user_id...');
-      // Try 2: Update by user_id
-      result = await supabase
-        .from('users')
-        .update(updateData)
-        .eq('user_id', userId)
-        .select()
-        .single()
-    }
-
-    if (result.error) {
-      console.warn('⚠️ user_id failed, trying email...');
-      // Try 3: Update by email
-      result = await supabase
-        .from('users')
-        .update(updateData)
-        .eq('email', userId)
-        .select()
-        .single()
-    }
-
-    if (result.error) {
-      console.error('❌ All update attempts failed:', result.error);
+    if (updateError) {
+      console.error('❌ Update failed:', updateError);
       return NextResponse.json({ 
         success: false, 
-        error: `User not found with ID/Email: ${userId}. Error: ${result.error.message}` 
-      }, { status: 404 })
+        error: `Update failed: ${updateError.message}` 
+      }, { status: 500 })
     }
 
-    console.log('✅ Successfully updated user:', result.data);
+    console.log('✅ Successfully updated user:', updatedUser);
     
     // Initialize wallet with 0 balance if not exists
     try {
-      const walletCheck = await supabase
-        .from('users')
-        .select('dropshipper_earnings')
-        .eq('clerk_user_id', result.data.clerk_user_id || userId)
-        .single();
-      
-      if (!walletCheck.data?.dropshipper_earnings) {
+      if (!updatedUser.dropshipper_earnings) {
         await supabase
           .from('users')
           .update({ dropshipper_earnings: 0 })
-          .eq('clerk_user_id', result.data.clerk_user_id || userId);
+          .eq('id', updatedUser.id);
       }
     } catch (walletError) {
       console.warn('⚠️ Wallet initialization warning:', walletError);
@@ -115,7 +138,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       success: true, 
       dropshipperId, 
-      user: result.data,
+      user: updatedUser,
       message: 'User successfully activated as dropshipper! They may need to refresh their page or re-login to see changes.'
     })
   } catch (error: any) {

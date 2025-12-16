@@ -31,7 +31,7 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 import LoadingSpinner from '../components/LoadingSpinner';
 import MixedProductGrid from '../components/MixedProductGrid';
 import { useToast } from '../hooks/use-toast';
-import BusinessOpportunityBanner from '../components/BusinessOpportunityBanner';
+import DropshippingSection from '../components/DropshippingSection';
 import FashionCatalog from '../components/FashionCatalog';
 import ModernFashionCategories from '../components/ModernFashionCategories';
 import { MessageCircle, Users } from 'lucide-react';
@@ -667,7 +667,7 @@ export default function Home() {
         />
       )}
 
-      <BusinessOpportunityBanner />
+      <DropshippingSection />
 
     </div>
     </>

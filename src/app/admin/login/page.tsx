@@ -10,9 +10,13 @@ export default function AdminLoginPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Auto-login for testing (remove in production)
-    localStorage.setItem('adminAuth', 'true')
-    router.push('/admin')
+    // Check if already authenticated
+    if (typeof window !== 'undefined') {
+      const auth = localStorage.getItem('adminAuth')
+      if (auth === 'true') {
+        router.push('/admin')
+      }
+    }
   }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,7 +24,7 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError('')
     
-    if (password === '9157') {
+    if (password === '7433') {
       try {
         if (typeof window !== 'undefined') {
           localStorage.setItem('adminAuth', 'true')
