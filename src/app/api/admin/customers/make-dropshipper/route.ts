@@ -64,11 +64,76 @@ export async function POST(request: Request) {
     }
 
     if (!user) {
-      console.error('❌ User lookup failed. Errors:', errors);
+      console.log('⚠️ User not found. Creating NEW user:', userId);
+      
+      // If user doesn't exist, create them
+      // We'll use a placeholder for clerk_user_id that can be updated later when they sign up
+      // or if userId looks like an email, we use that as email.
+      
+      const isEmail = userId.includes('@');
+      const emailToUse = isEmail ? userId : null;
+      // Generate a temporary ID if we don't have a real Clerk ID
+      const tempClerkId = `manual_${Date.now()}`;
+      
+      // Calculate 1 year subscription dates
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setFullYear(endDate.getFullYear() + 1); // Add 1 year
+
+      // Generate dropshipper ID
+      const dropshipperId = `DS${Date.now()}`;
+
+      const promoCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+
+      const newUserData = {
+        clerk_user_id: tempClerkId,
+        email: emailToUse || `temp_${Date.now()}@noemail.com`,
+        name: name || 'New User',
+        is_dropshipper: true,
+        dropshipper_status: 'active',
+        dropshipper_plan_id: 'plan_admin_gift',
+        dropshipper_plan_interval: 'yearly',
+        dropshipper_subscription_start: startDate.toISOString(),
+        dropshipper_subscription_end: endDate.toISOString(),
+        dropshipper_id: dropshipperId,
+        dropshipper_earnings: 0,
+        referral_code: promoCode,
+        
+        // Optional fields
+        dropshipper_phone: phone || null,
+        dropshipper_address: address || null,
+        dropshipper_bank_name: bankName || null,
+        dropshipper_account_number: accountNumber || null,
+        dropshipper_ifsc: ifsc || null,
+        dropshipper_aadhar_number: aadharNumber || null,
+        dropshipper_photo: photo || null,
+        
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      const { data: newUser, error: createError } = await supabase
+        .from('users')
+        .insert(newUserData)
+        .select()
+        .single();
+
+      if (createError) {
+        console.error('❌ Failed to create new user:', createError);
+        return NextResponse.json({ 
+          success: false, 
+          error: `Failed to create new user: ${createError.message}` 
+        }, { status: 500 });
+      }
+
+      console.log('✅ Created new dropshipper user:', newUser);
+
       return NextResponse.json({ 
-        success: false, 
-        error: `User not found with input: ${userId}. searched in clerk_user_id, email, user_id.` 
-      }, { status: 404 })
+        success: true, 
+        dropshipperId, 
+        user: newUser,
+        message: 'New user created and activated as dropshipper! Please ask them to Sign Up with this email to access their account.'
+      });
     }
 
     console.log('✅ Found user:', user.email, user.id);
@@ -146,3 +211,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: error.message || 'Internal Server Error' }, { status: 500 })
   }
 }
+// Force rebuild for API update confirmation
