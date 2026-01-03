@@ -9,6 +9,7 @@ import { useOrders } from '@/lib/ordersStore'
 import { useSearchParams } from 'next/navigation'
 import { useAuth } from '@/context/ClerkAuthContext'
 import { Button } from './ui/button'
+import NotificationDropdown from './NotificationDropdown'
 
 const mainCategories = ['Tech', 'Home', 'Fashion', 'New Arrivals'];
 
@@ -44,17 +45,20 @@ export default function TopBar() {
 
         <nav className="ml-auto flex items-center gap-1 sm:gap-3">
           {user && (
-            <Link href="/wishlist" className="relative rounded-full p-2 hover:bg-gray-100 transition-colors" aria-label="Wishlist">
-              <Heart className="h-5 w-5" />
-              {hasNewWishlistItem && (
-                <span className="absolute right-0 top-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white blinking-dot" />
-              )}
-              {wishlistIds.length > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-xs text-white">
-                  {wishlistIds.length}
-                </span>
-              )}
-            </Link>
+            <>
+              <NotificationDropdown />
+              <Link href="/wishlist" className="relative rounded-full p-2 hover:bg-gray-100 transition-colors" aria-label="Wishlist">
+                <Heart className="h-5 w-5" />
+                {hasNewWishlistItem && (
+                  <span className="absolute right-0 top-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white blinking-dot" />
+                )}
+                {wishlistIds.length > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-xs text-white">
+                    {wishlistIds.length}
+                  </span>
+                )}
+              </Link>
+            </>
           )}
           
           {user ? (

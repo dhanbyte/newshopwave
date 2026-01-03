@@ -12,9 +12,9 @@ export default function SimpleGoogleAuth() {
     // Only show if user is not already logged in and not on auth pages
     if (!isLoaded || user) return
     
-    // Don't show on auth pages
-    const authPages = ['/sign-in', '/sign-up', '/register']
-    if (authPages.some(page => pathname.startsWith(page))) return
+    // Don't show on auth pages, checkout, or cart pages
+    const excludedPages = ['/sign-in', '/sign-up', '/register', '/checkout', '/cart']
+    if (excludedPages.some(page => pathname.startsWith(page))) return
 
     // Check if user has dismissed recently
     const dismissed = localStorage.getItem('googleAuthDismissed')

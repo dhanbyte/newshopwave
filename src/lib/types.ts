@@ -62,6 +62,12 @@ export type ShippingRate = {
   codCharge?: number // additional COD charge
 }
 
+export type TrackingUpdate = {
+  status: string
+  location: string
+  timestamp: string | number
+}
+
 export type Order = {
   id: string
   userId: string
@@ -75,6 +81,16 @@ export type Order = {
   address: Address
   payment: PaymentMethod
   status: 'Pending'|'Processing'|'Shipped'|'Delivered'
+  trackingStatus?: 'pending' | 'in_transit' | 'out_for_delivery' | 'delivered' | 'returned'
+  trackingNumber?: string
+  estimatedDelivery?: string
+  trackingUpdates?: TrackingUpdate[]
+  isDropshipperOrder?: boolean
+  dropshipperId?: string
+  dropshipperSellingPrice?: number
+  dropshipperOrderType?: 'prepaid' | 'cod'
+  confirmationType?: 'direct' | 'call'
+  orderNote?: string
 }
 
 export type User = {

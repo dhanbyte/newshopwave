@@ -14,8 +14,7 @@ import type { Product } from '../lib/types';
 
 import { useProductStore } from '../lib/productStore';
 import { NEWARRIVALS_PRODUCTS } from '../lib/data/newarrivals';
-import { FASHION_PRODUCTS } from '../lib/data/fashion';
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback, Fragment } from 'react';
 import VideoCard from '../components/VideoCard';
 import VideoModal from '../components/VideoModal';
 
@@ -31,10 +30,9 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 import LoadingSpinner from '../components/LoadingSpinner';
 import MixedProductGrid from '../components/MixedProductGrid';
 import { useToast } from '../hooks/use-toast';
-import DropshippingSection from '../components/DropshippingSection';
-import FashionCatalog from '../components/FashionCatalog';
-import ModernFashionCategories from '../components/ModernFashionCategories';
-import { MessageCircle, Users } from 'lucide-react';
+import { MessageCircle, Users, TrendingUp, Package, CheckCircle2 } from 'lucide-react';
+import FreeDeliveryBanner from '../components/FreeDeliveryBanner';
+import DropshippingBanner from '../components/DropshippingBanner';
 
 
 
@@ -152,62 +150,120 @@ export default function Home() {
   const techDeals = useMemo(() => {
     const filtered = products.filter(p => {
       const isCategory = p.category === 'Tech' || p.category === 'Electronics';
-      return isCategory && (p.quantity || p.stock || 0) > 0;
+      const hasImage = p.image && p.image.trim() !== '';
+      const isCustom = p.category === 'Customizable' || p.isCustomizable === true;
+      return isCategory && hasImage && !isCustom;
     });
-    console.log('Tech deals found:', filtered.length);
-    return shuffleArray(filtered).slice(0, 20); // Limit to 20 products
+    
+    // Sort: In-stock first, then by whatever (shuffled)
+    const sorted = shuffleArray(filtered).sort((a, b) => {
+      const aStock = a.quantity || a.stock || 0;
+      const bStock = b.quantity || b.stock || 0;
+      if (aStock > 0 && bStock === 0) return -1;
+      if (aStock === 0 && bStock > 0) return 1;
+      return 0;
+    });
+    
+    console.log('Tech deals found:', sorted.length);
+    return sorted.slice(0, 20);
   }, [products]);
 
   const homeDeals = useMemo(() => {
     const filtered = products.filter(p => {
       const isCategory = p.category === 'Home' || p.category === 'Home & Kitchen';
-      return isCategory && (p.quantity || p.stock || 0) > 0;
+      const hasImage = p.image && p.image.trim() !== '';
+      const isCustom = p.category === 'Customizable' || p.isCustomizable === true;
+      return isCategory && hasImage && !isCustom;
     });
-    console.log('Home deals found:', filtered.length);
-    return shuffleArray(filtered).slice(0, 20); // Limit to 20 products
+    
+    const sorted = shuffleArray(filtered).sort((a, b) => {
+      const aStock = a.quantity || a.stock || 0;
+      const bStock = b.quantity || b.stock || 0;
+      if (aStock > 0 && bStock === 0) return -1;
+      if (aStock === 0 && bStock > 0) return 1;
+      return 0;
+    });
+    
+    console.log('Home deals found:', sorted.length);
+    return sorted.slice(0, 20);
   }, [products]);
 
   const newArrivals = useMemo(() => {
     const apiNewArrivals = products.filter(p => {
-      return p.category === 'New Arrivals' && (p.quantity || p.stock || 0) > 0;
+      const hasImage = p.image && p.image.trim() !== '';
+      const isCustom = p.category === 'Customizable' || p.isCustomizable === true;
+      return p.category === 'New Arrivals' && hasImage && !isCustom;
     });
-    const jsonNewArrivals = NEWARRIVALS_PRODUCTS.filter(p => (p.quantity || p.stock || 0) > 0);
+    const jsonNewArrivals = NEWARRIVALS_PRODUCTS.filter(p => p.image && p.image.trim() !== '' && p.category !== 'Customizable' && p.isCustomizable !== true);
     const combined = [...apiNewArrivals, ...jsonNewArrivals];
-    console.log('New arrivals found:', combined.length);
-    return shuffleArray(combined).slice(0, 20); // Limit to 20 products
+    
+    const sorted = shuffleArray(combined).sort((a, b) => {
+      const aStock = a.quantity || a.stock || 0;
+      const bStock = b.quantity || b.stock || 0;
+      if (aStock > 0 && bStock === 0) return -1;
+      if (aStock === 0 && bStock > 0) return 1;
+      return 0;
+    });
+    
+    console.log('New arrivals found:', sorted.length);
+    return sorted.slice(0, 20);
   }, [products]);
 
   const fashionDeals = useMemo(() => {
     const apiFashion = products.filter(p => {
       const isCategory = p.category === 'Fashion';
-      return isCategory && (p.quantity || p.stock || 0) > 0;
+      const hasImage = p.image && p.image.trim() !== '';
+      const isCustom = p.category === 'Customizable' || p.isCustomizable === true;
+      return isCategory && hasImage && !isCustom;
     });
-    const jsonFashion = FASHION_PRODUCTS.filter(p => (p.quantity || p.stock || 0) > 0);
-    const combined = [...apiFashion, ...jsonFashion];
-    console.log('Fashion deals found:', combined.length, 'API:', apiFashion.length, 'JSON:', jsonFashion.length);
-    return shuffleArray(combined).slice(0, 20); // Limit to 20 products
+    
+    const sorted = shuffleArray(apiFashion).sort((a, b) => {
+      const aStock = a.quantity || a.stock || 0;
+      const bStock = b.quantity || b.stock || 0;
+      if (aStock > 0 && bStock === 0) return -1;
+      if (aStock === 0 && bStock > 0) return 1;
+      return 0;
+    });
+    
+    console.log('Fashion deals found:', sorted.length);
+    return sorted.slice(0, 20);
   }, [products]);
 
   const filteredProducts = useMemo(() => {
+    const productsWithImages = products.filter(p => 
+      p.image && 
+      p.image.trim() !== '' && 
+      p.category !== 'Customizable' && 
+      p.isCustomizable !== true
+    );
+    
+    const sorted = productsWithImages.sort((a, b) => {
+      const aStock = a.quantity || a.stock || 0;
+      const bStock = b.quantity || b.stock || 0;
+      if (aStock > 0 && bStock === 0) return -1;
+      if (aStock === 0 && bStock > 0) return 1;
+      return 0;
+    });
+
     if (selectedCategory === 'All') {
-      return [...products, ...FASHION_PRODUCTS];
+      return sorted;
     }
     if (selectedCategory === 'Electronics') {
-      return products.filter(p => p.category === 'Electronics' || p.category === 'Tech');
+      return sorted.filter(p => p.category === 'Electronics' || p.category === 'Tech');
     }
     if (selectedCategory === 'New Arrivals') {
-      const apiNewArrivals = products.filter(p => p.category === 'New Arrivals');
-      const jsonNewArrivals = NEWARRIVALS_PRODUCTS;
+      const apiNewArrivals = sorted.filter(p => p.category === 'New Arrivals');
+      const jsonNewArrivals = NEWARRIVALS_PRODUCTS.filter(p => p.image && p.image.trim() !== '');
       return [...apiNewArrivals, ...jsonNewArrivals];
     }
     if (selectedCategory === 'Fashion') {
-      const apiFashion = products.filter(p => p.category === 'Fashion');
-      const jsonFashion = FASHION_PRODUCTS;
-      return [...apiFashion, ...jsonFashion];
+      return productsWithImages.filter(p => p.category === 'Fashion');
     }
-
-    return products.filter(p => p.category === selectedCategory);
-  }, [selectedCategory, products]);
+    if (selectedCategory === 'Home') {
+      return productsWithImages.filter(p => p.category === 'Home' || p.category === 'Kitchen');
+    }
+    return productsWithImages.filter(p => p.category === selectedCategory);
+  }, [products, selectedCategory]);
 
   const visibleProducts = useMemo(() => {
     return filteredProducts.slice(0, visibleCount);
@@ -260,9 +316,13 @@ export default function Home() {
 
   if (!mounted) {
     return (
+    <div className="min-h-screen bg-gray-50">
+      <FreeDeliveryBanner />
+      
       <div className="flex justify-center py-10">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
       </div>
+    </div>
     )
   }
 
@@ -367,8 +427,8 @@ export default function Home() {
 
 
 
-      <section id="tech-offers">
-        <h2 className="text-2xl font-bold mb-4 text-center">Top Offers</h2>
+      <section id="tech-offers" className="px-4">
+        <h2 className="text-2xl font-bold mb-6 text-center">Top Fashion Offers</h2>
          <Carousel
           setApi={setApi}
           opts={{
@@ -377,13 +437,12 @@ export default function Home() {
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-1 sm:-ml-2 md:-ml-4">
-            <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Mobile Accessories" products={techDeals.filter(p => p.subcategory === 'Accessories' || p.subcategory === 'Mobile Accessories')} href="/search?subcategory=Accessories"/></CarouselItem>
-            <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Kitchen Tools" products={homeDeals.filter(p => p.subcategory === 'Kitchen Tools' || p.subcategory === 'Kitchenware')} href="/search?subcategory=Kitchen%20Tools"/></CarouselItem>
-            <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="LED Lights" products={[...products, ...newArrivals].filter(p => p.subcategory === 'LED Lights' || p.name?.toLowerCase().includes('led') || p.name?.toLowerCase().includes('light'))} href="/search?subcategory=LED%20Lights"/></CarouselItem>
-            <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Fashion" products={fashionDeals} href="/search?category=Fashion"/></CarouselItem>
+          <CarouselContent className="-ml-2 md:-ml-3">
+            <CarouselItem className="pl-2 md:pl-3 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Mobile Accessories" products={techDeals.filter(p => p.subcategory === 'Accessories' || p.subcategory === 'Mobile Accessories')} href="/search?subcategory=Accessories"/></CarouselItem>
+            <CarouselItem className="pl-2 md:pl-3 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Kitchen Tools" products={homeDeals.filter(p => p.subcategory === 'Kitchen Tools' || p.subcategory === 'Kitchenware')} href="/search?subcategory=Kitchen%20Tools"/></CarouselItem>
+            <CarouselItem className="pl-2 md:pl-3 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="LED Lights" products={[...products, ...newArrivals].filter(p => p.subcategory === 'LED Lights' || p.name?.toLowerCase().includes('led') || p.name?.toLowerCase().includes('light'))} href="/search?subcategory=LED%20Lights"/></CarouselItem>
+            <CarouselItem className="pl-2 md:pl-3 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Fashion" products={fashionDeals} href="/search?category=Fashion"/></CarouselItem>
           </CarouselContent>
-
         </Carousel>
       </section>
 
@@ -451,12 +510,12 @@ export default function Home() {
               'Puja-Essentials': 'Puja',
               'Decor & Lighting': 'Decor',
               'Car Accessories': 'Car',
-              'Photo Frames': 'Frames',
+            'Photo Frames': 'Frames',
               'Gifts': 'Gifts'
             };
             
             // Count products from all sources
-            [...products, ...NEWARRIVALS_PRODUCTS, ...FASHION_PRODUCTS].forEach(product => {
+            [...products, ...NEWARRIVALS_PRODUCTS].forEach(product => {
               if (product.subcategory) {
                 subcategoryCounts[product.subcategory] = (subcategoryCounts[product.subcategory] || 0) + 1;
               }
@@ -470,7 +529,7 @@ export default function Home() {
             
             return topSubcategories.map((subcategory, index) => {
               // Find a product from this subcategory to use its image
-              const productFromCategory = [...products, ...NEWARRIVALS_PRODUCTS, ...FASHION_PRODUCTS]
+              const productFromCategory = [...products, ...NEWARRIVALS_PRODUCTS]
                 .find(p => p.subcategory === subcategory && p.image);
               
               // Special image for Women category
@@ -633,6 +692,104 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Sleek Trusted Delivery Section */}
+      <section className="mb-12 px-4 max-w-5xl mx-auto">
+        <div className="bg-white border border-gray-100 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-700 group">
+          <div className="flex flex-col md:flex-row items-stretch">
+            {/* Text Content */}
+            <div className="p-6 md:p-10 flex-1 flex flex-col justify-center bg-white">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 flex items-center justify-center bg-brand/10 rounded-full">
+                  <Package className="w-4 h-4 text-brand" />
+                </div>
+                <span className="text-brand font-bold tracking-widest text-[9px] uppercase">Assured Quality</span>
+              </div>
+              
+              <h2 className="text-xl md:text-3xl font-black mb-3 text-gray-900 leading-tight">
+                Safe & Professional <br className="hidden md:block" />
+                <span className="text-brand">Packing Process</span>
+              </h2>
+              
+              <p className="text-gray-500 text-xs md:text-sm mb-6 leading-relaxed max-w-sm">
+                Triple-layered protection & automated quality checks ensure your order arrives in <span className="text-gray-900 font-bold">perfect condition</span>.
+              </p>
+              
+              <div className="flex flex-wrap gap-2">
+                <span className="text-[9px] md:text-[10px] font-bold text-gray-600 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-full flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full" /> QUALITY CHECKED
+                </span>
+                <span className="text-[9px] md:text-[10px] font-bold text-gray-600 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-full flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" /> SECURE LAYERS
+                </span>
+                <span className="text-[9px] md:text-[10px] font-bold text-gray-600 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-full flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" /> GST INVOICED
+                </span>
+              </div>
+            </div>
+
+            {/* Video Content */}
+            {/* Video Content */}
+            <div className="relative w-full md:w-[350px] lg:w-[450px] aspect-[9/16] md:aspect-auto overflow-hidden bg-gray-900 min-h-[400px] md:min-h-full">
+              <iframe
+                src="https://www.youtube.com/embed/1BgNskCW2G4?autoplay=1&mute=1&loop=1&playlist=1BgNskCW2G4&controls=0&showinfo=0&rel=0"
+                className="w-full h-full object-cover"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+                title="Packing Process"
+              />
+              <div className="absolute inset-0 bg-transparent pointer-events-none" /> {/* Overlay to prevent clicks if needed, or remove to allow interaction */}
+              <div className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm pointer-events-none z-10">
+                <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse" />
+                <span className="text-[8px] text-gray-900 font-black uppercase tracking-widest">Live Packing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* More Products Section with Lazy Loading */}
+      <section className="mb-8 px-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg md:text-2xl font-bold text-gray-800">🛍️ More Products For You</h2>
+        </div>
+        
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
+          {visibleProducts.map((product, index) => (
+            <Fragment key={`more-${product.id}-${index}`}>
+              {index === 10 && (
+                <div className="col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 my-6">
+                  <DropshippingBanner />
+                </div>
+              )}
+              <div>
+                <SafeProductCard p={product} />
+              </div>
+            </Fragment>
+          ))}
+        </div>
+
+        {/* Loading Indicator */}
+        {isLoadingMore && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 mt-4">
+            {[...Array(10)].map((_, i) => (
+              <ProductCardSkeleton key={`skeleton-${i}`} />
+            ))}
+          </div>
+        )}
+
+        {/* Intersection Observer Target */}
+        <div ref={observerRef} className="h-20 flex items-center justify-center">
+          {visibleCount < filteredProducts.length && !isLoadingMore && (
+            <div className="text-gray-500 text-sm">Scroll for more products...</div>
+          )}
+          {visibleCount >= filteredProducts.length && filteredProducts.length > 0 && (
+            <div className="text-gray-600 font-medium py-4">
+              🎉 You've seen all {filteredProducts.length} products!
+            </div>
+          )}
+        </div>
+      </section>
+
 
       {/* Video Showcase Section - Before Footer */}
       {videos.length > 0 && (
@@ -666,8 +823,6 @@ export default function Home() {
           onNavigate={setCurrentVideoIndex}
         />
       )}
-
-      <DropshippingSection />
 
     </div>
     </>

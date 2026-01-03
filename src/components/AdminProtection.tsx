@@ -32,7 +32,7 @@ export default function AdminProtection({ children }: AdminProtectionProps) {
 
     const checkAuth = () => {
       try {
-        const adminAuth = localStorage.getItem('adminAuth')
+        const adminAuth = sessionStorage.getItem('adminAuth')
         if (adminAuth === 'true') {
           setIsAuthenticated(true)
         } else {

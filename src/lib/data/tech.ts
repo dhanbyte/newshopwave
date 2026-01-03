@@ -10,7 +10,7 @@ export const TECH_PRODUCTS: Product[] = [
   "brand": "Fitnos",
   "category": "Tech",
   "subcategory": "Accessories",
-  "price": { "original": 890, "discounted": 378, "currency": "₹" },
+  "price": { "original": 935, "discounted": 397, "currency": "₹" },
   "quantity": 100,
   "image": "https://Shopwave.b-cdn.net/NEW%20ARIVALS/04_48007825-ec89-43f8-ab11-8f87a0e82f85.webp",
 
@@ -45,7 +45,7 @@ export const TECH_PRODUCTS: Product[] = [
   "brand": "Fitnos",
   "category": "Tech", 
   "subcategory": "Accessories",
-  "price": { "original": 1299, "discounted": 389, "currency": "₹" },
+  "price": { "original": 1364, "discounted": 408, "currency": "₹" },
   "quantity": 100,
  "image": "https://Shopwave.b-cdn.net/NEW%20ARIVALS/02_cac2f34b-d7ee-440e-96be-d378247888b1.webp",
 
@@ -87,7 +87,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'PHOBIA',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 149, currency: '₹' },
+    price: { original: 209, discounted: 156, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/0294.webp?updatedAt=1756627296166',
     extraImages: [
@@ -111,7 +111,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'PHOBIA',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 159, currency: '₹' },
+    price: { original: 209, discounted: 167, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_53521c05-9caa-4905-9410-e18e9ee19322.webp?updatedAt=1756627475239',
     extraImages: [
@@ -135,7 +135,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'PHOBIA',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 195, discounted: 132, currency: '₹' },
+    price: { original: 205, discounted: 139, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/0260_otg_1.webp?updatedAt=1756627844923',
     extraImages: [
@@ -159,7 +159,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'PHOBIA',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 179, currency: '₹' },
+    price: { original: 209, discounted: 188, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/2_02c0cd1d-c796-4ac8-9c62-319e79da4bd8.webp?updatedAt=1756627985921',
     extraImages: [
@@ -183,7 +183,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Phonixio',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 139, currency: '₹' },
+    price: { original: 209, discounted: 146, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_0748acd3-4797-400f-997d-6cecf6b22f5a.webp?updatedAt=1756628128432',
     extraImages: [
@@ -207,7 +207,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Dustiva',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 349, discounted: 169, currency: '₹' },
+    price: { original: 366, discounted: 177, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/spring3.jpg?updatedAt=1756628450335',
     extraImages: [
@@ -231,7 +231,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Tetherix',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 189, currency: '₹' },
+    price: { original: 209, discounted: 198, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/07_4a3ac08b-5f90-4f47-9c6f-a48d0999f3e7.webp?updatedAt=1756628649421',
     extraImages: [
@@ -255,7 +255,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Tetherix',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 144, currency: '₹' },
+    price: { original: 209, discounted: 151, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/7259_5_way_2pin_multi_plug_socket_1pc.webp?updatedAt=1756628819783',
     extraImages: [
@@ -279,7 +279,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'DeoDap',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 299, discounted: 149, currency: '₹' },
+    price: { original: 314, discounted: 156, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/02_8e7a2a50-5f8e-4155-8141-8e2e0d10f081.webp?updatedAt=1756629225483',
     extraImages: [
@@ -303,7 +303,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'DeoDap',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 399, discounted: 258, currency: '₹' },
+    price: { original: 419, discounted: 271, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/05_a9a66c01-6170-4baa-949f-1ccaedc2c8ab.webp?updatedAt=1756629484554',
     extraImages: [
@@ -327,7 +327,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Compshop',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 699, discounted: 325, currency: '₹' },
+    price: { original: 734, discounted: 341, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/2image_316276e3-8e6e-45b7-a4e7-823700729212.webp?updatedAt=1756629696556',
     extraImages: [
@@ -351,7 +351,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'PHOBIA',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 154, currency: '₹' },
+    price: { original: 209, discounted: 162, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/13_a4f21314-c9cd-4a49-a7ab-018ac7e45b5c.webp?updatedAt=1756629860435',
     extraImages: [
@@ -375,7 +375,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'PHOBIA',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 178, currency: '₹' },
+    price: { original: 209, discounted: 187, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/10b6182c-9bc0-43ca-93b5-f0a67c67598d.webp?updatedAt=1756630040159',
     extraImages: [
@@ -398,7 +398,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'PHOBIA',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 399, discounted: 235, currency: '₹' },
+    price: { original: 419, discounted: 247, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_851cb1fa-cf2f-4993-8d08-78b974be139b.webp?updatedAt=1756630284776',
     extraImages: [
@@ -422,7 +422,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'PHOBIA',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 299, discounted: 134, currency: '₹' },
+    price: { original: 314, discounted: 141, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/10_c450ee16-f5ce-4b2c-b9df-4df8796b9fd2.webp?updatedAt=1756630937319',
     extraImages: [
@@ -446,7 +446,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'Airvanta',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 999, discounted: 285, currency: '₹' },
+  price: { original: 1049, discounted: 299, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/12249d16-5521-4931-b03a-e672fc47fb87.webp?updatedAt=1757057794638',
   extraImages: [
@@ -470,7 +470,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'VoltDesk',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 499, discounted: 199, currency: '₹' },
+  price: { original: 524, discounted: 209, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/6565656_633cbc89-939b-4036-813d-a44d3903c1f0.avif?updatedAt=1757057919751',
   extraImages: [
@@ -494,7 +494,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'VoltDesk',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 399, discounted: 299, currency: '₹' },
+  price: { original: 419, discounted: 314, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/4810.avif?updatedAt=1757058066887',
   extraImages: [
@@ -518,7 +518,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'VoltDesk',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 499, discounted: 358, currency: '₹' },
+  price: { original: 524, discounted: 376, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/7714_mini_fancy_fan_no7.avif?updatedAt=1757058221480',
   extraImages: [
@@ -542,7 +542,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'VoltDesk',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 399, discounted: 234, currency: '₹' },
+  price: { original: 419, discounted: 246, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/03_11926ed7-2eb1-483d-85be-35817ebd1abd.webp?updatedAt=1757058423099',
   extraImages: [
@@ -566,7 +566,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'VoltDesk',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 899, discounted: 299, currency: '₹' },
+  price: { original: 944, discounted: 314, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/02_cb73403c-b287-4a89-8156-d0207cc3280b.webp?updatedAt=1757058621579',
   extraImages: [
@@ -590,7 +590,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'Indo Glow',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 199, discounted: 136, currency: '₹' },
+  price: { original: 209, discounted: 143, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/03_6b4128b2-562a-4d42-90ca-49ce8b78dbae.webp?updatedAt=1757058863207',
   extraImages: [
@@ -614,7 +614,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'Indo Glow',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 999, discounted: 349, currency: '₹' },
+  price: { original: 1049, discounted: 366, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/1_2_f01846ee-41f6-47f2-a32a-b779928bc234.avif?updatedAt=1757059018234',
   extraImages: [
@@ -638,7 +638,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'Velvet Wellness',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 599, discounted: 352, currency: '₹' },
+  price: { original: 629, discounted: 370, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_622c5a3c-6928-4b0f-90f7-f1240ac755b2.avif?updatedAt=1757059355708',
   extraImages: [
@@ -662,7 +662,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'Indo Glow',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 499, discounted: 235, currency: '₹' },
+  price: { original: 524, discounted: 247, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/04_8f8b8985-4ca5-49a9-a349-3a0527cf2d12.avif?updatedAt=1757059561304',
   extraImages: [
@@ -686,7 +686,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'FitFuzion',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 499, discounted: 237, currency: '₹' },
+  price: { original: 524, discounted: 249, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/05_88219dc0-b78f-4e73-9813-e319282f4a5d.webp?updatedAt=1757059840143',
   extraImages: [
@@ -710,7 +710,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'Indo Glow',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 499, discounted: 419, currency: '₹' },
+  price: { original: 524, discounted: 440, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/79d27a5e-9a1b-4172-a0de-38b988d75132.webp?updatedAt=1757060196152',
   extraImages: [
@@ -734,7 +734,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'Indo Glow',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 399, discounted: 226, currency: '₹' },
+  price: { original: 419, discounted: 237, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/04_52f86b07-356f-4067-a113-2ff16bf44db1.webp?updatedAt=1757060660345',
   extraImages: [
@@ -758,7 +758,7 @@ export const TECH_PRODUCTS: Product[] = [
   brand: 'PHOBIA',
   category: 'Tech',
   subcategory: 'Accessories',
-  price: { original: 399, discounted: 248, currency: '₹' },
+  price: { original: 419, discounted: 260, currency: '₹' },
   quantity: 100,
   image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20aaitams/01_38d28e9e-d6b0-488b-bd5b-661c1b29385f.avif?updatedAt=1757061144683',
   extraImages: [
@@ -783,8 +783,8 @@ export const TECH_PRODUCTS: Product[] = [
   "category": "Hair",
   "subcategory": "Accessories",
   "price": {
-    "original": 684,
-    "discounted": 251,
+    "original": 718,
+    "discounted": 264,
     "currency": "₹"
   },
   "quantity": 100,
@@ -823,7 +823,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Tidy Table',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 499, discounted: 259, currency: '₹' },
+    price: { original: 524, discounted: 272, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/02_5ba5639c-603e-428a-afe3-eefdc5f0f696.webp?updatedAt=1757157493441',
     extraImages: [
@@ -856,7 +856,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Tidy Table',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 1299, discounted: 439, currency: '₹' },
+    price: { original: 1364, discounted: 461, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/08_902c7866-b59f-46f4-91ba-e20826c84bf9.webp?updatedAt=1757157396921',
     extraImages: [
@@ -889,7 +889,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Oblivion',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 375, discounted: 152, currency: '₹' },
+    price: { original: 394, discounted: 160, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/6_31c072f6-9abf-47c5-b9f5-64b26aa8ed1b.avif?updatedAt=1757157269942',
     extraImages: [
@@ -921,7 +921,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Velvet Wheels',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 299, discounted: 149, currency: '₹' },
+    price: { original: 314, discounted: 156, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/04_5b594c26-578b-4d5f-ba8c-01514d072012.avif?updatedAt=1757157112524',
     extraImages: [
@@ -954,7 +954,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Audila',
     category: 'Tech',
     subcategory: 'Audio',
-    price: { original: 699, discounted: 289, currency: '₹' },
+    price: { original: 734, discounted: 303, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/02_413ce869-b6ef-477c-8be8-b78545b87afb.webp?updatedAt=1757152313606',
     extraImages: [
@@ -987,7 +987,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Audila',
     category: 'Tech',
     subcategory: 'Audio',
-    price: { original: 999, discounted: 589, currency: '₹' },
+    price: { original: 1049, discounted: 618, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/05_f6b21063-ec30-4e5c-8826-247af473f700.webp?updatedAt=1757152181740',
     extraImages: [
@@ -1022,7 +1022,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Indo Glow',
     category: 'Tech',
     subcategory: 'Computer Accessories',
-    price: { original: 399, discounted: 229, currency: '₹' },
+    price: { original: 419, discounted: 240, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/e352de8b-cbde-4b0c-84d9-e7cefc7086fc.webp',
     extraImages: [
@@ -1055,7 +1055,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Compshop',
     category: 'Tech',
     subcategory: 'Computer Accessories',
-    price: { original: 299, discounted: 245, currency: '₹' },
+    price: { original: 314, discounted: 257, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/102_e91ff739-5b93-46fa-a0c9-48c7b8b77787.webp',
     extraImages: [
@@ -1088,7 +1088,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Compshop',
     category: 'Tech',
     subcategory: 'Computer Accessories',
-    price: { original: 199, discounted: 146, currency: '₹' },
+    price: { original: 209, discounted: 153, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/6_b495afda-4456-4d71-940e-c216362be266.avif',
     extraImages: [
@@ -1121,7 +1121,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Indo Glow',
     category: 'Tech',
     subcategory: 'Computer Accessories',
-    price: { original: 299, discounted: 229, currency: '₹' },
+    price: { original: 314, discounted: 240, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/01_29c6d444-80ef-49f8-92d0-4cc17634a7c2.avif',
     extraImages: [
@@ -1154,7 +1154,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'worko',
     category: 'Tech',
     subcategory: 'Computer Accessories',
-    price: { original: 399, discounted: 219, currency: '₹' },
+    price: { original: 419, discounted: 230, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/03_42f207c0-2cfa-4266-bc19-44e9e12776ad.avif',
     extraImages: [
@@ -1186,7 +1186,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Audila',
     category: 'Tech',
     subcategory: 'Audio',
-    price: { original: 899, discounted: 626, currency: '₹' },
+    price: { original: 944, discounted: 657, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/06_ccc20f08-f6b5-43f1-91ce-b803f0a2e32a.webp',
     extraImages: [
@@ -1219,7 +1219,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Velvet Wheels',
     category: 'Tech',
     subcategory: 'Accessories',
-    price: { original: 299, discounted: 219, currency: '₹' },
+    price: { original: 314, discounted: 230, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/04_20dfe114-8a53-4fd2-b020-cc5b01a5b94b.webp',
     extraImages: [
@@ -1252,7 +1252,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'WGM',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 249, discounted: 219, currency: '₹' },
+    price: { original: 261, discounted: 230, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/RFUDyyLEPz.webp',
     extraImages: [
@@ -1283,7 +1283,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'WGM',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 299, discounted: 219, currency: '₹' },
+    price: { original: 314, discounted: 230, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/u6JzPhcUnu.webp',
     extraImages: [
@@ -1314,7 +1314,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Indo Glow',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 699, discounted: 389, currency: '₹' },
+    price: { original: 734, discounted: 408, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/01_aefaa138-f4e0-41ef-80a0-62171b97017c.webp',
     extraImages: [
@@ -1347,7 +1347,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'WGM',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 489, discounted: 229, currency: '₹' },
+    price: { original: 513, discounted: 240, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/nokiUDoO8j.webp',
     extraImages: [
@@ -1378,7 +1378,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'WGM',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 380, discounted: 219, currency: '₹' },
+    price: { original: 399, discounted: 230, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/T68uBG0wh3.webp',
     extraImages: [
@@ -1409,7 +1409,7 @@ export const TECH_PRODUCTS: Product[] = [
     brand: 'Indo Glow',
     category: 'Tech',
     subcategory: 'Decor & Lighting',
-    price: { original: 399, discounted: 219, currency: '₹' },
+    price: { original: 419, discounted: 230, currency: '₹' },
     quantity: 100,
     image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/1ec26728-f1bc-40d6-9068-3f856ea4e34e.webp',
     extraImages: [
@@ -1442,7 +1442,7 @@ name: 'Crystal Ball Night Light Glass Ball Night Lamp with Wood Base',
 brand: 'Indo Glow',
 category: 'Tech',
 subcategory: 'Decor & Lighting',
-price: { original: 399, discounted: 219, currency: '₹' },
+price: { original: 419, discounted: 230, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/01_3d-light.webp',
 extraImages: [
@@ -1475,7 +1475,7 @@ name: 'Solar Lights for Garden LED Security Lamp for Home, Outdoors Pathways',
 brand: 'Garden Vera',
 category: 'Tech',
 subcategory: 'Outdoor Lighting',
-price: { original: 499, discounted: 299, currency: '₹' },
+price: { original: 524, discounted: 314, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/5f7e872992d2b507f33f68da-9-large_0e2c40e8-8e9c-426a-b98c-968cddb10225.avif',
 extraImages: [
@@ -1510,7 +1510,7 @@ name: 'Solar Wall Lights Small Fence Lights Solar Powered Up Down LED Porch Ligh
 brand: 'Garden Vera',
 category: 'Tech',
 subcategory: 'Outdoor Lighting',
-price: { original: 299, discounted: 268, currency: '₹' },
+price: { original: 314, discounted: 281, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/5f7e872992d2b507f33f68da-9-large_0e2c40e8-8e9c-426a-b98c-968cddb10225.avif',
 extraImages: [
@@ -1543,7 +1543,7 @@ name: 'Solar Wall Lamp  Wireless Outdoor Light with Motion Sensor & 3 Modes',
 brand: 'Garden Vera',
 category: 'Tech',
 subcategory: 'Outdoor Lighting',
-price: { original: 399, discounted: 262, currency: '₹' },
+price: { original: 419, discounted: 275, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/03_923abcbf-7148-4bcf-ba07-4ee313429cd7(1).webp',
 extraImages: [
@@ -1576,7 +1576,7 @@ name: 'High-Power Solar LED Street Light with Motion Sensor & Remote Control',
 brand: 'DeoDap',
 category: 'Tech',
 subcategory: 'Outdoor Lighting',
-price: { original: 699, discounted: 425, currency: '₹' },
+price: { original: 734, discounted: 446, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/01_09226c7d-84b2-4377-9880-910255d94adf.avif',
 extraImages: [
@@ -1609,7 +1609,7 @@ name: '4 Pack Solar Ground Lights, LED Solar Powered Disk Lights Outdoor Waterpr
 brand: 'Indo Glow',
 category: 'Tech',
 subcategory: 'Outdoor Lighting',
-price: { original: 999, discounted: 570, currency: '₹' },
+price: { original: 1049, discounted: 599, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/413daae0-1fd5-4d92-b61e-a0b86e9de9f3.jpg',
 extraImages: [
@@ -1642,7 +1642,7 @@ name: 'Multi-Position Adjustable Tablet / mobile Phone / bracket Holder (1 Pc)',
 brand: 'PHOBIA',
 category: 'Tech',
 subcategory: 'Accessories',
-price: { original: 399, discounted: 199, currency: '₹' },
+price: { original: 419, discounted: 209, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/4081badc-da85-4ce0-8201-b4cb34791f44.avif',
 extraImages: [
@@ -1675,7 +1675,7 @@ name: 'Bluetooth Selfie Stick, Portable Phone Tripod Stand for Mobile',
 brand: 'PHOBIA',
 category: 'Tech',
 subcategory: 'Accessories',
-price: { original: 899, discounted: 349, currency: '₹' },
+price: { original: 944, discounted: 366, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/a1e6359f-018b-4147-a4c6-64e1517dff02.webp',
 extraImages: [
@@ -1708,7 +1708,7 @@ name: 'Adjustable Ergonomic Foldable Portable, Holder Riser Tablet Stand Plastic
 brand: 'Indo Glow',
 category: 'Tech',
 subcategory: 'Accessories',
-price: { original: 1499, discounted: 1090, currency: '₹' },
+price: { original: 1574, discounted: 1145, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/6._be7c9da6-43de-4c89-a3ab-98c09bb61d8f.webp',
 extraImages: [
@@ -1739,7 +1739,7 @@ name: 'Wired USB Keyboard 104 Keys (1 Pc)',
 brand: 'Indo Glow',
 category: 'Tech',
 subcategory: 'Computer Accessories',
-price: { original: 899, discounted: 477, currency: '₹' },
+price: { original: 944, discounted: 501, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/2785008c-85b4-45aa-86d5-c39733feff54.jpg',
 extraImages: [
@@ -1772,7 +1772,7 @@ name: 'Wired USB Keyboard 104 Keys (1 Pc)',
 brand: 'Indo Glow',
 category: 'Tech',
 subcategory: 'Computer Accessories',
-price: { original: 899, discounted: 389, currency: '₹' },
+price: { original: 944, discounted: 408, currency: '₹' },
 quantity: 100,
 image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/01_d6ef1d68-1400-4132-ad4a-a54ca8de4577.avif',
 extraImages: [
@@ -1807,7 +1807,7 @@ specifications: {
       "Crescent Moon Crystal LED Photo Frame Lamp – Personalized Rotating Hanging Frame with Warm Light",
     shortDescription:
       "Crescent moon shaped photo frame lamp with LED lighting for romantic decor.",
-    price: { original: 644, discounted: 362, currency: "₹" },
+    price: { original: 676, discounted: 380, currency: "₹" },
     image: "https://Shopwave.b-cdn.net/new%20arival/zjnv778fgw.webp",
     extraImages: [
       "https://Shopwave.b-cdn.net/new%20arival/Z6qKfadU1s.webp",

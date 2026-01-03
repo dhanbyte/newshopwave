@@ -119,15 +119,14 @@ interface GiftGalleryProps {
   cartValue: number
 }
 
-export function GiftGallery({ cartValue }: GiftGalleryProps) {
-  const gifts = [
+
+export const GIFTS = [
     {
       id: 1,
       name: 'Phone Ring Holder',
       value: 99,
       image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300&h=300&fit=crop',
       threshold: 399,
-      unlocked: cartValue >= 399,
     },
     {
       id: 2,
@@ -135,7 +134,6 @@ export function GiftGallery({ cartValue }: GiftGalleryProps) {
       value: 149,
       image: 'https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=300&h=300&fit=crop',
       threshold: 699,
-      unlocked: cartValue >= 699,
     },
     {
       id: 3,
@@ -143,9 +141,14 @@ export function GiftGallery({ cartValue }: GiftGalleryProps) {
       value: 99,
       image: 'https://images.unsplash.com/photo-1589003077984-894e133dabab?w=300&h=300&fit=crop',
       threshold: 999,
-      unlocked: cartValue >= 999,
     },
   ]
+
+export function GiftGallery({ cartValue }: GiftGalleryProps) {
+  const gifts = GIFTS.map(g => ({
+    ...g,
+    unlocked: cartValue >= g.threshold
+  }))
 
   const unlockedGifts = gifts.filter(g => g.unlocked)
   const totalGiftValue = unlockedGifts.reduce((sum, g) => sum + g.value, 0)

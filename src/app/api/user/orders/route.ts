@@ -148,7 +148,13 @@ export async function GET(request: NextRequest) {
         address: shippingAddress,
         createdAt: order.created_at,
         isDropshipperOrder: order.isDropshipperOrder || false,
-        dropshipperProfit: order.dropshipperProfit || 0
+        dropshipperProfit: order.dropshipperProfit || 0,
+        trackingStatus: order.tracking_status || 'pending',
+        trackingNumber: order.tracking_number || null,
+        estimatedDelivery: order.estimated_delivery || null,
+        trackingUpdates: typeof order.tracking_updates === 'string' 
+          ? JSON.parse(order.tracking_updates) 
+          : order.tracking_updates || []
       }
     })
 

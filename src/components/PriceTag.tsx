@@ -8,9 +8,9 @@ export default function PriceTag({ original, discounted, currency = '₹', size 
   const adminDiscounted = discounted ? Number(discounted) : 0
   const isDropshipper = user?.is_dropshipper === true
   
-  // Calculate display prices
-  const displayOriginal = isDropshipper ? adminOriginal : Math.round(adminOriginal * 1.5)
-  const displayDiscounted = adminDiscounted ? (isDropshipper ? adminDiscounted : Math.round(adminDiscounted * 1.5)) : 0
+  // Calculate display prices - 10% markup for normal users
+  const displayOriginal = isDropshipper ? adminOriginal : Math.round(adminOriginal * 1.1)
+  const displayDiscounted = adminDiscounted ? (isDropshipper ? adminDiscounted : Math.round(adminDiscounted * 1.1)) : 0
   
   const safeOriginal = displayOriginal
   const safeDiscounted = displayDiscounted
@@ -40,11 +40,11 @@ export default function PriceTag({ original, discounted, currency = '₹', size 
     <div className="flex flex-col gap-1">
       <div className="flex items-baseline gap-2">
         <span className={sizeClasses[size].price}>{currency}{price.toLocaleString('en-IN')}</span>
-        {safeDiscounted && (
+        {safeDiscounted > 0 && safeOriginal > safeDiscounted && (
           <span className={sizeClasses[size].original}>{currency}{safeOriginal.toLocaleString('en-IN')}</span>
         )}
       </div>
-      {safeDiscounted && (
+      {safeDiscounted > 0 && safeOriginal > safeDiscounted && (
         <span className={sizeClasses[size].discount}>
           {off}% off • Save {currency}{savings.toLocaleString('en-IN')}
         </span>

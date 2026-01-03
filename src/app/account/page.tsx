@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import React from 'react'
-import { User, Package, Heart, MapPin, LifeBuoy, LogOut, ChevronRight, Edit, Gift, Star, Wallet, CreditCard, Check } from 'lucide-react'
+import { User, Package, Heart, MapPin, LifeBuoy, LogOut, ChevronRight, Edit, Gift, Star, Wallet, CreditCard, Check, ShieldCheck } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Script from 'next/script'
@@ -461,7 +461,7 @@ export default function AccountPage() {
       case accountSections.EDIT_PROFILE:
         return <EditProfileSection onBack={() => setActiveSection(accountSections.DASHBOARD)} />
       case accountSections.WALLET:
-        return <WalletSection onBack={() => setActiveSection(accountSections.DASHBOARD)} userBalance={user.dropshipper_earnings || 0} onUpdateBalance={refreshUserData} />
+        return <WalletSection onBack={() => setActiveSection(accountSections.DASHBOARD)} userBalance={user.wallet_balance || user.dropshipper_earnings || 0} onUpdateBalance={refreshUserData} />
       case accountSections.REFERRALS:
         return (
           <div>
@@ -482,6 +482,18 @@ export default function AccountPage() {
       default:
         return (
           <div className="space-y-6">
+            {/* GST Verification Banner */}
+            <div className="bg-white rounded-xl border-l-4 border-l-green-600 p-4 shadow-sm flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Check className="h-5 w-5 text-green-600" />
+                  <span className="font-black text-gray-900">GST VERIFIED SELLER</span>
+                </div>
+                <p className="text-xs font-mono text-gray-500">ID: 10ELHPD1779R1ZQ</p>
+              </div>
+              <ShieldCheck className="h-8 w-8 text-green-100" />
+            </div>
+
             {/* Premium Profile Header */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 text-white shadow-xl">
               <div className="absolute top-0 right-0 -mt-4 -mr-4 h-32 w-32 rounded-full bg-white/10 blur-3xl"></div>
@@ -546,15 +558,15 @@ export default function AccountPage() {
                     </div>
                   </div>
 
-                  {/* Wallet Balance */}
+                  {/* Wallet Balance (Cashback + Earnings) */}
                   <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                     <div className="flex items-center gap-3">
                       <div className="p-3 bg-green-100 rounded-lg">
                         <Wallet className="h-5 w-5 text-green-600" />
                       </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Wallet Balance</p>
-                        <p className="text-lg font-bold text-green-600">₹{(user.dropshipper_earnings || 0).toLocaleString()}</p>
+                      <div className="flex-1">
+                        <p className="text-xs text-gray-500 mb-1">Total Wallet</p>
+                        <p className="text-lg font-bold text-green-600">₹{(user.wallet_balance || user.dropshipper_earnings || 0).toLocaleString()}</p>
                       </div>
                     </div>
                   </div>
@@ -585,36 +597,51 @@ export default function AccountPage() {
                 </div>
               </div>
             ) : (
-              /* Become Dropshipper CTA */
-              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-200 shadow-sm">
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 text-4xl">🚀</div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-orange-800 mb-2">Become a Dropshipper</h3>
-                    <p className="text-gray-700 mb-4">Start your own business with wholesale prices and zero inventory!</p>
-                    <ul className="space-y-2 mb-4 text-sm text-gray-600">
-                      <li className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-green-600" />
-                        Get wholesale prices on all products
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-green-600" />
-                        No inventory needed - we handle shipping
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-green-600" />
-                        Earn profits on every sale
-                      </li>
-                    </ul>
-                    <Link 
-                      href="/dropshipper/plans"
-                      className="inline-block bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
-                    >
-                      View Plans & Join Now
-                    </Link>
+              <>
+                {/* Regular User Wallet Card (if balance exists) */}
+                {(user.wallet_balance || 0) > 0 && (
+                  <div className="bg-white rounded-2xl p-6 border border-green-100 shadow-sm mb-6">
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                          <div className="p-3 bg-green-50 rounded-lg">
+                            <Wallet className="h-6 w-6 text-green-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-gray-900">Photo Cashback Wallet</h4>
+                            <p className="text-sm text-gray-500">Earnings from photo uploads</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-2xl font-bold text-green-600">₹{(user.wallet_balance || 0).toLocaleString()}</p>
+                          <button 
+                            onClick={() => setActiveSection(accountSections.WALLET)}
+                            className="text-xs text-blue-600 font-bold hover:underline"
+                          >
+                            View History
+                          </button>
+                        </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Become Dropshipper CTA */}
+                <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-200 shadow-sm relative overflow-hidden group mb-6">
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-100 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="flex items-start gap-4 relative z-10">
+                    <div className="flex-shrink-0 text-4xl">🚀</div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-orange-800 mb-2">Become a Dropshipper</h3>
+                      <p className="text-gray-700 mb-4 font-medium">Start your business with wholesale prices!</p>
+                      <Link 
+                        href="/dropshipper/plans"
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-5 py-2.5 rounded-xl font-bold hover:from-orange-700 hover:to-red-700 transition-all shadow-md active:scale-95"
+                      >
+                        View Plans & Join Now
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </>
             )}
 
             {/* Quick Actions Grid */}
@@ -625,14 +652,12 @@ export default function AccountPage() {
                 <DashboardCard icon={Heart} title="Wishlist" href="/wishlist" hasNotification={hasNewItem} />
                 <DashboardCard icon={MapPin} title="My Addresses" onClick={() => setActiveSection(accountSections.ADDRESSES)} />
                 <DashboardCard icon={Edit} title="Edit Profile" onClick={() => setActiveSection(accountSections.EDIT_PROFILE)} />
-                {user.is_dropshipper && (
-                  <DashboardCard 
-                    icon={Wallet} 
-                    title="My Wallet" 
-                    onClick={() => setActiveSection(accountSections.WALLET)} 
-                    subtitle={`₹${(user.dropshipper_earnings || 0).toLocaleString()}`} 
-                  />
-                )}
+                <DashboardCard 
+                  icon={Wallet} 
+                  title="My Wallet" 
+                  onClick={() => setActiveSection(accountSections.WALLET)} 
+                  subtitle={`₹${(user.wallet_balance || user.dropshipper_earnings || 0).toLocaleString()}`} 
+                />
                 <DashboardCard icon={Gift} title="Referrals" onClick={() => setActiveSection(accountSections.REFERRALS)} />
               </div>
             </div>

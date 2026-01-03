@@ -125,7 +125,25 @@ export const useCart = create<CartState>()((set, get) => ({
     estimatedShipping: 0,
   },
   paymentMethod: 'Online',
-  init: (userId: string) => {
+  init: (userId?: string | null) => {
+    // Load guest cart from localStorage first
+    const guestCart = localStorage.getItem('guest_cart');
+    let localItems: CartItem[] = [];
+    if (guestCart) {
+      try {
+        const parsed = JSON.parse(guestCart);
+        if (Array.isArray(parsed)) {
+          localItems = parsed;
+          const totals = calculateTotals(parsed, get().paymentMethod)
+          set({ items: parsed, ...totals })
+        }
+      } catch (e) {
+        console.warn('Failed to parse guest cart', e);
+      }
+    }
+
+    if (!userId) return;
+
     // Check if user is dropshipper from localStorage or fetch from API
     const checkDropshipperStatus = async () => {
       try {
@@ -140,9 +158,6 @@ export const useCart = create<CartState>()((set, get) => ({
       return false;
     };
 
-    const totals = calculateTotals([], get().paymentMethod, false)
-    set({ items: [], ...totals })
-
     setTimeout(async () => {
       try {
         const isDropshipper = await checkDropshipperStatus();
@@ -150,8 +165,32 @@ export const useCart = create<CartState>()((set, get) => ({
         if (response.ok) {
           const serverCart = await response.json()
           if (serverCart && Array.isArray(serverCart)) {
-            const totals = calculateTotals(serverCart, get().paymentMethod, isDropshipper)
-            set({ items: serverCart, ...totals })
+            // MERGE LOGIC: Merge local guest items into server cart
+            let mergedItems = [...serverCart];
+            
+            if (localItems.length > 0) {
+              localItems.forEach(guestItem => {
+                const existingIndex = mergedItems.findIndex(si => si.id === guestItem.id);
+                if (existingIndex > -1) {
+                  // Merge quantities (limit to 99)
+                  mergedItems[existingIndex].qty = Math.min(99, mergedItems[existingIndex].qty + guestItem.qty);
+                } else {
+                  mergedItems.push(guestItem);
+                }
+              });
+
+              // Sync merged cart back to server
+              await fetch('/api/user-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, type: 'cart', data: mergedItems }),
+              });
+              
+              localStorage.removeItem('guest_cart'); // Clear guest cart once merged and synced
+            }
+
+            const totals = calculateTotals(mergedItems, get().paymentMethod, isDropshipper)
+            set({ items: mergedItems, ...totals })
           }
         }
       } catch (error) {
@@ -159,7 +198,7 @@ export const useCart = create<CartState>()((set, get) => ({
       }
     }, 0)
   },
-  add: async (userId: string, item: CartItem) => {
+  add: async (userId: string | undefined | null, item: CartItem) => {
     const currentItems = get().items
     const existing = currentItems.find((p) => p.id === item.id)
 
@@ -170,34 +209,43 @@ export const useCart = create<CartState>()((set, get) => ({
     const totals = calculateTotals(newItems, get().paymentMethod)
     set({ items: newItems, ...totals })
 
-    try {
-      await fetch('/api/user-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, type: 'cart', data: newItems }),
-      })
-    } catch (error) {
-      console.warn('Cart save failed:', error)
+    if (userId) {
+      try {
+        await fetch('/api/user-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, type: 'cart', data: newItems }),
+        })
+      } catch (error) {
+        console.warn('Cart save failed:', error)
+      }
+    } else {
+      // For guest users, persist to localStorage as fallback
+      localStorage.setItem('guest_cart', JSON.stringify(newItems));
     }
   },
-  remove: async (userId: string, id: string) => {
+  remove: async (userId: string | undefined | null, id: string) => {
     const currentItems = get().items
     const newItems = currentItems.filter((p) => p.id !== id)
 
     const totals = calculateTotals(newItems, get().paymentMethod)
     set({ items: newItems, ...totals })
 
-    try {
-      await fetch('/api/user-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, type: 'cart', data: newItems }),
-      })
-    } catch (error) {
-      console.warn('Cart save failed:', error)
+    if (userId) {
+      try {
+        await fetch('/api/user-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, type: 'cart', data: newItems }),
+        })
+      } catch (error) {
+        console.warn('Cart save failed:', error)
+      }
+    } else {
+      localStorage.setItem('guest_cart', JSON.stringify(newItems));
     }
   },
-  setQty: async (userId: string, id: string, qty: number) => {
+  setQty: async (userId: string | undefined | null, id: string, qty: number) => {
     const currentItems = get().items
     const newItems = currentItems.map((p) =>
       p.id === id ? { ...p, qty: Math.max(1, Math.min(99, qty)) } : p
@@ -206,14 +254,18 @@ export const useCart = create<CartState>()((set, get) => ({
     const totals = calculateTotals(newItems, get().paymentMethod)
     set({ items: newItems, ...totals })
 
-    try {
-      await fetch('/api/user-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, type: 'cart', data: newItems }),
-      })
-    } catch (error) {
-      console.warn('Cart save failed:', error)
+    if (userId) {
+      try {
+        await fetch('/api/user-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, type: 'cart', data: newItems }),
+        })
+      } catch (error) {
+        console.warn('Cart save failed:', error)
+      }
+    } else {
+      localStorage.setItem('guest_cart', JSON.stringify(newItems));
     }
   },
   setPaymentMethod: (method: 'COD' | 'Online') => {
@@ -224,19 +276,23 @@ export const useCart = create<CartState>()((set, get) => ({
   clear: () => {
     const totals = calculateTotals([])
     set({ items: [], ...totals })
+    localStorage.removeItem('guest_cart');
   },
-  clearCartFromDB: async (userId: string) => {
+  clearCartFromDB: async (userId: string | undefined | null) => {
     const totals = calculateTotals([])
     set({ items: [], ...totals })
 
-    try {
-      await fetch('/api/user-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, type: 'cart', data: [] }),
-      })
-    } catch (error) {
-      console.warn('Cart clear failed:', error)
+    if (userId) {
+      try {
+        await fetch('/api/user-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, type: 'cart', data: [] }),
+        })
+      } catch (error) {
+        console.warn('Cart clear failed:', error)
+      }
     }
+    localStorage.removeItem('guest_cart');
   },
 }))

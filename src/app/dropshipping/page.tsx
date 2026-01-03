@@ -1,478 +1,341 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
-import { Package, TrendingUp, DollarSign, Users, Shield, Zap, CheckCircle, Video, Target, Percent, ArrowRight } from 'lucide-react'
+'use client';
 
-export const metadata: Metadata = {
-  title: 'What is Dropshipping? Complete Guide | ShopWave Dropshipping India',
-  description: 'Learn what dropshipping is and how to start your dropshipping business in India with ShopWave. Get 50-70% wholesale discounts, free product videos, Meta ads support, and profit sharing. Complete dropshipping guide for beginners.',
-  keywords: 'what is dropshipping, dropshipping meaning, dropshipping India, how to start dropshipping, dropshipping business model, dropshipping guide India, dropshipping for beginners, dropshipping suppliers India, wholesale dropshipping, online business India, reselling business, work from home India, dropshipping tutorial, ShopWave dropshipping',
-  openGraph: {
-    title: 'What is Dropshipping? Complete Guide | ShopWave India',
-    description: 'Complete guide to dropshipping in India. Learn how to start your dropshipping business with ShopWave - 50-70% discounts, free videos, Meta ads support.',
-    type: 'article',
-  },
-}
+import Head from 'next/head';
+import Image from 'next/image';
+import { ArrowRight, CheckCircle, TrendingUp, DollarSign, Package, Users, PlayCircle, ShieldCheck, Zap, BarChart, Rocket } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import DropshipperForm from '../../components/DropshipperForm';
 
 export default function DropshippingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+      <Head>
+        <title>Start Dropshipping with ShopWave | Best Reselling Platform India</title>
+      </Head>
+
       {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            What is <span className="text-blue-600">Dropshipping</span>?
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Start your online business with ZERO inventory investment. Sell products without storing them!
-          </p>
-        </div>
-
-        {/* Video Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-12">
-          <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center mb-6">
-            <a 
-              href="https://www.youtube.com/watch?v=I-U1NwHyGGI" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 bg-red-600 text-white px-8 py-4 rounded-full hover:bg-red-700 transition-colors"
-            >
-              <Video className="w-6 h-6" />
-              <span className="font-semibold">Watch Complete Tutorial (2 min)</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* What is Dropshipping */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
-            🎯 Dropshipping Kya Hai? (What is Dropshipping?)
-          </h2>
-          
-          <div className="prose prose-lg max-w-none">
-            <p className="text-gray-700 text-lg leading-relaxed mb-6">
-              <strong>Dropshipping</strong> ek business model hai jisme aap products bechte ho <strong>bina inventory rakhe</strong>. 
-              Jab customer aapse order karta hai, tab aap supplier (ShopWave) se product mangwate ho aur wo directly customer ko deliver kar deta hai.
-            </p>
-
-            <div className="bg-blue-50 border-l-4 border-blue-600 p-6 my-8">
-              <h3 className="text-xl font-bold text-blue-900 mb-3">Simple Example:</h3>
-              <ol className="space-y-3 text-gray-800">
-                <li>✅ Customer aapse ₹1000 me product order karta hai</li>
-                <li>✅ Aap ShopWave se ₹600 me (wholesale price) order karte ho</li>
-                <li>✅ ShopWave directly customer ko deliver karta hai</li>
-                <li>✅ Aapka profit: ₹400 (40%)</li>
-              </ol>
-            </div>
-
-            <h3 className="text-2xl font-bold text-gray-900 mt-12 mb-4">
-              🚀 How Dropshipping Works - Step by Step
-            </h3>
-            
-            <div className="grid md:grid-cols-4 gap-6 my-8">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
-                <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">1</div>
-                <h4 className="font-bold text-gray-900 mb-2">Customer Orders</h4>
-                <p className="text-sm text-gray-700">Customer aapse product order karta hai</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
-                <div className="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">2</div>
-                <h4 className="font-bold text-gray-900 mb-2">You Order</h4>
-                <p className="text-sm text-gray-700">Aap ShopWave se wholesale price pe order karte ho</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
-                <div className="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">3</div>
-                <h4 className="font-bold text-gray-900 mb-2">We Ship</h4>
-                <p className="text-sm text-gray-700">ShopWave directly customer ko deliver karta hai</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl">
-                <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">4</div>
-                <h4 className="font-bold text-gray-900 mb-2">You Earn</h4>
-                <p className="text-sm text-gray-700">Aap profit kamao bina kuch kiye!</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ShopWave Services */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            🎁 ShopWave Dropshipping Services
-          </h2>
-          <p className="text-xl text-gray-600">
-            India's #1 Dropshipping Platform - Complete Business Solution
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Service 1 */}
-          <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-            <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <Percent className="w-8 h-8 text-green-600" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">50-70% Wholesale Discount</h3>
-            <p className="text-gray-700 mb-4">
-              Sabhi products pe massive discount. Customer price ₹1000, aapka price ₹300-500!
-            </p>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-600" />
-                Weekly Plan: 50% discount
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-600" />
-                Monthly Plan: 70% discount
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-600" />
-                Yearly Plan: 85-90% discount
-              </li>
-            </ul>
-          </div>
-
-          {/* Service 2 */}
-          <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-            <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-              <Video className="w-8 h-8 text-blue-600" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Free Product Videos</h3>
-            <p className="text-gray-700 mb-4">
-              Har product ke liye professional promotional videos - social media pe share karo!
-            </p>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-blue-600" />
-                HD quality videos
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-blue-600" />
-                Instagram/Facebook ready
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-blue-600" />
-                Download & share unlimited
-              </li>
-            </ul>
-          </div>
-
-          {/* Service 3 */}
-          <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-            <div className="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-              <Target className="w-8 h-8 text-purple-600" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Meta Ads Support</h3>
-            <p className="text-gray-700 mb-4">
-              Facebook & Instagram ads se aane wale orders pe extra profit share!
-            </p>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-purple-600" />
-                20-30% profit share from ads
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-purple-600" />
-                Ad creatives provided
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-purple-600" />
-                Campaign guidance
-              </li>
-            </ul>
-          </div>
-
-          {/* Service 4 */}
-          <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-            <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-              <Package className="w-8 h-8 text-orange-600" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">No Inventory Needed</h3>
-            <p className="text-gray-700 mb-4">
-              Koi product stock nahi rakhna. Hum handle karte hain storage & shipping!
-            </p>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-orange-600" />
-                Zero investment in stock
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-orange-600" />
-                No warehouse needed
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-orange-600" />
-                Direct delivery to customer
-              </li>
-            </ul>
-          </div>
-
-          {/* Service 5 */}
-          <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-            <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4">
-              <Users className="w-8 h-8 text-red-600" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">24/7 Support</h3>
-            <p className="text-gray-700 mb-4">
-              Dedicated support team har waqt available - WhatsApp, call, email!
-            </p>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-red-600" />
-                WhatsApp support
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-red-600" />
-                Order tracking help
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-red-600" />
-                Business guidance
-              </li>
-            </ul>
-          </div>
-
-          {/* Service 6 */}
-          <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-            <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-              <Zap className="w-8 h-8 text-indigo-600" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Fast Processing</h3>
-            <p className="text-gray-700 mb-4">
-              Quick order processing & delivery. Customer satisfaction guaranteed!
-            </p>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-indigo-600" />
-                Same day processing
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-indigo-600" />
-                3-7 days delivery
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-indigo-600" />
-                Real-time tracking
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-2xl p-8 md:p-12 text-white">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-            💰 Why Choose ShopWave Dropshipping?
-          </h2>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                <DollarSign className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">High Profit Margins</h3>
-                <p className="text-blue-100">Earn ₹500-₹2000 per sale with our wholesale pricing</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">Scalable Business</h3>
-                <p className="text-blue-100">Start small, grow big - no limits on earnings</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                <Shield className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">Quality Guaranteed</h3>
-                <p className="text-blue-100">All products quality checked before shipping</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                <Zap className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">Work From Home</h3>
-                <p className="text-blue-100">Run your business from anywhere, anytime</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Plans */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            📊 Choose Your Plan
-          </h2>
-          <p className="text-xl text-gray-600">
-            Flexible plans for every business size
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Weekly</h3>
-            <div className="text-3xl font-bold text-blue-600 mb-4">₹49</div>
-            <ul className="space-y-2 text-sm text-gray-600 mb-6">
-              <li>✅ 50% discount</li>
-              <li>✅ Basic support</li>
-              <li>✅ All products access</li>
-            </ul>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-blue-500">
-            <div className="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">POPULAR</div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Monthly</h3>
-            <div className="text-3xl font-bold text-blue-600 mb-4">₹299</div>
-            <ul className="space-y-2 text-sm text-gray-600 mb-6">
-              <li>✅ 70% discount</li>
-              <li>✅ Product videos</li>
-              <li>✅ 30% ad profit share</li>
-            </ul>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-purple-500">
-            <div className="bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">BEST VALUE</div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Quarterly</h3>
-            <div className="text-3xl font-bold text-blue-600 mb-4">₹599</div>
-            <ul className="space-y-2 text-sm text-gray-600 mb-6">
-              <li>✅ 85% discount</li>
-              <li>✅ Product videos</li>
-              <li>✅ 25% ad profit share</li>
-            </ul>
-          </div>
-
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl shadow-lg p-6 border-2 border-orange-500">
-            <div className="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">PREMIUM</div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Yearly</h3>
-            <div className="text-3xl font-bold text-orange-600 mb-4">₹999</div>
-            <ul className="space-y-2 text-sm text-gray-600 mb-6">
-              <li>✅ 90% discount</li>
-              <li>✅ Product videos</li>
-              <li>✅ 20% ad profit share</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="text-center">
-          <Link 
-            href="/dropshipper/plans"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg"
-          >
-            View All Plans & Get Started
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="max-w-4xl mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-          ❓ Frequently Asked Questions
-        </h2>
+      <section className="relative overflow-hidden bg-slate-900 pt-24 pb-32">
+        <div className="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-900/50 to-transparent"></div>
         
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">
-              Q: Dropshipping shuru karne ke liye kitna investment chahiye?
-            </h3>
-            <p className="text-gray-700">
-              A: Sirf ₹49 se shuru kar sakte ho (Weekly plan). Koi inventory investment nahi chahiye!
+        <div className="max-w-7xl mx-auto px-4 relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/40 text-green-300 font-bold text-sm backdrop-blur-sm animate-pulse">
+               <span className="w-2 h-2 rounded-full bg-green-400"></span> India's Next-Gen Reselling System
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">
+              Start Your Own <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">
+                Profitable Business
+              </span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-slate-300 max-w-xl leading-relaxed">
+              Stop losing money with fake suppliers. Join ShopWave for tested products, fast delivery, and a transparent payout system.
             </p>
+
+            <div className="flex flex-wrap gap-4 text-sm font-medium text-slate-200">
+               <div className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-lg border border-white/5">
+                 <ShieldCheck className="w-4 h-4 text-green-400" /> Tested Products
+               </div>
+               <div className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-lg border border-white/5">
+                 <Zap className="w-4 h-4 text-yellow-400" /> Fast Dispatch
+               </div>
+               <div className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-lg border border-white/5">
+                 <DollarSign className="w-4 h-4 text-blue-400" /> COD Unlocked
+               </div>
+            </div>
+            
+            <div className="pt-4">
+              <a href="#plans" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-1">
+                View Plans <ArrowRight className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">
-              Q: Kitna profit kama sakte hain?
-            </h3>
-            <p className="text-gray-700">
-              A: Average ₹15,000-₹50,000 per month. Depends on aapki sales aur marketing efforts.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">
-              Q: Products ki delivery kaun karega?
-            </h3>
-            <p className="text-gray-700">
-              A: ShopWave directly customer ko deliver karega. Aapko kuch nahi karna!
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">
-              Q: Kya refund milega agar plan cancel karna ho?
-            </h3>
-            <p className="text-gray-700">
-              A: No, all plans are non-refundable. Please choose wisely!
-            </p>
+          <div className="relative">
+             <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-lg opacity-30 animate-pulse"></div>
+             <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl relative">
+                <iframe 
+                  className="w-full aspect-video rounded-lg shadow-lg"
+                  src="https://www.youtube.com/embed/_aQzrzeZWFM?rel=0" 
+                  title="ShopWave Concept"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                ></iframe>
+                <p className="text-center text-slate-400 text-sm mt-4">Watch: Complete System Explained</p>
+             </div>
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-2xl p-12 text-center text-white">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to Start Your Dropshipping Journey?
-          </h2>
-          <p className="text-xl mb-8 text-blue-100">
-            Join 10,000+ successful dropshippers earning daily with ShopWave
-          </p>
-          <Link 
-            href="/dropshipper/plans"
-            className="inline-flex items-center gap-2 bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
-          >
-            Get Started Now - View Plans
-            <ArrowRight className="w-5 h-5" />
-          </Link>
+      {/* Why Choose ShopWave / Problems vs Solution */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6">Why Dropshipping Fails Elsewhere?</h2>
+            <p className="text-lg text-slate-600">
+              People say "Dropshipping is a scam" because of <span className="text-red-500 font-bold">Fake Suppliers, High Returns, and No Support</span>.
+              <br/>We fixed the system, not just the business.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+             {[
+               { icon: <Package className="w-8 h-8 text-blue-600" />, title: "No Stock Needed", desc: "Sell without buying inventory upfront. Zero Risk." },
+               { icon: <ShieldCheck className="w-8 h-8 text-green-600" />, title: "Quality Tested", desc: "We only list low-return, verified products." },
+               { icon: <Rocket className="w-8 h-8 text-purple-600" />, title: "Fast Delivery", desc: "3-5 Days delivery across India." },
+               { icon: <Users className="w-8 h-8 text-orange-600" />, title: "Real Support", desc: "Genuine WhatsApp & Call support for sellers." }
+             ].map((feature, i) => (
+               <div key={i} className="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all hover:-translate-y-1">
+                 <div className="mb-4 bg-white p-3 rounded-xl w-fit shadow-sm">{feature.icon}</div>
+                 <h3 className="text-xl font-bold text-slate-900 mb-2">{feature.title}</h3>
+                 <p className="text-slate-600 text-sm">{feature.desc}</p>
+               </div>
+             ))}
+          </div>
         </div>
       </section>
 
-      {/* Schema Markup */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": "What is Dropshipping? Complete Guide to Dropshipping in India",
-            "description": "Complete guide to dropshipping business model in India. Learn how to start dropshipping with ShopWave - wholesale prices, product videos, Meta ads support.",
-            "author": {
-              "@type": "Organization",
-              "name": "ShopWave"
-            },
-            "publisher": {
-              "@type": "Organization",
-              "name": "ShopWave Dropshipping",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "https://www.shopwave.social/logo.png"
-              }
-            },
-            "mainEntityOfPage": {
-              "@type": "WebPage",
-              "@id": "https://www.shopwave.social/dropshipping"
-            }
-          })
-        }}
-      />
+      {/* How It Works Steps */}
+       <section className="py-20 px-4 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16"> 
+             <span className="text-blue-600 font-bold tracking-wider uppercase text-sm">Process</span>
+             <h2 className="text-3xl md:text-4xl font-black text-slate-900 mt-2">How ShopWave Works</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-5 gap-4 relative">
+             {/* Connector Line (Desktop) */}
+             <div className="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-200 -translate-y-1/2 z-0"></div>
+
+             {[
+               { number: "01", title: "Share", desc: "Share products on WhatsApp/Insta" },
+               { number: "02", title: "Order", desc: "Customer places order with you" },
+               { number: "03", title: "Submit", desc: "Enter details in ShopWave Panel" },
+               { number: "04", title: "We Ship", desc: "We pack & deliver to customer" },
+               { number: "05", title: "Profit", desc: "Get Paid in 1-2 Days (COD)" }
+             ].map((step, i) => (
+               <div key={i} className="relative z-10 bg-white p-6 rounded-xl border border-slate-100 shadow-sm text-center">
+                  <div className="w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-4 border-4 border-white shadow-md">
+                    {step.number}
+                  </div>
+                  <h4 className="font-bold text-lg mb-1">{step.title}</h4>
+                  <p className="text-xs text-slate-500">{step.desc}</p>
+               </div>
+             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Plans Section */}
+      <section id="plans" className="py-24 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900">Choose Your Plan</h2>
+            <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm md:text-base">
+               <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full font-bold flex items-center gap-2"><CheckCircle className="w-4 h-4"/> Only Product + Delivery Cost</span>
+               <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-bold flex items-center gap-2"><CheckCircle className="w-4 h-4"/> No RTO Charges</span>
+               <span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-bold flex items-center gap-2"><CheckCircle className="w-4 h-4"/> 10% Meta Ads Fee</span>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            
+            {/* Plan 1: Partner Store */}
+            <div className="flex flex-col p-8 rounded-3xl border border-slate-200 bg-white shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-full h-2 bg-slate-500"></div>
+              <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-wide">Partner Store Plan</h3>
+              <p className="text-xs text-slate-500 font-bold mb-4 uppercase tracking-widest">For Existing Store Owners</p>
+              
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-4xl font-extrabold text-slate-900">₹999</span>
+                <span className="text-slate-500 font-medium">/Joining</span>
+              </div>
+              <p className="text-slate-600 mb-6 text-sm">Perfect if you already have a Shopify store or website.</p>
+              
+              <div className="space-y-3 mb-8 flex-1">
+                <p className="font-bold text-sm text-slate-900 border-b pb-2">What You Get:</p>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" /> Verified Products Supply</li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" /> Same-day Dispatch & Confirmation</li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" /> <b>No RTO Charges</b></li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-green-500 shrink-0 mt-0.5" /> Meta Ads Setup (10% Fee)</li>
+                <li className="flex items-start gap-3 text-red-500 text-xs"><span className="font-bold">x</span> No Website Creation</li>
+              </div>
+              <Button 
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white h-12 rounded-xl font-bold"
+                onClick={() => window.open("https://wa.me/919157499884?text=Hello ShopWave, I am interested in the Partner Store Plan (₹999). I already have a store. Please guide me.", "_blank")}
+              >
+                Join for ₹999
+              </Button>
+            </div>
+
+            {/* Plan 2: Marketplace Seller */}
+            <div className="flex flex-col p-8 rounded-3xl border-2 border-blue-600 bg-slate-50 shadow-xl relative transform md:-translate-y-4">
+              <div className="absolute top-4 right-4 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Popular</div>
+              <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-wide">Marketplace Seller</h3>
+              <p className="text-xs text-blue-600 font-bold mb-4 uppercase tracking-widest">For Amazon / Flipkart / Meesho</p>
+              
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-4xl font-extrabold text-slate-900">₹1,999</span>
+                <span className="text-slate-500 text-sm">/Lifetime Access</span>
+              </div>
+              <p className="text-slate-600 mb-6 text-sm">Sell on marketplaces + your own website.</p>
+              
+              <div className="space-y-3 mb-8 flex-1">
+                 <p className="font-bold text-sm text-slate-900 border-b pb-2">What You Get:</p>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> Marketplace Selling Guidance</li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> Products Supply & Dispatch</li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> <b>No RTO Charges</b></li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> Meta Ads Setup (10% Fee)</li>
+                <li className="flex items-start gap-3 text-red-500 text-xs"><span className="font-bold">x</span> Self-Service Listing</li>
+              </div>
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12 rounded-xl font-bold shadow-lg shadow-blue-500/30"
+                onClick={() => window.open("https://wa.me/919157499884?text=Hello ShopWave, I am interested in the Marketplace Seller Plan (₹1,999). I want to sell on Amazon/Flipkart. Please guide me.", "_blank")}
+              >
+                Select Plan
+              </Button>
+            </div>
+
+            {/* Plan 3: Full Shopify */}
+            <div className="flex flex-col p-8 rounded-3xl border border-slate-200 bg-white shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+               <div className="absolute top-0 left-0 w-full h-2 bg-purple-500"></div>
+              <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-wide">Full Shopify Store</h3>
+              <p className="text-xs text-purple-600 font-bold mb-4 uppercase tracking-widest">For Complete Beginners</p>
+              
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-4xl font-extrabold text-slate-900">₹2,999</span>
+                <span className="text-slate-500 text-sm">/One Time</span>
+              </div>
+              <p className="text-slate-600 mb-6 text-sm">We build your professional website from scratch.</p>
+              
+              <div className="space-y-3 mb-8 flex-1">
+                <p className="font-bold text-sm text-slate-900 border-b pb-2">What You Get:</p>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" /> <b>Full Shopify Website Creation</b></li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" /> Payment Gateway Setup</li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" /> Meta Ads Full Setup</li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" /> Complete Backend Support</li>
+                <li className="flex items-start gap-3 text-slate-700 text-sm"><CheckCircle className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" /> <b>No RTO Charges</b></li>
+              </div>
+              <Button 
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white h-12 rounded-xl font-bold"
+                onClick={() => window.open("https://wa.me/919157499884?text=Hello ShopWave, I am interested in the Full Shopify Website Plan (₹2,999). I want to start from zero. Please guide me.", "_blank")}
+              >
+                Get Full Setup
+              </Button>
+            </div>
+
+          </div>
+          
+          <div className="mt-12 text-center bg-slate-50 p-6 rounded-2xl border border-slate-200">
+             <h4 className="text-lg font-bold text-slate-800 mb-2">📢 Simple Comparison</h4>
+             <div className="flex flex-col md:flex-row justify-center gap-4 text-sm text-slate-600">
+                <p><b>Plan 1:</b> Store already hai → Products + Ads + Delivery hum sambhalenge</p>
+                <span className="hidden md:inline text-slate-300">|</span>
+                <p><b>Plan 2:</b> Marketplace pe sell karna hai → System + Support</p>
+                <span className="hidden md:inline text-slate-300">|</span>
+                <p><b>Plan 3:</b> Kuch bhi nahi hai → Hum Shopify website bana ke sab set kar denge</p>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ads Booster Feature */}
+      <section className="py-20 bg-slate-900 text-white overflow-hidden relative">
+         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600 rounded-full blur-[150px] opacity-20"></div>
+         <div className="max-w-7xl mx-auto px-4 relative z-10">
+            <div className="flex flex-col lg:flex-row items-center gap-16">
+               <div className="flex-1 space-y-6">
+                  <div className="inline-block p-2 px-4 rounded-lg bg-yellow-500/20 text-yellow-500 font-bold border border-yellow-500/40 text-sm">
+                    POWERED BY SHOPWAVE
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-black leading-tight">
+                    Risk-Free <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Meta Ads System</span>
+                  </h2>
+                  <p className="text-lg text-slate-300">
+                    "Aap sirf products sell karo, backend, delivery, RTO aur ads Shopwave sambhalega."
+                  </p>
+                  
+                  <div className="space-y-4 pt-4">
+                     <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                        <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shrink-0">
+                           <Zap className="w-6 h-6 text-white"/>
+                        </div>
+                        <div>
+                           <div className="font-bold text-lg text-white">Winning Products Only</div>
+                           <div className="text-sm text-slate-400">We run ads ONLY on tested/viral products to ensure sales.</div>
+                        </div>
+                     </div>
+                     <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10">
+                        <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center shrink-0">
+                           <ShieldCheck className="w-6 h-6 text-white"/>
+                        </div>
+                        <div>
+                           <div className="font-bold text-lg text-white">Full RTO Protection</div>
+                           <div className="text-sm text-slate-400">Delivery in 3-5 Days. If RTO happens, <b>Product Cost is adjusted</b> in your next order.</div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div className="flex-1 w-full max-w-md">
+                   <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-3xl border border-slate-700 shadow-2xl relative">
+                      <div className="absolute -top-4 -right-4 bg-green-500 text-white font-bold p-3 rounded-xl shadow-lg transform rotate-12">
+                         100% Transparent
+                      </div>
+                      <h3 className="text-xl font-bold mb-4">Your Cost Breakdown</h3>
+                      <div className="space-y-4">
+                         <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg">
+                           <span className="text-slate-400 text-sm">Product Cost</span>
+                           <span className="font-mono font-bold text-slate-300">As per catalog</span>
+                         </div>
+                         <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg">
+                           <span className="text-slate-400 text-sm">Delivery Charges</span>
+                           <span className="font-mono font-bold text-slate-300">Actuals</span>
+                         </div>
+                         <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg">
+                           <span className="text-slate-400 text-sm">Ads Management</span>
+                           <span className="font-mono font-bold text-yellow-400">10% Fee</span>
+                         </div>
+                         <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg">
+                           <span className="text-slate-400 text-sm">RTO Handling</span>
+                           <span className="font-mono font-bold text-green-400">Product Cost Refunded</span>
+                         </div>
+                      </div>
+                      <p className="text-xs text-center text-slate-500 mt-6 pt-6 border-t border-white/10">
+                        Reliable • Transparent • Profitable
+                      </p>
+                   </div>
+               </div>
+            </div>
+         </div>
+      </section>
+
+      {/* Start Today */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+           <h2 className="text-3xl md:text-5xl font-black text-slate-900">Start Your Business Today</h2>
+           <p className="text-xl text-slate-600">
+             Limited beta users only. Join India's most transparent dropshipping partner.
+           </p>
+
+           {/* PDF Link */}
+           <a 
+             href="https://drive.google.com/file/d/17d1-t5w5YLNFFR5aOTXEyxqlQMWkg2yJ/view?usp=drive_link" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             className="inline-flex items-center gap-2 text-blue-600 font-bold hover:underline mb-8 block"
+           >
+             <ShieldCheck className="w-5 h-5" /> Detailed Dropshipping Guide (PDF)
+           </a>
+
+           <div className="bg-slate-50 p-8 rounded-3xl border border-slate-200">
+              <h3 className="text-2xl font-bold mb-6">Quick Application Form</h3>
+              <DropshipperForm />
+           </div>
+        </div>
+      </section>
     </div>
-  )
+  );
 }

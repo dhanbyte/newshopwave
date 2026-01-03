@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { userId, items, total, paymentMethod, paymentId, shippingAddress } = body;
+    const { userId, items, total, paymentMethod, paymentId, shippingAddress, dropshipperSellingPrice, dropshipperOrderType, confirmationType, orderNote } = body;
 
     if (!userId || !items || !total) {
       return NextResponse.json({ 
@@ -55,7 +55,12 @@ export async function POST(request: Request) {
         status: 'pending',
         shipping_address: JSON.stringify(shippingAddress),
         payment_method: paymentMethod,
-        payment_id: paymentId
+        payment_id: paymentId,
+        is_dropshipper_order: isDropshipper,
+        dropshipper_selling_price: dropshipperSellingPrice,
+        dropshipper_order_type: dropshipperOrderType,
+        confirmation_type: confirmationType,
+        order_note: orderNote
       })
       .select()
       .single()

@@ -33,7 +33,8 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
   
   const adminPrice = getPriceValue(productData.price) || productData.price_original || 0;
   const isDropshipper = user?.is_dropshipper === true;
-  const price = isDropshipper ? adminPrice : Math.round(adminPrice * 1.5);
+  // All users get same price (cheap/wholesale) - no markup
+  const price = adminPrice;
   
   // Generate proper slug for the product
   const getProductSlug = () => {
@@ -47,19 +48,18 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
   const productSlug = getProductSlug();
   
   const handleAddToCart = () => {
-    if (!requireAuth('add items to cart')) {
-      return;
-    }
+    // Shopping can be done without login now
+    // Only checkout/payment will require auth
     
     console.log('🛒 Adding to cart:', {
       productName: productData.name,
       adminPrice,
       isDropshipper,
       finalPrice: price,
-      userId: user.id
+      userId: user?.id || 'guest'
     });
     
-    add(user.id, { 
+    add(user?.id, { 
       id: productData.id, 
       qty: 1, 
       price, 
@@ -147,20 +147,24 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
             <RatingStars value={productData.ratings?.average || 0} size="xs" />
           </div>
           
-          {/* Stock info for dropshippers */}
-          {isDropshipper && (
-            <div className="mb-1 text-[10px] md:text-xs text-gray-600">
-              Stock: <span className={`font-semibold ${
-                (productData.quantity || productData.stock || 0) > 10 
-                  ? 'text-green-600' 
-                  : (productData.quantity || productData.stock || 0) > 0 
-                    ? 'text-orange-600' 
-                    : 'text-red-600'
-              }`}>
-                {productData.quantity || productData.stock || 0} units
-              </span>
-            </div>
-          )}
+          {/* Stock info for all users */}
+          {(() => {
+            const stockCount = productData.quantity || productData.stock || 0;
+            if (stockCount > 10) {
+              return (
+                <div className="mb-1 text-[10px] md:text-xs text-green-700 font-semibold">
+                  ✓ In Stock
+                </div>
+              );
+            } else if (stockCount > 0) {
+              return (
+                <div className="mb-1 text-[10px] md:text-xs text-orange-700 font-semibold">
+                  ⚠ Only {stockCount} left!
+                </div>
+              );
+            }
+            return null;
+          })()}
           
           <div className="mb-2 md:mb-3">
             <PriceTag 

@@ -42,18 +42,18 @@ export default function OfferCard({ title, products, href }: { title: string; pr
   if (!products || products.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-100 p-2 h-full flex flex-col">
-        <h3 className="font-bold text-xs sm:text-sm">{title}</h3>
-        <p className="text-[10px] sm:text-xs text-gray-500 mb-1 sm:mb-2">Top picks</p>
+    <div className="bg-white rounded-lg border border-gray-100 p-3 md:p-4 h-full flex flex-col">
+        <h3 className="font-bold text-sm md:text-base mb-1">{title}</h3>
+        <p className="text-xs text-gray-500 mb-3">Top picks</p>
         <div className="relative flex-grow aspect-square">
              <AnimatePresence initial={false}>
                 <motion.div
-                    key={animationKey} // Key changes when products cycle
+                    key={animationKey}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.8, ease: 'easeInOut' }}
-                    className="grid grid-cols-2 grid-rows-2 gap-0.5 sm:gap-1 absolute inset-0"
+                    className="grid grid-cols-2 grid-rows-2 gap-1 md:gap-2 absolute inset-0"
                 >
                     {visibleProducts.map((p, i) => (
                         <Link key={`${p.id}-${i}`} href={`/product/${p.slug}`} className="block w-full h-full relative rounded-md md:rounded-lg overflow-hidden group">
@@ -61,7 +61,7 @@ export default function OfferCard({ title, products, href }: { title: string; pr
                                 src={p.image}
                                 alt={p.name}
                                 fill
-                                sizes="(max-width: 768px) 12vw, 25vw"
+                                sizes="(max-width: 768px) 20vw, 12vw"
                                 className="object-cover transform group-hover:scale-105 transition-transform duration-300"
                             />
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
@@ -70,7 +70,7 @@ export default function OfferCard({ title, products, href }: { title: string; pr
                 </motion.div>
              </AnimatePresence>
         </div>
-        <Link href={href} className="block mt-2 md:mt-4 text-center text-xs md:text-sm font-semibold text-brand hover:underline">
+        <Link href={href} className="block mt-3 md:mt-4 text-center text-xs md:text-sm font-semibold text-brand hover:underline">
             See all deals
         </Link>
     </div>

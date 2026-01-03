@@ -1,9 +1,8 @@
 // @ts-nocheck
+// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { TECH_PRODUCTS } from '@/lib/data/tech';
-import { HOME_PRODUCTS } from '@/lib/data/home';
-import { FASHION_PRODUCTS } from '@/lib/data/fashion';
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -158,20 +157,8 @@ export async function GET(request: Request) {
                     };
                 });
 
-            // Combine all products
+            // Combine regular and vendor products
             let allProducts = [...transformedRegularProducts, ...transformedVendorProducts];
-            
-            // Add JSON products as fallback (exclude customizable products)
-            const jsonProducts = [...FASHION_PRODUCTS, ...TECH_PRODUCTS, ...HOME_PRODUCTS]
-                .filter(p => p.category !== 'Customizable')
-                .map(p => ({
-                    ...p,
-                    isVendorProduct: false,
-                    inStock: true
-                }));
-            
-            allProducts = [...allProducts, ...jsonProducts];
-            console.log('Combined products: DB=' + allProducts.filter(p => p.isVendorProduct).length + ', JSON=' + jsonProducts.length);
             
             // Apply limit if specified
             const finalProducts = limit && !isNaN(Number(limit)) ? 
@@ -190,20 +177,7 @@ export async function GET(request: Request) {
             // Fall through to fallback
         }
         
-        // Return JSON products as fallback (exclude customizable products)
-        console.log('Using JSON products as fallback');
-        const allProducts = [...FASHION_PRODUCTS, ...TECH_PRODUCTS, ...HOME_PRODUCTS]
-            .filter(p => p.category !== 'Customizable')
-            .map(p => ({
-                ...p,
-                isVendorProduct: false,
-                inStock: true
-            }));
-        
-        const finalProducts = limit && !isNaN(Number(limit)) ? 
-            allProducts.slice(0, Number(limit)) : allProducts;
-            
-        return NextResponse.json(finalProducts);
+        return NextResponse.json([]);
         
     } catch (error) {
         console.error('Error in GET /api/products:', error);

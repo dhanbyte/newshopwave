@@ -1,6 +1,7 @@
 'use client'
 import { useState, useCallback, useMemo } from 'react'
-import { useAuth } from '@/context/ClerkAuthContext'
+import { useAuth } from '../context/ClerkAuthContext'
+import { getPincodeServiceability } from '../lib/pincode-data'
 
 type Address = {
   id: string
@@ -13,6 +14,7 @@ type Address = {
   state: string
   landmark: string
   default: boolean
+  sellingPrice?: string
 }
 
 const required = (s?: string) => !!(s && s.trim().length)
@@ -180,9 +182,62 @@ export default function AddressForm({ action, initial, onCancel }: { action: (a:
     )
   }
 
+  const [isFetchingLocation, setIsFetchingLocation] = useState(false)
+
+  const fetchLocation = () => {
+    if (!navigator.geolocation) {
+      toast({ title: "Error", description: "Geolocation is not supported by your browser." })
+      return
+    }
+
+    setIsFetchingLocation(true)
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords
+          // Using Nominatim (OpenStreetMap) for free reverse geocoding
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`)
+          const data = await response.json()
+          
+          if (data && data.address) {
+            const addr = data.address
+            setFormData(prev => ({
+              ...prev,
+              city: addr.city || addr.town || addr.village || '',
+              state: addr.state || '',
+              pincode: addr.postcode || '',
+              line1: addr.road || addr.suburb || '',
+              line2: addr.neighbourhood || ''
+            }))
+            toast({ title: "Location Fetched", description: "Address fields updated." })
+          }
+        } catch (error) {
+          console.error("Error reverse geocoding:", error)
+          toast({ title: "Error", description: "Could not fetch address details." })
+        } finally {
+          setIsFetchingLocation(false)
+        }
+      },
+      (error) => {
+        console.error("Geolocation error:", error)
+        toast({ title: "Error", description: "Permission denied or location unavailable." })
+        setIsFetchingLocation(false)
+      }
+    )
+  }
+
   // Full form for normal users
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      <button 
+        type="button" 
+        onClick={fetchLocation}
+        disabled={isFetchingLocation}
+        className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg border-2 border-brand text-brand hover:bg-brand/5 transition-colors text-sm font-bold"
+      >
+        <span className="text-lg">📍</span> {isFetchingLocation ? 'Fetching Location...' : 'Use Current Location'}
+      </button>
+
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         <div>
           <input 
@@ -222,8 +277,7 @@ export default function AddressForm({ action, initial, onCancel }: { action: (a:
               
               // Auto-fill city/state when 6 digits entered
               if (pincode.length === 6) {
-                // Import and use pincode lookup
-                import('@/lib/pincode-data').then(({ getPincodeServiceability }) => {
+                try {
                   const result = getPincodeServiceability(pincode)
                   
                   if (result.serviceable && result.data) {
@@ -247,7 +301,9 @@ export default function AddressForm({ action, initial, onCancel }: { action: (a:
                       description: "Please check the pincode or contact support"
                     })
                   }
-                })
+                } catch (err) {
+                  console.error('Pincode lookup error:', err);
+                }
               }
             }}
           />

@@ -18,7 +18,7 @@ export default function AdminLayout({
   useEffect(() => {
     setMounted(true)
     const checkAuth = () => {
-      const adminAuth = localStorage.getItem('adminAuth')
+      const adminAuth = sessionStorage.getItem('adminAuth')
       setIsAuthenticated(adminAuth === 'true')
     }
     checkAuth()

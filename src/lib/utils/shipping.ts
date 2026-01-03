@@ -1,19 +1,8 @@
 import type { ShippingRate } from '../types'
+import { calculateDeliveryCharge, getDeliveryChargeBreakdown } from '../calculateDeliveryCharge'
 
-// Shipping rates based on weight (in grams)
-export const SHIPPING_RATES: ShippingRate[] = [
-  { minWeight: 0, maxWeight: 500, rate: 40 },
-  { minWeight: 501, maxWeight: 1000, rate: 70 },
-  { minWeight: 1001, maxWeight: 2000, rate: 90 },
-  { minWeight: 2001, maxWeight: 3000, rate: 100 },
-  { minWeight: 3001, maxWeight: 4000, rate: 120 },
-  { minWeight: 4001, maxWeight: 5000, rate: 140 },
-  { minWeight: 5001, maxWeight: 10000, rate: 200 },
-  { minWeight: 10001, maxWeight: Infinity, rate: 250 } // For very heavy items
-]
-
-// COD charge
-export const COD_CHARGE = 25
+// COD charge - now ₹0 since delivery charges include payment method
+export const COD_CHARGE = 0
 
 // Default weights for products without weight specified (in grams)
 export const DEFAULT_WEIGHTS: Record<string, number> = {
@@ -228,7 +217,7 @@ export const DEFAULT_WEIGHTS: Record<string, number> = {
   'default': 100
 }
 
-// Packaging weight (in grams) - reduced for lighter items
+// Packaging weight (in grams)
 export const PACKAGING_WEIGHT = 30
 
 /**
@@ -244,35 +233,35 @@ export function estimateProductWeight(productName: string, category?: string): n
     }
   }
   
-  // Check category-based weights with more accurate estimates
+  // Check category-based weights
   if (category) {
     const cat = category.toLowerCase()
     if (cat.includes('electronic') || cat.includes('mobile') || cat.includes('tech')) {
-      return 150 // Reduced from 200
+      return 150
     }
     if (cat.includes('fashion') || cat.includes('clothing') || cat.includes('apparel')) {
-      return 150 // Reduced from 180
+      return 150
     }
     if (cat.includes('home') || cat.includes('kitchen')) {
-      return 250 // Reduced from 300
+      return 250
     }
     if (cat.includes('beauty') || cat.includes('personal') || cat.includes('cosmetic')) {
-      return 100 // Reduced from 120
+      return 100
     }
     if (cat.includes('book') || cat.includes('stationery')) {
-      return 120 // Reduced from 150
+      return 120
     }
     if (cat.includes('sports') || cat.includes('fitness')) {
-      return 300 // Reduced from 400
+      return 300
     }
     if (cat.includes('toy') || cat.includes('game')) {
-      return 100 // Reduced from 200 - toys are generally light
+      return 100
     }
     if (cat.includes('accessory') || cat.includes('accessories')) {
-      return 60 // Reduced from 80
+      return 60
     }
     if (cat.includes('jewelry') || cat.includes('jewellery')) {
-      return 30 // Reduced from 50
+      return 30
     }
   }
   
@@ -280,14 +269,11 @@ export function estimateProductWeight(productName: string, category?: string): n
 }
 
 /**
- * Calculate shipping cost based on total weight
+ * Calculate shipping cost based on total weight and payment method
+ * New system: ₹80 (COD) / ₹55 (Prepaid) for first 500g, then ₹40 per 500g
  */
-export function calculateShippingCost(totalWeightInGrams: number): number {
-  const rate = SHIPPING_RATES.find(
-    rate => totalWeightInGrams >= rate.minWeight && totalWeightInGrams <= rate.maxWeight
-  )
-  
-  return rate ? rate.rate : SHIPPING_RATES[SHIPPING_RATES.length - 1].rate
+export function calculateShippingCost(totalWeightInGrams: number, paymentMethod: 'COD' | 'PREPAID' = 'PREPAID'): number {
+  return calculateDeliveryCharge(totalWeightInGrams, paymentMethod)
 }
 
 /**
@@ -301,17 +287,22 @@ export function calculateTotalWeight(items: Array<{ id: string; qty: number; wei
 }
 
 /**
- * Get shipping details including weight breakdown
+ * Get shipping details including weight breakdown and delivery charges
  */
-export function getShippingDetails(items: Array<{ id: string; qty: number; weight?: number; name: string; category?: string }>) {
+export function getShippingDetails(
+  items: Array<{ id: string; qty: number; weight?: number; name: string; category?: string }>,
+  paymentMethod: 'COD' | 'PREPAID' = 'PREPAID'
+) {
   const totalWeight = calculateTotalWeight(items)
-  const shippingCost = calculateShippingCost(totalWeight)
+  const shippingCost = calculateShippingCost(totalWeight, paymentMethod)
+  const breakdown = getDeliveryChargeBreakdown(totalWeight, paymentMethod)
   
   return {
     totalWeight,
     totalWeightKg: (totalWeight / 1000).toFixed(2),
     shippingCost,
     packagingWeight: PACKAGING_WEIGHT,
+    deliveryBreakdown: breakdown,
     breakdown: items.map(item => ({
       id: item.id,
       name: item.name,

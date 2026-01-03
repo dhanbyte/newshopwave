@@ -5,24 +5,29 @@ import type { ElementType } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Head from 'next/head'
 import Link from 'next/link'
-import Gallery from '@/components/Gallery'
-import PriceTag from '@/components/PriceTag'
-import RatingStars from '@/components/RatingStars'
-import QtyCounter from '@/components/QtyCounter'
-import { useCart } from '@/lib/cartStore'
-import WishlistButton from '@/components/WishlistButton'
-import { ChevronLeft, Share2, ShieldCheck, RotateCw, BellRing, Check, Truck } from 'lucide-react'
+import Gallery from '../../../components/Gallery'
+import PriceTag from '../../../components/PriceTag'
+import RatingStars from '../../../components/RatingStars'
+import QtyCounter from '../../../components/QtyCounter'
+import { useCart } from '../../../lib/cartStore'
+import WishlistButton from '../../../components/WishlistButton'
+import { ChevronLeft, Share2, ShieldCheck, RotateCw, BellRing, Check, Truck, Package } from 'lucide-react'
 
-import ProductReviews from '@/components/ProductReviews'
-import RelatedProducts from '@/components/RelatedProducts'
-import { useToast } from '@/hooks/use-toast'
-import { Button } from '@/components/ui/button'
-import { useRequireAuth } from '@/hooks/use-require-auth'
-import { useProductStore } from '@/lib/productStore'
-import type { Product } from '@/lib/types'
-import LoadingSpinner from '@/components/LoadingSpinner'
-import { useNotificationStore } from '@/lib/notificationStore'
-import CustomNameInput from '@/components/CustomNameInput'
+import ProductReviews from '../../../components/ProductReviews'
+import RelatedProducts from '../../../components/RelatedProducts'
+import { useToast } from '../../../hooks/use-toast'
+import { Button } from '../../../components/ui/button'
+import { useRequireAuth } from '../../../hooks/use-require-auth'
+import { useProductStore } from '../../../lib/productStore'
+import type { Product } from '../../../lib/types'
+import LoadingSpinner from '../../../components/LoadingSpinner'
+import { useNotificationStore } from '../../../lib/notificationStore'
+import CustomNameInput from '../../../components/CustomNameInput'
+import DeliveryEstimate from '../../../components/DeliveryEstimate'
+import StockUrgency from '../../../components/StockUrgency'
+import TrustBadges from '../../../components/TrustBadges'
+import AIProductDetails from '../../../components/AIProductDetails'
+import PackingQuality from '../../../components/PackingQuality'
 
 type ProductWithLegacyFields = Product & {
   _id?: string
@@ -156,7 +161,13 @@ function ProductDetailContent() {
     )
   }
 
-  const price = p.price?.discounted ?? p.price_discounted ?? p.price?.original ?? p.price_original ?? p.price ?? 0
+  const getPrice = (product: Product) => {
+    if (typeof product.price === 'object' && product.price !== null) {
+      return product.price.discounted || product.price.original || 0;
+    }
+    return typeof product.price === 'number' ? product.price : (product.price_discounted || product.price_original || 0);
+  }
+  const price = getPrice(p);
   const images = [p.image, ...(p.extraImages||[])]
   const related = products.filter(x => {
     if (x.id === p.id) return false;
@@ -168,13 +179,6 @@ function ProductDetailContent() {
   }).slice(0, 8);
 
   const handleAddToCart = () => {
-    if (!requireAuth('add items to cart')) {
-      return;
-    }
-    if (!user?.id) {
-      return;
-    }
-    
     // Check if custom name is required but not provided
     if (p.isCustomizable && !customName.trim()) {
       toast({ 
@@ -196,7 +200,8 @@ function ProductDetailContent() {
       ...(p.isCustomizable && customName.trim() && { customName: customName.trim() })
     };
     
-    add(user.id, cartItem);
+    // Pass user.id if logged in, otherwise undefined/null for guest
+    add(user?.id, cartItem);
     const displayName = p.isCustomizable && customName.trim() 
       ? `${p.name} (Custom: "${customName.trim()}")`
       : p.name;
@@ -204,13 +209,6 @@ function ProductDetailContent() {
   }
 
   const handleBuyNow = () => {
-    if (!requireAuth('proceed to checkout')) {
-      return;
-    }
-    if (!user?.id) {
-      return;
-    }
-    
     // Check if custom name is required but not provided
     if (p.isCustomizable && !customName.trim()) {
       toast({ 
@@ -232,7 +230,8 @@ function ProductDetailContent() {
       ...(p.isCustomizable && customName.trim() && { customName: customName.trim() })
     };
     
-    add(user.id, cartItem);
+    // Pass user.id if logged in, otherwise undefined/null for guest
+    add(user?.id, cartItem);
     router.push('/checkout');
   }
 
@@ -383,28 +382,6 @@ function ProductDetailContent() {
     return baseKeywords;
   };
 
-  const TrustBadges = () => (
-    <div className="grid grid-cols-3 gap-2 md:gap-4 mt-6 py-4 border-t border-b border-gray-100">
-      <div className="flex flex-col items-center text-center">
-        <div className="p-2 bg-green-50 rounded-full mb-2">
-          <ShieldCheck className="w-5 h-5 text-green-600" />
-        </div>
-        <span className="text-xs font-medium text-gray-600">Secure Payment</span>
-      </div>
-      <div className="flex flex-col items-center text-center">
-        <div className="p-2 bg-blue-50 rounded-full mb-2">
-          <RotateCw className="w-5 h-5 text-blue-600" />
-        </div>
-        <span className="text-xs font-medium text-gray-600">Easy Returns</span>
-      </div>
-      <div className="flex flex-col items-center text-center">
-        <div className="p-2 bg-purple-50 rounded-full mb-2">
-          <Truck className="w-5 h-5 text-purple-600" />
-        </div>
-        <span className="text-xs font-medium text-gray-600">Free Delivery</span>
-      </div>
-    </div>
-  )
 
   return (
     <>
@@ -600,10 +577,13 @@ function ProductDetailContent() {
             
             {/* Stock info for dropshippers */}
             {user?.is_dropshipper && (
-              <div className="mt-3 mb-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="mt-3 mb-2 p-4 bg-brand/5 border border-brand/20 rounded-2xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-blue-900">Available Stock:</span>
-                  <span className={`text-lg font-bold ${
+                  <div className="flex items-center gap-2">
+                    <Package className="w-5 h-5 text-brand" />
+                    <span className="text-sm font-bold text-gray-900">Inventory Status</span>
+                  </div>
+                  <span className={`text-lg font-black ${
                     (p.quantity || p.stock || 0) > 10 
                       ? 'text-green-600' 
                       : (p.quantity || p.stock || 0) > 0 
@@ -613,9 +593,31 @@ function ProductDetailContent() {
                     {p.quantity || p.stock || 0} units
                   </span>
                 </div>
-                {(p.quantity || p.stock || 0) <= 10 && (p.quantity || p.stock || 0) > 0 && (
-                  <p className="text-xs text-orange-600 mt-1">⚠️ Low stock - Order soon!</p>
-                )}
+                
+                <div className="flex flex-col gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full bg-white border-brand/20 text-brand hover:bg-brand/5 font-bold gap-2"
+                    onClick={() => {
+                      // Logic to download images/videos
+                      const link = document.createElement('a');
+                      link.href = p.image;
+                      link.download = `${p.name}-marketing-asset.jpg`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      toast({ title: "Asset Download Started", description: "High-quality product image is being downloaded." });
+                    }}
+                  >
+                    🚀 Download Marketing Assets (HD)
+                  </Button>
+                  {(p.quantity || p.stock || 0) <= 10 && (p.quantity || p.stock || 0) > 0 && (
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-orange-600 bg-orange-50 p-2 rounded-lg border border-orange-100 uppercase tracking-tighter animate-pulse">
+                      ⚠️ Warning: Critical Low Stock - Order Immediately
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -627,7 +629,14 @@ function ProductDetailContent() {
                </div>
             )}
             
-            <div className="mt-3"><PriceTag original={p.price?.original ?? p.price_original ?? p.originalPrice} discounted={p.price?.discounted ?? p.price_discounted ?? p.price} /></div>
+            <div className="mt-3"><PriceTag original={typeof p.price === 'object' ? p.price?.original : (p.price_original ?? p.price)} discounted={price} /></div>
+            
+            {!user?.is_dropshipper && (
+              <div className="mt-4 space-y-3">
+                <DeliveryEstimate />
+                <StockUrgency stock={p.quantity || p.stock || 0} />
+              </div>
+            )}
             
             {p.shortDescription && <div className="mt-4 text-sm text-gray-700">
               <p>{p.shortDescription}</p>
@@ -646,15 +655,25 @@ function ProductDetailContent() {
             
             <ActionButtons />
             
-            <TrustBadges />
-
-          <div className="mt-8 space-y-6">
-            {p.description && 
-              <div>
-                <h3 className="text-sm font-semibold mb-1">Description</h3>
-                <p className="text-sm text-gray-700">{p.description}</p>
+            {!user?.is_dropshipper && (
+              <div className="mt-6">
+                <TrustBadges />
               </div>
-            }
+            )}
+            
+            <div className="mt-6">
+              <PackingQuality />
+            </div>
+
+            <div className="mt-8 space-y-6">
+              <AIProductDetails category={p.category} subcategory={p.subcategory} />
+              
+              {p.description && 
+                <div>
+                  <h3 className="text-sm font-semibold mb-1">Description</h3>
+                  <p className="text-sm text-gray-700">{p.description}</p>
+                </div>
+              }
 
             {p.features && p.features.length > 0 && (
               <div>

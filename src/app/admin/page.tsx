@@ -2,6 +2,9 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
+import dynamic from 'next/dynamic';
+
+const ProductCampaignManager = dynamic(() => import('../../components/admin/ProductCampaignManager'), { ssr: false });
 
 interface DashboardStats {
   totalProducts: number
@@ -42,6 +45,7 @@ const quickLinks = [
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
     void fetchStats()
@@ -71,6 +75,10 @@ export default function AdminDashboard() {
         totalCustomers: customersData.customers?.length ?? 0,
         totalRevenue
       })
+
+      // Store fetched products
+      setProducts(productsData.products as any[] || []);
+      
     } catch (error) {
       if (error instanceof Error) {
         console.error('Error fetching stats:', error.message)
@@ -123,6 +131,11 @@ export default function AdminDashboard() {
           ))}
         </div>
       )}
+
+      {/* WhatsApp Campaign Manager */}
+      <div className="mb-8">
+        <ProductCampaignManager products={products} />
+      </div>
 
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>

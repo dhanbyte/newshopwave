@@ -493,6 +493,72 @@ export default function ProductsPage() {
     }
   }
 
+  const exportToExcel = (type: 'all' | 'active' | 'pending') => {
+    let dataToExport = products;
+    if (type === 'active') {
+      dataToExport = products.filter(p => p.status === 'active' || p.status === 'approved');
+    } else if (type === 'pending') {
+      dataToExport = products.filter(p => !p.status || p.status === 'pending');
+    }
+
+    if (dataToExport.length === 0) {
+      alert(`No ${type} products found to export.`);
+      return;
+    }
+
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const excelData = dataToExport.map(p => {
+      const mainImageUrl = p.imageUrl?.startsWith('http') ? p.imageUrl : (p.imageUrl ? `${baseUrl}${p.imageUrl}` : '');
+      const galleryUrls = (p.images || []).map(img => img?.startsWith('http') ? img : `${baseUrl}${img}`).join('; ');
+      
+      return {
+        'Product ID': p.id,
+        'Name': p.name,
+        'Category': p.category,
+        'Subcategory': p.subcategory || '',
+        'Brand': p.brand || '',
+        'Price': p.price,
+        'Original Price': p.originalPrice || '',
+        'Stock': p.stock,
+        'Status': p.status || 'pending',
+        'Type': p.isVendorProduct ? 'Vendor' : 'Regular',
+        'Vendor ID': p.vendorId || '',
+        'Main Image URL': mainImageUrl,
+        'Gallery Images': galleryUrls,
+        'Weight (g)': p.weight || '',
+        'Description': p.description || ''
+      };
+    })
+
+    // Convert to CSV format
+    const headers = Object.keys(excelData[0])
+    const csvContent = [
+      headers.join(','),
+      ...excelData.map(row => 
+        headers.map(header => {
+          const value = row[header as keyof typeof row]
+          // Escape commas, quotes and newlines in values
+          if (value === null || value === undefined) return '';
+          const stringValue = String(value);
+          return (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n'))
+            ? `"${stringValue.replace(/"/g, '""').replace(/\n/g, ' ')}"` 
+            : stringValue
+        }).join(',')
+      )
+    ].join('\n')
+
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `${type}_products_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -504,32 +570,29 @@ export default function ProductsPage() {
           >
             🔄 Refresh
           </button>
-          <button 
-            onClick={populateProducts}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-          >
-            Populate Products
-          </button>
-          <button 
-            onClick={approveAllProducts}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            Approve All
-          </button>
-          <button 
-            onClick={deleteAllVendorProducts}
-            disabled={loading}
-            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 disabled:opacity-50"
-          >
-            Delete Vendor Products
-          </button>
-          <button 
-            onClick={deleteAllProducts}
-            disabled={loading}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
-          >
-            Delete All Products
-          </button>
+          <div className="flex gap-1">
+            <button 
+              onClick={() => exportToExcel('all')}
+              className="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 text-xs font-bold"
+              title="Download All Products"
+            >
+              📥 All CSV
+            </button>
+            <button 
+              onClick={() => exportToExcel('active')}
+              className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-xs font-bold"
+              title="Download Active Products"
+            >
+              ✅ Active CSV
+            </button>
+            <button 
+              onClick={() => exportToExcel('pending')}
+              className="bg-yellow-600 text-white px-3 py-2 rounded-lg hover:bg-yellow-700 text-xs font-bold text-gray-900"
+              title="Download Pending Products"
+            >
+              ⏳ Pending CSV
+            </button>
+          </div>
           <Link href="/admin/add-product">
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
               + Add Product
@@ -1138,11 +1201,19 @@ function normalizeProduct(product: RawProduct, isVendorProduct: boolean): AdminP
     crypto.randomUUID()
   )
 
-  const images = Array.isArray(product.images) ? product.images : []
-  const imageUrl = images[0] ?? product.image ?? '/images/placeholder.jpg'
+  const raw: any = product;
+  const images = Array.isArray(raw.images) ? raw.images : 
+                 (typeof raw.images === 'string' ? [raw.images] : []);
+  
+  const imageUrl = images[0] || 
+                   raw.image || 
+                   raw.image_url || 
+                   raw.imageUrl || 
+                   raw.thumbnail ||
+                   '/images/placeholder.jpg';
 
-  const price = resolvePrice(product.price)
-  const stock = resolveStock(product.stock, product.quantity)
+  const price = resolvePrice(product.price);
+  const stock = resolveStock(product.stock, product.quantity);
 
   return {
     id,
@@ -1161,7 +1232,7 @@ function normalizeProduct(product: RawProduct, isVendorProduct: boolean): AdminP
     width: (product as any).width,
     height: (product as any).height,
     description: (product as any).description,
-    status: product.status,
+    status: product.status || 'pending',
     isVendorProduct
   }
 }

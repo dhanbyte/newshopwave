@@ -4,20 +4,26 @@ import type { Product } from './types'
 
 export const liveSearch = (q: string, products: Product[]) => {
   if (!q.trim()) return []
-  // Filter out Ayurvedic products from search
+  // Filter out Ayurvedic products from search and products without images
   const filteredProducts = products.filter(p => 
     p.category !== 'Ayurvedic' && 
     p.subcategory !== 'Ayurvedic' &&
-    !p.name?.toLowerCase().includes('ayurvedic')
+    !p.name?.toLowerCase().includes('ayurvedic') &&
+    p.category !== 'Customizable' && 
+    p.isCustomizable !== true &&
+    p.image && p.image.trim() !== ''
   )
   const fuse = new Fuse(filteredProducts, { keys: ['name','brand','category','tags'], includeScore: true, threshold: 0.6 })
   return fuse.search(q).slice(0, 8).map(r => r.item)
 }
 
 export const filterProducts = (products: Product[], opts: { q?: string; category?: string; subcategory?:string; tertiaryCategory?:string; min?: number; max?: number; brand?: string; rating?: number; sort?: 'new'|'priceAsc'|'priceDesc'|'popular' }) => {
-  // Remove duplicates based on product ID first
+  // Remove duplicates based on product ID and filter out products without images
   const uniqueProducts = products.filter((product, index, self) => 
-    index === self.findIndex(p => p.id === product.id)
+    index === self.findIndex(p => p.id === product.id) && 
+    product.category !== 'Customizable' &&
+    product.isCustomizable !== true &&
+    product.image && product.image.trim() !== ''
   );
   
   let list = [...uniqueProducts]
@@ -64,13 +70,6 @@ export const filterProducts = (products: Product[], opts: { q?: string; category
         p.subcategory === 'Gifts' ||
         p.subcategory === 'Diwali Special'
       );
-    } else if (decodedCategory === 'Customizable') {
-      // Handle Customizable products - include all customizable products
-      list = list.filter(p => 
-        p.category === 'Customizable' ||
-        p.isCustomizable === true
-      );
-    } else {
       list = list.filter(p => p.category === decodedCategory);
     }
   }
@@ -110,7 +109,10 @@ export const filterProducts = (products: Product[], opts: { q?: string; category
     case 'priceDesc': list.sort((a,b) => (b.price?.discounted ?? b.price_discounted ?? b.price?.original ?? b.price_original ?? 0) - (a.price?.discounted ?? a.price_discounted ?? a.price?.original ?? a.price_original ?? 0)); break
     case 'popular': list.sort((a,b) => (b.ratings?.count ?? 0) - (a.ratings?.count ?? 0)); break;
     // case 'new': list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); break;
-    default: break
+    default: 
+      // Default sort to price low to high as per user request
+      list.sort((a,b) => (a.price?.discounted ?? a.price_discounted ?? a.price?.original ?? a.price_original ?? 0) - (b.price?.discounted ?? b.price_discounted ?? b.price?.original ?? b.price_original ?? 0));
+      break
   }
   
   // Re-apply stock sorting to preserve it after other sorts
@@ -118,6 +120,15 @@ export const filterProducts = (products: Product[], opts: { q?: string; category
     const aInStock = (a.quantity > 0 || a.stock > 0) ? 1 : 0;
     const bInStock = (b.quantity > 0 || b.stock > 0) ? 1 : 0;
     return bInStock - aInStock;
+  });
+
+  // Always push out-of-stock products to the end
+  list.sort((a, b) => {
+    const aStock = a.quantity || a.stock || 0;
+    const bStock = b.quantity || b.stock || 0;
+    if (aStock > 0 && bStock === 0) return -1;
+    if (aStock === 0 && bStock > 0) return 1;
+    return 0;
   });
 
   return list

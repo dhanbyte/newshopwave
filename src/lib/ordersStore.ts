@@ -12,7 +12,7 @@ type OrdersState = {
   isLoading: boolean
   hasNewOrder: boolean
   init: (userId: string | null) => () => void
-  placeOrder: (userId: string, items: CartItem[], address: Address, total: number, payment: PaymentMethod, orderId?: string) => Promise<Order>
+  placeOrder: (userId: string, items: CartItem[], address: Address, total: number, payment: PaymentMethod, orderId?: string, dropshipperInfo?: { sellingPrice: number, orderType: 'prepaid' | 'cod', confirmation: 'direct' | 'call', note?: string }) => Promise<Order>
   updateOrderStatus: (orderId: string, status: Order['status']) => Promise<void>
   clearNewOrderStatus: (userId: string) => Promise<void>
   clear: () => void
@@ -72,7 +72,7 @@ export const useOrders = create<OrdersState>()((set, get) => ({
         return () => {}; // Return an empty unsubscribe function
     }
   },
-  placeOrder: async (userId, items, address, total, payment, orderId) => {
+  placeOrder: async (userId, items, address, total, payment, orderId, dropshipperInfo) => {
     const docRef = getOrderDocRef(userId);
     const { clearCartFromDB } = useCart.getState();
 
@@ -93,6 +93,13 @@ export const useOrders = create<OrdersState>()((set, get) => ({
       address,
       payment,
       status: 'Pending',
+      ...(dropshipperInfo && {
+        isDropshipperOrder: true,
+        dropshipperSellingPrice: dropshipperInfo.sellingPrice,
+        dropshipperOrderType: dropshipperInfo.orderType,
+        confirmationType: dropshipperInfo.confirmation,
+        orderNote: dropshipperInfo.note
+      })
     }
     const state = get();
     const currentOrders = state.orders;

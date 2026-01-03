@@ -1,64 +1,24 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import RootContent from './RootContent';
 import { ClerkProvider } from '@clerk/nextjs';
-import { ClerkAuthProvider } from '@/context/ClerkAuthContext';
+import { ClerkAuthProvider } from '../context/ClerkAuthContext';
 import { FaWhatsapp } from 'react-icons/fa';
 import Link from 'next/link';
 import { Analytics } from '@vercel/analytics/next';
-import SimpleGoogleAuth from '@/components/SimpleGoogleAuth';
+import SimpleGoogleAuth from '../components/SimpleGoogleAuth';
 import Script from 'next/script';
+import PushNotificationManager from '../components/PushNotificationManager';
+const WhatsAppAutomationData = dynamic(() => import('../components/WhatsAppAutomationData'), { 
+  ssr: false,
+  loading: () => null 
+});
 
-
-export const metadata: Metadata = {
-  title: 'ShopWave - India\'s #1 Dropshipping Platform | Start Your Online Business | Wholesale Prices',
-  description: 'ShopWave - India\'s leading dropshipping platform! Start your online business with 50-70% wholesale discounts. No inventory needed. Free product videos, Meta ads support, profit sharing. Join 10,000+ dropshippers earning daily. Best dropshipping site in India 2024.',
-  keywords: 'dropshipping India, dropshipping business India, start dropshipping India, best dropshipping platform India, dropshipping website India, wholesale dropshipping, dropshipping suppliers India, online business India, ecommerce dropshipping, dropshipping products India, dropshipping without investment, dropshipping training India, dropshipping course India, how to start dropshipping, dropshipping for beginners, dropshipping profit, dropshipping wholesale prices, Indian dropshipping, dropshipping marketplace India, reselling business India, online selling India, work from home India, business opportunity India, ShopWave dropshipping, shopwave India, online shopping India, cheapest prices, free delivery, tech accessories, home products, ayurvedic products, best deals India, discount shopping, mobile accessories, kitchen items, buy online India, ecommerce India, shopping website India, best price India, fast delivery shopping',
-  authors: [{ name: 'ShopWave' }],
-  creator: 'ShopWave',
-  publisher: 'ShopWave',
-  applicationName: 'ShopWave - Dropshipping Platform',
-  generator: 'ShopWave',
-  robots: 'index, follow',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_IN',
-    url: 'https://www.shopwave.social/',
-    title: 'ShopWave - India\'s #1 Dropshipping Platform | Start Your Business Today',
-    description: 'Join India\'s leading dropshipping platform! Get 50-70% wholesale discounts, free product videos, Meta ads support. No inventory needed. Start earning from home. 10,000+ active dropshippers.',
-    siteName: 'ShopWave Dropshipping',
-    images: [{
-      url: 'https://www.shopwave.social/logo.png',
-      width: 1200,
-      height: 630,
-      alt: 'ShopWave - Dropshipping Platform India',
-    }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'ShopWave - India\'s #1 Dropshipping Platform | Wholesale Prices | Start Business',
-    description: 'Start your dropshipping business in India! 50-70% discounts, free videos, Meta ads support. No inventory. Join 10,000+ dropshippers earning daily.',
-    creator: '@shopwave',
-    site: '@shopwave',
-  },
-
-};
-
-const WhatsAppButton = () => {
-  const whatsappUrl = `https://wa.me/919157499884?text=${encodeURIComponent("Hello! I have a question about your products.")}`;
-  return (
-    <Link href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="fixed bottom-10 right-5 py-10 z-50" aria-label="Contact us on WhatsApp">
-       <div className="bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 transition-transform hover:scale-110">
-         <FaWhatsapp size={24} aria-hidden="true" />
-       </div>
-    </Link>
-  );
-};
+const PhoneCollectionModal = dynamic(() => import('../components/PhoneCollectionModal'), {
+  ssr: false,
+  loading: () => null
+});
 
 
 export default function RootLayout({
@@ -156,10 +116,10 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "ShopWave Dropshipping",
-              "alternateName": ["ShopWave India", "Shop Wave", "Shop Wave India", "ShopWave Dropshipping Platform"],
+              "name": "ShopWave India",
+              "alternateName": ["ShopWave", "Shop Wave", "Shop Wave India", "ShopWave Online Shopping"],
               "url": "https://www.shopwave.social",
-              "description": "India's #1 dropshipping platform - Start your online business with wholesale prices, free product videos, Meta ads support. No inventory needed.",
+              "description": "ShopWave - India's favorite online shopping destination. Discover latest gadgets, home essentials, fashion and more at unbelievable prices.",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": "https://www.shopwave.social/search?q={search_term_string}",
@@ -175,13 +135,13 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "ShopWave",
-              "legalName": "ShopWave Dropshipping Platform",
+              "legalName": "ShopWave Online Shopping India",
               "brand": "ShopWave",
               "url": "https://www.shopwave.social",
               "logo": "https://www.shopwave.social/logo.png",
               "image": "https://www.shopwave.social/logo.png",
-              "description": "ShopWave - India's #1 dropshipping platform. Start your online business with 50-70% wholesale discounts, free product videos, Meta ads support, and profit sharing. Join 10,000+ successful dropshippers.",
-              "slogan": "India's #1 Dropshipping Platform - Start Your Business Today",
+              "description": "ShopWave - India's #1 online shopping platform. Explore a wide range of products with 50-70% discounts. Join millions of happy shoppers.",
+              "slogan": "ShopWave - Quality Products, Unbeatable Prices",
               "foundingDate": "2024",
               "priceRange": "₹",
               "hasOfferCatalog": true,
@@ -189,8 +149,8 @@ export default function RootLayout({
                 "@type": "Offer",
                 "itemOffered": {
                   "@type": "Service",
-                  "name": "Dropshipping Business Platform",
-                  "description": "Complete dropshipping solution with wholesale prices, product videos, Meta ads support"
+                  "name": "Online Retail Shopping",
+                  "description": "Wide range of electronics, home decor, and fashion items at wholesale prices"
                 }
               },
               "address": {
@@ -303,7 +263,8 @@ export default function RootLayout({
           <ClerkAuthProvider>
             <RootContent>{children}</RootContent>
             <SimpleGoogleAuth />
-            <WhatsAppButton />
+            <WhatsAppAutomationData />
+            <PhoneCollectionModal />
             {process.env.NODE_ENV === 'development' && (
               <div className="fixed bottom-4 left-4 bg-black text-white p-2 rounded text-xs z-50">
                 <div>🔧 Debug Mode</div>
@@ -311,6 +272,8 @@ export default function RootLayout({
             )}
           </ClerkAuthProvider>
         </ClerkProvider>
+        
+        <PushNotificationManager />
         <Analytics />
       </body>
     </html>

@@ -10,9 +10,9 @@ export default function AdminLoginPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if already authenticated
+    // Check if already authenticated in this session
     if (typeof window !== 'undefined') {
-      const auth = localStorage.getItem('adminAuth')
+      const auth = sessionStorage.getItem('adminAuth')
       if (auth === 'true') {
         router.push('/admin')
       }
@@ -27,7 +27,8 @@ export default function AdminLoginPage() {
     if (password === '7433') {
       try {
         if (typeof window !== 'undefined') {
-          localStorage.setItem('adminAuth', 'true')
+          // Use sessionStorage instead of localStorage - clears when browser closes
+          sessionStorage.setItem('adminAuth', 'true')
         }
         router.push('/admin')
       } catch (error) {

@@ -8,7 +8,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "DeoDap",
     category: "New Arrivals",
     subcategory: "LED Lights",
-    price: { original: 1999, discounted: 699, currency: "₹" },
+    price: { original: 2099, discounted: 734, currency: "₹" },
     quantity: 50,
     image: "https://Shopwave.b-cdn.net/NEW%20ARIVALS/GalaxyProjector-04.webp",
     extraImages: [
@@ -52,7 +52,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "DeoDap",
     category: "New Arrivals",
     subcategory: "LED Lights",
-    price: { original: 675, discounted: 249, currency: "₹" },
+    price: { original: 709, discounted: 261, currency: "₹" },
     quantity: 100,
     image:
       "https://Shopwave.b-cdn.net/NEW%20ARIVALS/3_12e4cc87-a760-425d-badf-365f48f8677d.webp",
@@ -94,7 +94,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "12 Pcs 3D Colorful Butterfly Wall Stickers Set – Removable PVC Decorative Wall Decals for Home, Bedroom, Living Room, Office & Party Decoration",
     shortDescription:
       "3D butterfly wall stickers with realistic design, removable and reusable for home decoration.",
-    price: { original: 349, discounted: 159, currency: "₹" },
+    price: { original: 366, discounted: 167, currency: "₹" },
     image:
       "https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/WhatsAppImage2025-08-26at10.42.57_83dbfe1f.webp",
     extraImages: [
@@ -124,7 +124,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "LED Candle lamp, Table Lamp Portable Plastic Lamps for Restaurant, Outdoor, Office, Lamp, Show-piece Festival New Year Diwali Gift Decoration Home Decor Party",
     shortDescription:
       "Portable LED candle lamp with premium quality material for elegant decoration.",
-    price: { original: 299, discounted: 135, currency: "₹" },
+    price: { original: 314, discounted: 142, currency: "₹" },
     image:
       "https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/02_6d35b019-089f-4949-9571-7a7bd595fccd.webp",
     extraImages: [
@@ -152,7 +152,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "LED Table Lamp Mini Projection Lamp for Night Light, Gifting, Birthday, Home, Indoor, Outdoor Decoration Decorative Smokeless Flameless Acrylic Candles Lights",
     shortDescription:
       "Safe LED table lamp with soft light, battery operated and flameless design.",
-    price: { original: 248, discounted: 149, currency: "₹" },
+    price: { original: 260, discounted: 156, currency: "₹" },
     image:
       "https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/03_5bc9af83-2508-437a-92eb-ef5e8ea553fe.webp",
     extraImages: [
@@ -180,7 +180,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "8 Meter Multi-Color LED Decorative String Fairy Lights | Waterproof Festival Lighting for Home, Diwali, Christmas, Wedding, Party & Outdoor Decoration",
     shortDescription:
       "8-meter waterproof LED string lights with vibrant multi-color illumination.",
-    price: { original: 299, discounted: 146, currency: "₹" },
+    price: { original: 314, discounted: 153, currency: "₹" },
     image:
       "https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/04_light_59099232-79e1-4dec-805f-42dc9208c96b.webp",
     extraImages: [
@@ -209,7 +209,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "8 Meter Crystal Flower LED Decorative String Light – Multi-Color Festive Fairy Lights for Diwali, Christmas, Weddings, Parties, Balcony & Home Decoration",
     shortDescription:
       "Elegant crystal flower LED lights with sparkling glow and flower-shaped covers.",
-    price: { original: 399, discounted: 195, currency: "₹" },
+    price: { original: 419, discounted: 205, currency: "₹" },
     image:
       "https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/83_52961c49-6b23-442a-a5db-e8a6cd3597c3.webp",
     extraImages: [
@@ -237,7 +237,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "8 Meter Warm LED Decorative String Light – Festive Fairy Lights for Diwali, Christmas, Weddings, Parties, Balcony & Home Decoration",
     shortDescription:
       "Cozy warm LED string light creating elegant and sophisticated ambiance.",
-    price: { original: 299, discounted: 169, currency: "₹" },
+    price: { original: 314, discounted: 177, currency: "₹" },
     image:
       "https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/electronics%20itams%20part%202/WhatsAppImage2025-08-23at12.06.45PM.webp",
     extraImages: [
@@ -266,7 +266,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Adjustable Dashboard Car Mobile Holder with Strong Suction Cup – 360° Rotating Windshield Mount Stand for Smartphones",
     shortDescription:
       "Drive safely and stay hands-free with this secure smartphone mounting solution.",
-    price: { original: 399, discounted: 199, currency: "₹" },
+    price: { original: 419, discounted: 209, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/01_15d3c786-e22a-4818-8a49-d1c8c6662719.webp",
     extraImages: [
@@ -296,7 +296,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "360 Degree Car Mobile phones in car holder, special car navigation hook type fixing for horizontal and vertical inclined air outlet clips",
     shortDescription:
       "Gravity design car phone holder with 360° adjustable rotating bracket.",
-    price: { original: 284, discounted: 181, currency: "₹" },
+    price: { original: 298, discounted: 190, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/01_ee558b9b-d0d6-4392-8499-a7e411102cba.webp",
     extraImages: [
@@ -326,7 +326,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Ball Design Car Push Start Button Rocker / Cover Push Start Button Cover Durable Easy-Install Car Starter Button Universal Fit",
     shortDescription:
       "Upgrade your driving pleasure with this unique ball joystick design car start button cover.",
-    price: { original: 299, discounted: 164, currency: "₹" },
+    price: { original: 314, discounted: 172, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/01_d35d7975-e2fd-49d8-8d87-7c9ec56e8393.webp",
     extraImages: [
@@ -357,7 +357,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Mini Bag Sealer, 2 in 1 Seal & Cutter Heat Sealers, TYPE-C USB Charging Portable Bag Reseller, Handle Food Sealer",
     shortDescription:
       "2 in 1 bag sealer and cutter with USB charging for keeping food fresh.",
-    price: { original: 399, discounted: 189, currency: "₹" },
+    price: { original: 419, discounted: 198, currency: "₹" },
     image: "https://Shopwave.b-cdn.net/new%20arival/17865..1.webp",
     extraImages: [
       "https://Shopwave.b-cdn.net/new%20arival/17865_2in1_sealer_n_cutter_machine.webp",
@@ -385,7 +385,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "2 in 1 Car Vacuum Cleaner 120W High-Power Handheld Wireless Vacuum Cleaner Home Car Dual-use Portable USB Rechargeable",
     shortDescription:
       "Lightweight portable vacuum cleaner for home and car with USB charging.",
-    price: { original: 999, discounted: 388, currency: "₹" },
+    price: { original: 1049, discounted: 407, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/4ce6bdd6-4139-4645-8183-d71554df6b88_38f14c77-c503-46cd-be19-4ae0e0c88eb0.webp",
     extraImages: [
@@ -415,7 +415,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Mini Mixer, Small Blender, powerful Mini Grinder, Electric Coffee Bean Grinder Machine Portable Grinder for Home and Office",
     shortDescription:
       "4-blade mini grinder for coffee beans, spices, and grains.",
-    price: { original: 1299, discounted: 597, currency: "₹" },
+    price: { original: 1364, discounted: 627, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/03_9d16605e-1734-43ff-bd06-46645c77ea65.webp",
     extraImages: [
@@ -445,7 +445,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Multifunctional Cleaning Claw Pipe Cleaner 60 cm Drainage Block Remover Drain Spring Pipe Dredging Tool",
     shortDescription:
       "60 cm metal wire brush for cleaning sink drains and removing blockages.",
-    price: { original: 149, discounted: 84, currency: "₹" },
+    price: { original: 156, discounted: 88, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/609b820c1ce70f90287cc903-large_1_c7125055-2828-46c0-b762-d19bfcdf24ea.webp",
     extraImages: [
@@ -476,7 +476,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "EMS Foot Massager, Electric Feet Massager, Deep Kneading Circulation Foot Booster for Feet and Legs Muscle Stimulator",
     shortDescription:
       "Electric EMS foot massager with 8 modes and 19 gears for muscle stimulation.",
-    price: { original: 499, discounted: 215, currency: "₹" },
+    price: { original: 524, discounted: 226, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/01_c87acdae-de5c-49b0-80e0-5e1af7ed7fa5.webp",
     extraImages: [
@@ -507,7 +507,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "4 in 1 Fast Charging Cable With Multiport USB-C to Type C, USB-C to Lightning Adapter Cable Fast Charging Nylon Braided",
     shortDescription:
       "65W fast charging cable with 4 different ports for universal device compatibility.",
-    price: { original: 299, discounted: 165, currency: "₹" },
+    price: { original: 314, discounted: 173, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/02_71c68310-5be0-4fac-97e3-de92ea6df361.webp",
     extraImages: [
@@ -539,7 +539,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Type C data cable Fast Charging, Data Transfer Cable, Cable For All C Type Mobile Use",
     shortDescription:
       "97 cm Type-C cable supporting fast charging and data transfer.",
-    price: { original: 299, discounted: 175, currency: "₹" },
+    price: { original: 314, discounted: 184, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/2_d00b5d20-b111-449d-a311-ad6f67589ff6.webp",
     extraImages: [
@@ -569,7 +569,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "The 80W Power Adapter compatible 80W WARP, Fast Charge and regular charging speed of other devices",
     shortDescription:
       "80W super fast charger with cable for quick charging of all devices.",
-    price: { original: 999, discounted: 497, currency: "₹" },
+    price: { original: 1049, discounted: 522, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/03_0b72e2ab-d046-4749-8deb-f294a6368dfb.webp",
     extraImages: [
@@ -597,7 +597,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
   //   brand: "Phonixio",
   //   description: "Bluetooth Headphones, Wireless Bluetooth 5.3 In-Ear with Microphones, 200mAh Battery, Transparent LED Display",
   //   shortDescription: "Wireless earbuds with Bluetooth 5.3, ENC noise cancelling, and LED display.",
-  //   price: { original: 599, discounted: 230, currency: "₹" },
+  //   price: { original: 629, discounted: 242, currency: "₹" },
   //   image: "",
   //   extraImages: [
   //     "",
@@ -621,7 +621,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Cute Jumping Rabbit Ear Plush Winter Earmuffs – Soft & Warm Ear Protection with Movable Bunny Ears",
     shortDescription:
       "Interactive bunny ear earmuffs with movable ears and plush material.",
-    price: { original: 399, discounted: 169, currency: "₹" },
+    price: { original: 419, discounted: 177, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/plush-bunny-earmuff-01_a433ea93-cf88-4c4d-a3f2-0e255a07ea90.webp",
     extraImages: [
@@ -651,7 +651,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Wall-Hanging Shelves Pantry Organizer Box Plastic 3 Layer Wall-Mounted Food Organizer Rack Kitchen Fruit Vegetable Storage",
     shortDescription:
       "3-layer wall-mounted organizer for food, fruits, and vegetables.",
-    price: { original: 599, discounted: 371, currency: "₹" },
+    price: { original: 629, discounted: 390, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/07_24b9ce72-1c0c-4c5b-bf59-99fefbaa0619.webp",
     extraImages: [
@@ -682,7 +682,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "3D Crystal Ball lamps for Bedroom 3D Lamps for Home Decoration 3D Crystal Ball Night Light Gifts for Women Gifts for Men",
     shortDescription:
       "3D crystal ball lamp with Radha Krishna design for spiritual decoration.",
-    price: { original: 399, discounted: 136, currency: "₹" },
+    price: { original: 419, discounted: 143, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/Crystal-Ball-Lamp-01_0069f489-bb55-4c74-b7d9-744a6a42123a.webp",
     extraImages: [
@@ -712,7 +712,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "3D Crystal Ball lamps for Bedroom 3D Lamps for Home Decoration 3D Crystal Ball Night Light Gifts for Women Gifts for Men",
     shortDescription:
       "3D crystal ball lamp with Ganpati design for spiritual decoration.",
-    price: { original: 399, discounted: 136, currency: "₹" },
+    price: { original: 419, discounted: 143, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/Crystal-Ball-Lamp-03_7b9c5da7-e695-4ee6-aeae-4ac590929bcf.webp",
     extraImages: [
@@ -742,7 +742,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Set of 2 Decorative LED Candle Lights with Holographic Finish – Battery Operated Flickering Candle Holders",
     shortDescription:
       "Holographic finish LED candle lights with realistic flickering effect.",
-    price: { original: 299, discounted: 154, currency: "₹" },
+    price: { original: 314, discounted: 162, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/light-02_b62dc98d-6bf7-4be9-bdea-1fdbd2032307.webp ",
     extraImages: [
@@ -773,7 +773,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
   //     "Crystal Design LED Tealight Candles Set of 6 – Flameless Decorative Lights for Home, Festive Decoration",
   //   shortDescription:
   //     "Set of 6 crystal design LED tealight candles for elegant decoration.",
-  //   price: { original: 699, discounted: 335, currency: "₹" },
+  //   price: { original: 734, discounted: 352, currency: "₹" },
   //   image:
   //     "https://Shopwave.b-cdn.net/new%20arival/Led-lamp-01_1176ee84-3194-4b80-9abb-24ec3ea02497.webp",
   //   extraImages: [
@@ -803,7 +803,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Decorative Lotus Shaped LED Candle Light – Flameless Festive Diya Lamp for Home, Mandir & Celebration",
     shortDescription:
       "Lotus shaped LED candle light for spiritual and festive decoration.",
-    price: { original: 199, discounted: 135, currency: "₹" },
+    price: { original: 209, discounted: 142, currency: "₹" },
     image: "https://Shopwave.b-cdn.net/new%20arival/LEDCandle-WOSKU-001.webp",
     extraImages: [
       "https://Shopwave.b-cdn.net/new%20arival/LEDCandle-05.webp",
@@ -832,7 +832,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "12 Pcs LED Ball Shaped Decorative Light with Mesh Cover - Warm White Light",
     shortDescription:
       "Set of 12 LED ball shaped decorative lights with mesh covers.",
-    price: { original: 499, discounted: 278, currency: "₹" },
+    price: { original: 524, discounted: 292, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/Light-01_637acaf3-55b0-42a8-983a-5368166e2203.webp",
     extraImages: [
@@ -862,7 +862,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Premium LED Flameless Candle Lights with Decorative Mesh Lamp Shade – Warm White Flickering Battery-Operated",
     shortDescription:
       "Premium LED flameless candles with mesh lamp shades for elegant lighting.",
-    price: { original: 399, discounted: 134, currency: "₹" },
+    price: { original: 419, discounted: 141, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/01_00d29645-97af-43f1-8bf6-9cf6e749244f.webp",
     extraImages: [
@@ -892,7 +892,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "LED Angel Decorative Lights – 4 Pc Multicolor Changing Battery Operated Figurine Lamps",
     shortDescription:
       "Angel shaped LED decorative lights with multicolor changing feature.",
-    price: { original: 499, discounted: 286, currency: "₹" },
+    price: { original: 524, discounted: 300, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/new%20arival/Angle-led-lamp-03_a44e8cf5-4337-444e-ad31-095e1d6a2611.webp",
     extraImages: [
@@ -922,7 +922,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Premium Crystal Table Lamp with Elegant Shade and USB Charging – Decorative LED Lamp for Bedroom, Living Room",
     shortDescription:
       "Elegant crystal table lamp with USB charging and premium design.",
-    price: { original: 499, discounted: 385, currency: "₹" },
+    price: { original: 524, discounted: 404, currency: "₹" },
     image: "https://Shopwave.b-cdn.net/new%20arival/Crystal-Table-Lamp-03.webp",
     extraImages: [
       "https://Shopwave.b-cdn.net/new%20arival/Crystal-Table-Lamp-08.webp",
@@ -951,7 +951,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Luxury Tall Cylinder Shape Crystal Table Lamp with USB Charging – Modern LED Decorative Bedside, Study & Desk Lamp",
     shortDescription:
       "Tall cylinder shape crystal table lamp with modern design and USB charging.",
-    price: { original: 599, discounted: 378, currency: "₹" },
+    price: { original: 629, discounted: 397, currency: "₹" },
     image: "https://Shopwave.b-cdn.net/new%20arival/CrystalLamp3-WOSKU-01.webp",
     extraImages: [
       "https://Shopwave.b-cdn.net/new%20arival/CrystalLamp3-03.webp",
@@ -983,7 +983,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Alanid Perfume is a sophisticated blend of floral and woody notes. A fragrance crafted for those who enjoy timeless elegance with a modern touch. Long-lasting freshness that complements every occasion.",
     shortDescription:
       "Elegant floral-woody perfume with long-lasting fragrance.",
-    price: { original: 899, discounted: 259, currency: "₹" },
+    price: { original: 944, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2019.57.16_23e43854.jpg",
     extraImages: [
@@ -1009,7 +1009,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Candy Crush Perfume brings a playful sweetness inspired by fruity candies and soft musk. Perfect for youthful, energetic personalities who like a bit of sparkle in their scent.",
     shortDescription: "Sweet and fruity perfume with a playful vibe.",
-    price: { original: 799, discounted: 259, currency: "₹" },
+    price: { original: 839, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2020.00.22_069a2578.jpg",
     extraImages: [],
@@ -1032,7 +1032,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Ocean Breeze Perfume captures the refreshing spirit of the sea with notes of marine breeze, citrus, and light amber. A clean, energizing scent perfect for summer days.",
     shortDescription: "Refreshing oceanic fragrance with a cool finish.",
-    price: { original: 999, discounted: 259, currency: "₹" },
+    price: { original: 1049, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2020.00.22_3c33ca0c.jpg",
     extraImages: [
@@ -1060,7 +1060,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Musk Zara Perfume delivers an earthy and luxurious fragrance made with the richness of white musk and amber. A classy unisex scent with soft depth and long endurance.",
     shortDescription: "Rich musk-based perfume with elegant tones.",
-    price: { original: 1099, discounted: 259, currency: "₹" },
+    price: { original: 1154, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2020.00.22_d02ad15d.jpg",
     extraImages: [],
@@ -1083,7 +1083,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Oud Khalifa Perfume is a luxurious oriental scent combining oud, saffron, and amber. Deep, bold, and royal — made for those who prefer rich, long-lasting fragrances.",
     shortDescription: "Luxurious oud perfume with oriental depth.",
-    price: { original: 1299, discounted: 259, currency: "₹" },
+    price: { original: 1364, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2020.00.23_00487e52.jpg",
     extraImages: [
@@ -1110,7 +1110,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Aqua Cool Perfume offers a breezy freshness of sea air mixed with light citrus tones. Designed for daily wear with a refreshing, aquatic appeal.",
     shortDescription: "Fresh aquatic perfume for men and women.",
-    price: { original: 799, discounted: 259, currency: "₹" },
+    price: { original: 839, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2020.00.23_041a9569.jpg",
     extraImages: [
@@ -1137,7 +1137,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Blue Wave Perfume features an energetic burst of marine and citrus accords with a subtle woody base. Clean, modern, and stylish — ideal for confident personalities.",
     shortDescription: "Citrus-marine perfume with a fresh, stylish finish.",
-    price: { original: 899, discounted: 259, currency: "₹" },
+    price: { original: 944, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2020.00.23_cb0186c4.jpg",
     extraImages: [
@@ -1162,7 +1162,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Velvet Touch Perfume delivers smooth floral notes balanced with creamy vanilla and soft musk. A cozy and elegant fragrance that leaves a gentle trace wherever you go.",
     shortDescription: "Soft floral-vanilla perfume for everyday elegance.",
-    price: { original: 999, discounted: 259, currency: "₹" },
+    price: { original: 1049, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2020.00.24_1be8be02.jpg",
     extraImages: [
@@ -1189,7 +1189,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Al-Fajar Perfume brings a unique mix of oriental woods and aromatic spices. A warm and confident scent designed for modern sophistication.",
     shortDescription: "Oriental spicy perfume with deep, elegant tones.",
-    price: { original: 1099, discounted: 259, currency: "₹" },
+    price: { original: 1154, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-13%20at%2020.00.24_6797db58.jpg",
     extraImages: [
@@ -1214,7 +1214,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     description:
       "Swiss Noir Perfume is a dark, mysterious fragrance combining bergamot, leather, and tonka bean. Perfect for those who like bold sophistication and lasting appeal.",
     shortDescription: "Rich leather-based perfume with a modern twist.",
-    price: { original: 1199, discounted: 259, currency: "₹" },
+    price: { original: 1259, discounted: 272, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/perfumes/WhatsApp%20Image%202025-10-14%20at%2015.35.25_23b2bba0.jpg",
     extraImages: [
@@ -1242,7 +1242,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "LED Romantic Arch Frame Showpiece – Adorable Couple Kissing Statue with Illuminated Backdrop",
     shortDescription:
       "Romantic couple figurine with LED arch frame for anniversary and wedding decor.",
-    price: { original: 702, discounted: 259, currency: "₹" },
+    price: { original: 737, discounted: 272, currency: "₹" },
     image: "https://Shopwave.b-cdn.net/new%20arival/5OjF2HgZwV.webp",
     extraImages: [
       "https://Shopwave.b-cdn.net/new%20arival/dYvldeuRoi.webp",
@@ -1270,7 +1270,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "Romantic Couple Figurine Showpiece with LED Heart Balloon – Proposal Scene Love Lamp",
     shortDescription:
       "Proposal scene couple figurine with LED heart balloon for romantic occasions.",
-    price: { original: 699, discounted: 244, currency: "₹" },
+    price: { original: 734, discounted: 256, currency: "₹" },
     image: "https://Shopwave.b-cdn.net/new%20arival/7zpnQfC5ON.webp",
     extraImages: ["https://Shopwave.b-cdn.net/new%20arival/Pt6rhJQKLS.webp"],
     category: "New Arrivals",
@@ -1293,7 +1293,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Tidy Table",
     category: "New Arrivals",
     subcategory: "Kitchen & Dining",
-    price: { original: 499, discounted: 285 },
+    price: { original: 524, discounted: 299 },
     image:
       "https://deodap.in/cdn/shop/files/04_8f9a1961-6be1-4f4e-b24c-ed52a16a0b27.jpg?v=1737618473&width=493",
     extraImages: [
@@ -1319,7 +1319,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Tidy Table",
     category: "New Arrivals",
     subcategory: "Kitchen & Dining",
-    price: { original: 999, discounted: 574 },
+    price: { original: 1049, discounted: 603 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/e11a97f2-158b-480e-b0a4-4ecfd5959df7.webp",
     extraImages: [
@@ -1342,7 +1342,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "GlimmerHome",
     category: "New Arrivals",
     subcategory: "Home & Garden",
-    price: { original: 199, discounted: 75 },
+    price: { original: 209, discounted: 79 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/2_818d4a23-80d9-4bb1-8fd4-4cb2a3d01d7e.webp",
     extraImages: [
@@ -1364,7 +1364,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "DeoDap",
     category: "New Arrivals",
     subcategory: "Kitchen & Dining",
-    price: { original: 799, discounted: 375 },
+    price: { original: 839, discounted: 394 },
     image:
       "https://deodap.in/cdn/shop/products/04_39a68410-7b5c-444e-a796-34627ff85120.jpg?v=1737635519&width=493",
     extraImages: [
@@ -1389,7 +1389,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "FreshNest Solutions",
     category: "New Arrivals",
     subcategory: "Kitchen & Dining",
-    price: { original: 999, discounted: 665 },
+    price: { original: 1049, discounted: 698 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/04_b34cb7e9-dcd4-4c3d-bdcc-2fe7cac86bf6.webp",
     extraImages: [
@@ -1411,7 +1411,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Ganesh",
     category: "New Arrivals",
     subcategory: "Kitchen & Dining",
-    price: { original: 999, discounted: 545 },
+    price: { original: 1049, discounted: 572 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/02_9373c21e-4ec6-4002-b87c-9506b5a8c92d.webp",
     extraImages: [
@@ -1433,7 +1433,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Ganesh",
     category: "New Arrivals",
     subcategory: "Kitchen & Dining",
-    price: { original: 899, discounted: 479 },
+    price: { original: 944, discounted: 503 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/02_630abe0e-afde-49c1-8134-2c2f5d00f47e.webp",
     extraImages: [
@@ -1456,7 +1456,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Supermom",
     category: "New Arrivals",
     subcategory: "Kitchen & Dining",
-    price: { original: 899, discounted: 369 },
+    price: { original: 944, discounted: 387 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/Healthy-Juicer-01.webp",
     extraImages: [
@@ -1479,7 +1479,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "DeoDap",
     category: "New Arrivals",
     subcategory: "Home Decor",
-    price: { original: 199, discounted: 79 },
+    price: { original: 209, discounted: 83 },
     image:
       "https://deodap.in/cdn/shop/files/01_b1a07986-4ddb-4e3e-9197-a7221ebd4e6c.jpg?v=1754126169&width=493",
     extraImages: [
@@ -1505,7 +1505,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Chef's Embrace",
     category: "New Arrivals",
     subcategory: "Kitchen & Dining",
-    price: { original: 826, discounted: 326 },
+    price: { original: 867, discounted: 342 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/0133_usb_juicer_6blade.webp",
     extraImages: [
@@ -1527,7 +1527,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Indo Glow",
     category: "New Arrivals",
     subcategory: "Home Decor",
-    price: { original: 399, discounted: 220 },
+    price: { original: 419, discounted: 231 },
     image:
       "https://deodap.in/cdn/shop/files/01_babdfc06-aa75-4c2e-9173-4b082c4b5a92.jpg?v=1737620989&width=493",
     extraImages: [
@@ -1553,7 +1553,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Giftoiza",
     category: "New Arrivals",
     subcategory: "Home Decor",
-    price: { original: 599, discounted: 349 },
+    price: { original: 629, discounted: 366 },
     image:
       "https://deodap.in/cdn/shop/files/01_e1d0493e-40e4-49b4-9f7f-7b101fac965d.jpg?v=1756964647&width=493",
     extraImages: [
@@ -1578,7 +1578,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "DeoDap",
     category: "New Arrivals",
     subcategory: "Home Decor",
-    price: { original: 399, discounted: 275 },
+    price: { original: 419, discounted: 289 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/sku_b6c9efa4-0626-431f-9da6-3ab63d1ad3b7.webp",
     extraImages: [
@@ -1600,7 +1600,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "DeoDap",
     category: "New Arrivals",
     subcategory: "Home Decor",
-    price: { original: 399, discounted: 235 },
+    price: { original: 419, discounted: 247 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/456_e739133f-eb6d-4dd0-8be0-1223c17336f5.webp",
     extraImages: [
@@ -1623,7 +1623,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Siplix",
     category: "New Arrivals",
     subcategory: "Home Decor",
-    price: { original: 399, discounted: 229 },
+    price: { original: 419, discounted: 240 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/0759.webp",
     extraImages: [
@@ -1646,7 +1646,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Styleva",
     category: "New Arrivals",
     subcategory: "Home Decor",
-    price: { original: 299, discounted: 155 },
+    price: { original: 314, discounted: 163 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/02_422704ce-a965-4947-bf72-04dc6e8fb865.webp",
     extraImages: [
@@ -1669,7 +1669,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
     brand: "Compshop",
     category: "New Arrivals",
     subcategory: "Electronics",
-    price: { original: 599, discounted: 322 },
+    price: { original: 629, discounted: 338 },
     image:
       "https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/sku_8085c215-2773-474f-b73c-aff40e4e45d8.webp",
     extraImages: [
@@ -1694,7 +1694,7 @@ export const NEWARRIVALS_PRODUCTS: Product[] = [
       "COOL AND ROMANTIC :- Flameless LED Tea Lights are ideal for decorations, It can be used as mood lights night lights with votive holders or other holders like glass cups. You can put the battery tealight on table or other places in restaurants, home and garden wedding, party, festival decorations. EASY TO USE :- On/Off switch for easy & convenient operation. The electronic tea light comes with batteries which have 100+ hours of light-time and can be replaced easily via the tab at the bottom. SAFE For KIDS, PETS, SENIORS :- These LED tea lights can be used without having to worry of flame, absolutely no fire hazards or burning risks, safe for families with pets or young children. SAFE & NO FIRE RISK, NO HASSLE & NO MESS :- The candle can be used in bedrooms, lounges, dens, bathrooms, etc. Can be used for Mother's Day gifts. Absolutely no mess; no dripping wax, no smoke, no matches. CREATE AMBIENCE :-The warm red flameless LED tea light candles flicker and provide the effect of an actual candle, perfect for decorating weddings, parties, gardens, patios, decks, restaurants, lanterns, kids projects, centerpieces etc.",
     shortDescription:
       "Red LED flameless tealights with flickering effect - safe for kids and pets (24 pieces)",
-    price: { original: 999, discounted: 499, currency: "₹" },
+    price: { original: 1049, discounted: 524, currency: "₹" },
     image:
       "https://Shopwave.b-cdn.net/NEW%20ARIVALS/5_fd9a71e9-b878-46e9-ba8c-b48b1c3ca98b.webp",
       extraImages: [

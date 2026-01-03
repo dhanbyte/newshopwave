@@ -5,22 +5,21 @@ import { useMemo, Suspense, useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link';
 import Image from 'next/image';
-import { filterProducts } from '@/lib/search'
-import Filters from '@/components/Filters'
-import SortBar from '@/components/SortBar'
-import ProductCard from '@/components/ProductCard'
-import CategoryPills from '@/components/CategoryPills'
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { filterProducts } from '../../lib/search'
+import Filters from '../../components/Filters'
+import SortBar from '../../components/SortBar'
+import ProductCard from '../../components/ProductCard'
+import CategoryPills from '../../components/CategoryPills'
+import { Button } from '../../components/ui/button'
+import { Sheet, SheetContent, SheetTrigger } from '../../components/ui/sheet'
 import { Filter, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import CategoryGrid from '@/components/CategoryGrid';
-import { cn } from '@/lib/utils';
-import { useProductStore } from '@/lib/productStore';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import { FASHION_PRODUCTS } from '@/lib/data/fashion';
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import OfferCard from '@/components/OfferCard';
+import CategoryGrid from '../../components/CategoryGrid';
+import { cn } from '../../lib/utils';
+import { useProductStore } from '../../lib/productStore';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { Carousel, CarouselContent, CarouselItem } from '../../components/ui/carousel';
+import OfferCard from '../../components/OfferCard';
 
 type CategorySummary = {
   name: string
@@ -223,8 +222,7 @@ function SearchContent() {
   
   const list = useMemo(() => {
     try {
-      // Combine API products with Fashion products
-      const allProducts = [...products, ...FASHION_PRODUCTS.filter(p => p.quantity > 0)];
+      const allProducts = products.filter(p => p.quantity > 0);
       return filterProducts(allProducts, opts);
     } catch (err) {
       console.error('Error filtering products:', err);
@@ -240,7 +238,7 @@ function SearchContent() {
       // Get unique products by creating a Map with id as key
       const uniqueProductsMap = new Map();
       products.forEach(p => {
-        if (p && p.id && p.quantity > 0 && !uniqueProductsMap.has(p.id)) {
+        if (p && p.id && p.image && p.image.trim() !== '' && p.quantity > 0 && !uniqueProductsMap.has(p.id)) {
           uniqueProductsMap.set(p.id, p);
         }
       });
@@ -267,27 +265,27 @@ function SearchContent() {
   }, [products]);
   
   const mobileAccessories = useMemo(() => {
-    return products.filter(p => p.quantity > 0 && (p.name.toLowerCase().includes('mobile') || p.name.toLowerCase().includes('phone') || p.name.toLowerCase().includes('stand'))).slice(0, 8);
+    return products.filter(p => p.image && p.image.trim() !== '' && p.quantity > 0 && (p.name.toLowerCase().includes('mobile') || p.name.toLowerCase().includes('phone') || p.name.toLowerCase().includes('stand'))).slice(0, 8);
   }, [products]);
   
   const fansAndCooling = useMemo(() => {
-    return products.filter(p => p.quantity > 0 && (p.name.toLowerCase().includes('fan') || p.name.toLowerCase().includes('cooling') || p.name.toLowerCase().includes('cooler'))).slice(0, 8);
+    return products.filter(p => p.image && p.image.trim() !== '' && p.quantity > 0 && (p.name.toLowerCase().includes('fan') || p.name.toLowerCase().includes('cooling') || p.name.toLowerCase().includes('cooler'))).slice(0, 8);
   }, [products]);
   
   const audioProducts = useMemo(() => {
-    return products.filter(p => p.quantity > 0 && (p.name.toLowerCase().includes('headphone') || p.name.toLowerCase().includes('audio') || p.name.toLowerCase().includes('speaker'))).slice(0, 8);
+    return products.filter(p => p.image && p.image.trim() !== '' && p.quantity > 0 && (p.name.toLowerCase().includes('headphone') || p.name.toLowerCase().includes('audio') || p.name.toLowerCase().includes('speaker'))).slice(0, 8);
   }, [products]);
   
   const lightingProducts = useMemo(() => {
-    return products.filter(p => p.quantity > 0 && (p.name.toLowerCase().includes('light') || p.name.toLowerCase().includes('led') || p.name.toLowerCase().includes('bulb'))).slice(0, 8);
+    return products.filter(p => p.image && p.image.trim() !== '' && p.quantity > 0 && (p.name.toLowerCase().includes('light') || p.name.toLowerCase().includes('led') || p.name.toLowerCase().includes('bulb'))).slice(0, 8);
   }, [products]);
   
   const computerAccessories = useMemo(() => {
-    return products.filter(p => p.quantity > 0 && (p.name.toLowerCase().includes('mouse') || p.name.toLowerCase().includes('computer') || p.name.toLowerCase().includes('laptop'))).slice(0, 8);
+    return products.filter(p => p.image && p.image.trim() !== '' && p.quantity > 0 && (p.name.toLowerCase().includes('mouse') || p.name.toLowerCase().includes('computer') || p.name.toLowerCase().includes('laptop'))).slice(0, 8);
   }, [products]);
   
   const powerAndCables = useMemo(() => {
-    return products.filter(p => p.quantity > 0 && (p.name.toLowerCase().includes('cable') || p.name.toLowerCase().includes('adapter') || p.name.toLowerCase().includes('charger') || p.name.toLowerCase().includes('usb'))).slice(0, 8);
+    return products.filter(p => p.image && p.image.trim() !== '' && p.quantity > 0 && (p.name.toLowerCase().includes('cable') || p.name.toLowerCase().includes('adapter') || p.name.toLowerCase().includes('charger') || p.name.toLowerCase().includes('usb'))).slice(0, 8);
   }, [products]);
   
   const allCategoryLinks = [
@@ -454,10 +452,10 @@ function SearchContent() {
                       className="w-full"
                     >
                       <CarouselContent className="-ml-1 sm:-ml-2 md:-ml-4">
-                        <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="T-Shirts" products={FASHION_PRODUCTS.filter(p => p.subcategory === 'T-Shirts').slice(0, 6)} href="/search?category=Fashion&subcategory=T-Shirts"/></CarouselItem>
-                        <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Jeans" products={FASHION_PRODUCTS.filter(p => p.subcategory === 'Jeans').slice(0, 6)} href="/search?category=Fashion&subcategory=Jeans"/></CarouselItem>
-                        <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Dresses" products={FASHION_PRODUCTS.filter(p => p.subcategory === 'Dresses').slice(0, 6)} href="/search?category=Fashion&subcategory=Dresses"/></CarouselItem>
-                        <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Shoes" products={FASHION_PRODUCTS.filter(p => p.subcategory === 'Shoes').slice(0, 6)} href="/search?category=Fashion&subcategory=Shoes"/></CarouselItem>
+                        <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="T-Shirts" products={products.filter(p => p.category === 'Fashion' && p.subcategory === 'T-Shirts').slice(0, 6)} href="/search?category=Fashion&subcategory=T-Shirts"/></CarouselItem>
+                        <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Jeans" products={products.filter(p => p.category === 'Fashion' && p.subcategory === 'Jeans').slice(0, 6)} href="/search?category=Fashion&subcategory=Jeans"/></CarouselItem>
+                        <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Dresses" products={products.filter(p => p.category === 'Fashion' && p.subcategory === 'Dresses').slice(0, 6)} href="/search?category=Fashion&subcategory=Dresses"/></CarouselItem>
+                        <CarouselItem className="pl-1 sm:pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4"><OfferCard title="Shoes" products={products.filter(p => p.category === 'Fashion' && p.subcategory === 'Shoes').slice(0, 6)} href="/search?category=Fashion&subcategory=Shoes"/></CarouselItem>
                       </CarouselContent>
                     </Carousel>
                   </section>
@@ -1635,77 +1633,42 @@ function SearchContent() {
                 ))}
               </div>
             ) : (
-              <div className="space-y-8">
-                <div className="text-center py-10 rounded-xl border bg-white">
-                    <p className="text-gray-600">No products found in this category.</p>
-                    <p className="text-sm text-gray-500">But here are some related products you might like:</p>
+              <div className="space-y-12">
+                <div className="text-center py-16 px-4 rounded-3xl border-2 border-dashed border-gray-100 bg-gray-50/50">
+                    <div className="text-6xl mb-4">🔍</div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Oops! No matches found</h3>
+                    <p className="text-gray-500 max-w-sm mx-auto mb-6">We couldn't find any products matching your search. Try different keywords or browse our popular categories below.</p>
+                    <Button asChild variant="default" className="rounded-full px-8">
+                      <Link href="/search">Browse All Products</Link>
+                    </Button>
                 </div>
                 
-                {/* Show related products when category is empty */}
+                {/* Recommendations Section */}
                 {(() => {
-                  let relatedProducts = [];
-                  
-                  // If searching in Tech category, show all tech products
-                  if (opts.category === 'Tech') {
-                    relatedProducts = products.filter(p => p.category === 'Tech' && p.quantity > 0).slice(0, 12);
-                  }
-                  // If searching in Home category, show home products
-                  else if (opts.category === 'Home') {
-                    relatedProducts = products.filter(p => p.category === 'Home' && p.quantity > 0).slice(0, 12);
-                  }
-                  // If searching in New Arrivals category, show new arrivals products
-                  else if (opts.category === 'New Arrivals') {
-                    relatedProducts = products.filter(p => {
-                      if (!p || !p.quantity || p.quantity <= 0) return false;
-                      
-                      return (p.category === 'New Arrivals' || 
-                       p.subcategory === 'Diwali Special' ||
-                       p.subcategory === 'Best Selling' ||
-                       p.subcategory === 'Gifts' ||
-                       p.category === 'Customizable' ||
-                       p.subcategory === 'Pooja Essentials' ||
-                       p.subcategory === 'LED Lights' ||
-                       p.subcategory === 'Fragrance');
-                    }).slice(0, 12);
-                  }
-                  // If searching in Customizable category, show customizable products
-                  else if (opts.category === 'Customizable') {
-                    relatedProducts = products.filter(p => p.category === 'Customizable' && p.quantity > 0).slice(0, 12);
-                  }
-                  // If searching in Pooja category, show pooja products including dhoop and agarbatti from Home category
-                  else if (opts.category === 'Pooja') {
-                    relatedProducts = products.filter(p => 
-                      (p.category === 'Pooja' || 
-                       (p.category === 'Home' && p.subcategory === 'Puja-Essentials')) && p.quantity > 0
-                    ).slice(0, 12);
-                  }
-                  // If searching in Fashion category, show fashion products
-                  else if (opts.category === 'Fashion') {
-                    relatedProducts = [...products.filter(p => p.category === 'Fashion' && p.quantity > 0), ...FASHION_PRODUCTS.filter(p => p.quantity > 0)].slice(0, 12);
-                  }
-                  // If searching in Food & Drinks category
-                  else if (opts.category === 'Food & Drinks') {
-                    relatedProducts = products.filter(p => p.category === 'Food & Drinks' && p.quantity > 0).slice(0, 12);
-                  }
-                  // If searching in Pooja category
-                  else if (opts.category === 'Pooja') {
-                    relatedProducts = products.filter(p => p.category === 'Pooja' && p.quantity > 0).slice(0, 12);
-                  }
-                  // Default: show popular products from all categories
-                  else {
-                    relatedProducts = products.filter(p => p.quantity > 0 && p.price.discounted).slice(0, 12);
+                  let recommendedProducts = [];
+                  if (opts.category) {
+                    recommendedProducts = products.filter(p => p.category === opts.category && p.quantity > 0).slice(0, 10);
                   }
                   
-                  if (relatedProducts.length === 0) {
-                    relatedProducts = products.filter(p => p.quantity > 0).slice(0, 12);
+                  if (recommendedProducts.length === 0) {
+                    recommendedProducts = products.filter(p => p.quantity > 0 && p.ratings?.average && p.ratings.average >= 4).slice(0, 10);
+                  }
+
+                  if (recommendedProducts.length === 0) {
+                    recommendedProducts = products.filter(p => p.quantity > 0).slice(0, 10);
                   }
                   
-                  return relatedProducts.length > 0 ? (
-                    <div>
-                      <h3 className="text-xl font-bold mb-4 text-center">Related Products</h3>
+                  return recommendedProducts.length > 0 ? (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                          <span className="p-1.5 bg-brand/10 rounded-lg text-brand">✨</span>
+                          Recommended For You
+                        </h3>
+                      </div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {relatedProducts.map(p => (
-                          <ProductCard key={p.id} p={p} />
+                        {recommendedProducts.map(p => (
+                          <ProductCard key={`rec-${p.id}`} p={p} />
                         ))}
                       </div>
                     </div>

@@ -2,18 +2,22 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import TopBar from '@/components/TopBar';
-import BottomNav from '@/components/BottomNav';
-import Footer from '@/components/Footer';
-import { Toaster } from '@/components/ui/toast';
+import TopBar from '../components/TopBar';
+import BottomNav from '../components/BottomNav';
+import Footer from '../components/Footer';
+import { Toaster } from '../components/ui/toast';
 
-import BackInStockPopup from '@/components/BackInStockPopup';
-import WelcomePopup from '@/components/WelcomePopup';
-import { useProductStore } from '@/lib/productStore';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import LoadingFallback from '@/components/LoadingFallback';
-import ErrorBoundary from '@/components/ErrorBoundary';
-import DropshipperDebug from '@/components/DropshipperDebug';
+import BackInStockPopup from '../components/BackInStockPopup';
+import WelcomePopup from '../components/WelcomePopup';
+import { useProductStore } from '../lib/productStore';
+import LoadingSpinner from '../components/LoadingSpinner';
+import LoadingFallback from '../components/LoadingFallback';
+import ErrorBoundary from '../components/ErrorBoundary';
+import DropshipperDebug from '../components/DropshipperDebug';
+import WhatsAppButton from '../components/WhatsAppButton';
+import SocialProof from '../components/SocialProof';
+
+const ErrorBoundaryAny = ErrorBoundary as any;
 
 export default function RootContent({
   children,
@@ -43,14 +47,14 @@ export default function RootContent({
 
   if (isAdminRoute) {
     return (
-      <ErrorBoundary as any>
+      <ErrorBoundary>
         {children}
       </ErrorBoundary>
     );
   }
 
   return (
-    <ErrorBoundary as any>
+    <ErrorBoundary>
       <RootContentInner>{children}</RootContentInner>
     </ErrorBoundary>
   );
@@ -87,38 +91,40 @@ function RootContentInner({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        <ErrorBoundary as any>
+        <ErrorBoundaryAny>
           <TopBar />
-        </ErrorBoundary>
+        </ErrorBoundaryAny>
         
         <main className="container py-4 pb-24 md:pb-8 flex-grow">
-          <ErrorBoundary as any>
+          <ErrorBoundaryAny>
             {children}
-          </ErrorBoundary>
+          </ErrorBoundaryAny>
         </main>
         
         {(!isHomePage || !isLoading) && (
-          <ErrorBoundary as any>
+          <ErrorBoundaryAny>
             <Footer />
-          </ErrorBoundary>
+          </ErrorBoundaryAny>
         )}
       </div>
       
-      <ErrorBoundary as any>
+      <ErrorBoundaryAny>
         <BottomNav />
-      </ErrorBoundary>
+      </ErrorBoundaryAny>
 
-      <ErrorBoundary as any>
+      <ErrorBoundaryAny>
         <BackInStockPopup />
-      </ErrorBoundary>
+      </ErrorBoundaryAny>
       
-      <ErrorBoundary as any>
+      <ErrorBoundaryAny>
         <WelcomePopup />
-      </ErrorBoundary>
+      </ErrorBoundaryAny>
       
       {process.env.NODE_ENV === 'development' && <DropshipperDebug />}
       
       <Toaster />
+      <WhatsAppButton />
+      <SocialProof />
     </>
   );
 }

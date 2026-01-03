@@ -7,30 +7,74 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function PUT(req: NextRequest) {
   try {
-    const { orderId, trackingId } = await req.json();
+    const { 
+      orderId, 
+      trackingId, 
+      trackingStatus, 
+      estimatedDelivery, 
+      trackingUpdates 
+    } = await req.json();
 
-    if (!orderId || !trackingId) {
+    if (!orderId) {
       return NextResponse.json(
-        { success: false, error: 'Order ID and Tracking ID are required' },
+        { success: false, error: 'Order ID is required' },
         { status: 400 }
       );
     }
 
-    // Update tracking ID in admin_orders table
-    const { error } = await supabase
-      .from('admin_orders')
-      .update({ tracking_id: trackingId })
-      .eq('order_id', orderId);
+    const updateData: any = {};
+    if (trackingId !== undefined) updateData.tracking_number = trackingId;
+    if (trackingStatus !== undefined) updateData.tracking_status = trackingStatus;
+    if (estimatedDelivery !== undefined) updateData.estimated_delivery = estimatedDelivery;
+    if (trackingUpdates !== undefined) updateData.tracking_updates = JSON.stringify(trackingUpdates);
 
-    if (error) {
-      console.error('Error updating tracking ID:', error);
-      return NextResponse.json(
-        { success: false, error: error.message },
-        { status: 500 }
-      );
+    // Update in multiple tables to ensure consistency
+    const tables = ['admin_orders', 'orders', 'vendor_orders'];
+    const results = await Promise.all(
+      tables.map(table => 
+        supabase
+          .from(table)
+          .update(updateData)
+          .or(`order_id.eq.${orderId},id.eq.${orderId}`)
+      )
+    );
+
+    const errors = results.filter(r => r.error).map(r => r.error);
+    
+    // Send Notification to user if trackingStatus changed
+    if (trackingStatus) {
+      // First find the user_id for this order
+      const { data: orderData } = await supabase
+        .from('admin_orders')
+        .select('user_id')
+        .eq('order_id', orderId)
+        .maybeSingle();
+
+      if (orderData?.user_id) {
+        const statusLabels: any = {
+          'pending': '⏳ Order Pending',
+          'in_transit': '🚚 Order In Transit',
+          'out_for_delivery': '🎁 Out for Delivery',
+          'delivered': '✅ Order Delivered',
+          'returned': '↩️ Order Returned'
+        };
+
+        await supabase
+          .from('user_notifications')
+          .insert({
+            user_id: orderData.user_id,
+            title: statusLabels[trackingStatus] || '📦 Order Update',
+            message: `Your order #${orderId} has been updated to ${trackingStatus.replace('_', ' ')}.`,
+            type: 'order',
+            metadata: { order_id: orderId, status: trackingStatus }
+          });
+      }
     }
-
-    return NextResponse.json({ success: true });
+    
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Tracking information updated successfully' 
+    });
   } catch (error: any) {
     console.error('Error in tracking API:', error);
     return NextResponse.json(

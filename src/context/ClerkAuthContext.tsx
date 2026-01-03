@@ -1,11 +1,11 @@
 'use client'
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { useUser, useAuth as useClerkAuth } from '@clerk/nextjs'
-import { useWishlist } from '@/lib/wishlistStore'
-import { useCart } from '@/lib/cartStore'
-import { useAddressBook } from '@/lib/addressStore'
-import { useOrders } from '@/lib/ordersStore'
-import { useNotificationStore } from '@/lib/notificationStore'
+import { useWishlist } from '../lib/wishlistStore'
+import { useCart } from '../lib/cartStore'
+import { useAddressBook } from '../lib/addressStore'
+import { useOrders } from '../lib/ordersStore'
+import { useNotificationStore } from '../lib/notificationStore'
 
 export interface CustomUser {
   id: string
@@ -18,6 +18,7 @@ export interface CustomUser {
   dropshipper_earnings?: number
   dropshipper_status?: string
   phone?: string
+  wallet_balance?: number
 }
 
 interface AuthContextType {
@@ -84,7 +85,8 @@ export const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
           is_dropshipper: result.user.is_dropshipper,
           dropshipper_id: result.user.dropshipper_id,
           dropshipper_earnings: result.user.dropshipper_earnings,
-          dropshipper_status: result.user.dropshipper_status
+          dropshipper_status: result.user.dropshipper_status,
+          wallet_balance: result.user.wallet_balance
         } : null)
         
         console.log('✅ User data loaded:', {
@@ -101,7 +103,8 @@ export const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
             is_dropshipper: emailResult.user.is_dropshipper,
             dropshipper_id: emailResult.user.dropshipper_id,
             dropshipper_earnings: emailResult.user.dropshipper_earnings,
-            dropshipper_status: emailResult.user.dropshipper_status
+            dropshipper_status: emailResult.user.dropshipper_status,
+            wallet_balance: emailResult.user.wallet_balance
           } : null)
           
           console.log('✅ User data loaded via email:', {
@@ -129,7 +132,8 @@ export const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
           is_dropshipper: result.user.is_dropshipper,
           dropshipper_id: result.user.dropshipper_id,
           dropshipper_earnings: result.user.dropshipper_earnings,
-          dropshipper_status: result.user.dropshipper_status
+          dropshipper_status: result.user.dropshipper_status,
+          wallet_balance: result.user.wallet_balance
         } : null)
         
         console.log('✅ User data refreshed:', {
@@ -183,11 +187,8 @@ export const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
             }
             
             // Load user data including dropshipper info
-            const userDataWithPhone = {
-              ...customUser,
-              phone: clerkUser.primaryPhoneNumber?.phoneNumber || ''
-            }
-            await saveUserToDatabase(userDataWithPhone)
+            // Use existing phone/data if available
+            await saveUserToDatabase(customUser);
             
             // Handle referral tracking in background
             if (typeof window !== 'undefined') {

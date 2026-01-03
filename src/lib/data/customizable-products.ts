@@ -8,7 +8,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Indo Glow',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 299, discounted: 199, currency: '₹' },
+    price: { original: 314, discounted: 209, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/6_6cbab775-d2f1-40aa-b598-5fe7c1943372.webp',
     extraImages: [
@@ -47,7 +47,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Own Hydrate',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 399, discounted: 149, currency: '₹' },
+    price: { original: 419, discounted: 156, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/0213f03e-c450-4e28-8ace-47a577a423b4.webp',
     extraImages: [
@@ -86,7 +86,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Own Hydrate',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 399, discounted: 249, currency: '₹' },
+    price: { original: 419, discounted: 261, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/02_fca261be-a87a-4802-abe9-19da6e291f44.webp',
     extraImages: [
@@ -124,7 +124,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Print On Demand',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 299, discounted: 260, currency: '₹' },
+    price: { original: 314, discounted: 273, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/01_1fac12b5-d5e0-4d22-bfe7-1f1256feb3dc.webp',
     extraImages: [
@@ -161,7 +161,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Ganesh',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 399, discounted: 249, currency: '₹' },
+    price: { original: 419, discounted: 261, currency: '₹' },
     quantity: 100,
     image:       'https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/09_58043254-6422-4b7a-b1a1-c8820c45fc94.webp',
 
@@ -199,7 +199,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Lunchie Bunchie',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 299, discounted: 149, currency: '₹' },
+    price: { original: 314, discounted: 156, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/07_c36d940c-83c1-4191-8c5c-54a69107f39d.webp',
     extraImages: [
@@ -236,7 +236,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Lunchie Bunchie',
     category: 'Customizable',
     subcategory: 'Kitchen',
-    price: { original: 399, discounted: 249, currency: '₹' },
+    price: { original: 419, discounted: 261, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/1_aa6dcb8d-64d7-4e9f-817f-a020a821c2d9.webp',
     extraImages: [
@@ -274,7 +274,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Apex',
     category: 'Customizable',
     subcategory: 'Kitchen',
-    price: { original: 899, discounted: 446, currency: '₹' },
+    price: { original: 944, discounted: 468, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/02_a6a77cf8-8967-4681-bd52-0b56a2a5d9c8.webp',
     extraImages: [
@@ -311,7 +311,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
   //   brand: 'Apex',
   //   category: 'Customizable',
   //   subcategory: 'Drinkware',
-  //   price: { original: 649, discounted: 202, currency: '₹' },
+  //   price: { original: 681, discounted: 212, currency: '₹' },
   //   quantity: 100,
   //   image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/sku_62255ca6-14cf-4033-bc8a-7268c650a87a.webp',
   //   extraImages: [
@@ -349,7 +349,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
   //   brand: 'Tidy Table',
   //   category: 'Customizable',
   //   subcategory: 'Kitchen',
-  //   price: { original: 399, discounted: 177, currency: '₹' },
+  //   price: { original: 419, discounted: 186, currency: '₹' },
   //   quantity: 100,
   //   image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/04_8f9a1961-6be1-4f4e-b24c-ed52a16a0b27.webp',
   //   extraImages: [
@@ -386,7 +386,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Tidy Table',
     category: 'Customizable',
     subcategory: 'Kitchen',
-    price: { original: 1299, discounted: 529, currency: '₹' },
+    price: { original: 1364, discounted: 555, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products%20part%202/e11a97f2-158b-480e-b0a4-4ecfd5959df7.webp',
     extraImages: [
@@ -423,7 +423,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'DeoDap',
     category: 'Customizable',
     subcategory: 'Gift Hampers',
-    price: { original: 799, discounted: 549, currency: '₹' },
+    price: { original: 839, discounted: 576, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/03_5f5dc9f1-7b58-42ed-9e0b-5c43c1db2164.webp',
     extraImages: [
@@ -458,7 +458,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Own Hydrate',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 699, discounted: 499, currency: '₹' },
+    price: { original: 734, discounted: 524, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/cca80267-01f5-40b5-b711-0c11a0dc5f8b.webp',
     extraImages: [
@@ -494,7 +494,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Own Hydrate',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 699, discounted: 445, currency: '₹' },
+    price: { original: 734, discounted: 467, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/89989.webp',
     extraImages: [
@@ -530,7 +530,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'DeoDap',
     category: 'Customizable',
     subcategory: 'Accessories',
-    price: { original: 199, discounted: 99, currency: '₹' },
+    price: { original: 209, discounted: 104, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/06_dc018770-df13-48fd-b40e-05bea446a2cd.webp',
     extraImages: [
@@ -566,7 +566,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Bracelet Bar',
     category: 'Customizable',
     subcategory: 'Jewelry',
-    price: { original: 199, discounted: 99, currency: '₹' },
+    price: { original: 209, discounted: 104, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/1_1cbbb949-ade4-42bd-acaa-29a6bc20d5b3.webp',
     extraImages: [
@@ -599,7 +599,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Miracle',
     category: 'Customizable',
     subcategory: 'Kitchen',
-    price: { original: 799, discounted: 599, currency: '₹' },
+    price: { original: 839, discounted: 629, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/2_db09aead-6dc0-4a13-8de4-3cf5d0179af3.webp',
     extraImages: [
@@ -634,7 +634,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Print On Demand',
     category: 'Customizable',
     subcategory: 'Kitchen',
-    price: { original: 799, discounted: 496, currency: '₹' },
+    price: { original: 839, discounted: 521, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/4_1244eb7e-55e0-4448-a706-6612c80f61e6.webp',
     extraImages: [
@@ -668,7 +668,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'Print On Demand',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 896, discounted: 349, currency: '₹' },
+    price: { original: 941, discounted: 366, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/05_6751e9db-87c6-43f2-86f4-3ece1655d8c9.webp',
     extraImages: [
@@ -703,7 +703,7 @@ export const CUSTOMIZABLE_PRODUCTS: Product[] = [
     brand: 'DeoDap',
     category: 'Customizable',
     subcategory: 'Drinkware',
-    price: { original: 699, discounted: 399, currency: '₹' },
+    price: { original: 734, discounted: 419, currency: '₹' },
     quantity: 100,
     image: 'https://Shopwave.b-cdn.net/Custom%20Print%20Products/01_5bb6a0cc-873a-4b75-8722-67a5229255a8.webp',
     extraImages: [

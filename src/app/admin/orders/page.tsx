@@ -43,6 +43,13 @@ interface Order {
   isDropshipperOrder?: boolean
   dropshipperId?: string
   dropshipperSellingPrice?: number
+  trackingStatus?: string
+  estimatedDelivery?: string
+  trackingUpdates?: any[]
+  dropshipperOrderType?: string
+  confirmationType?: string
+  orderNote?: string
+  hasPhoto?: boolean
 }
 
 interface OrdersResponse {
@@ -76,8 +83,13 @@ export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [activeTab, setActiveTab] = useState<'customer' | 'dropshipper'>('customer')
-  const [isEditingTracking, setIsEditingTracking] = useState(false)
   const [trackingIdInput, setTrackingIdInput] = useState('')
+  const [trackingStatusInput, setTrackingStatusInput] = useState('pending')
+  const [estimatedDeliveryInput, setEstimatedDeliveryInput] = useState('')
+  const [updateStatusInput, setUpdateStatusInput] = useState('')
+  const [updateLocationInput, setUpdateLocationInput] = useState('')
+  const [isUpdatingTracking, setIsUpdatingTracking] = useState(false)
+  const [isEditingTracking, setIsEditingTracking] = useState(false)
 
   useEffect(() => {
     void fetchOrders()
@@ -132,30 +144,66 @@ export default function OrdersPage() {
     }
   }
 
-  const updateTrackingId = async (orderId: string, trackingId: string) => {
+  const updateFullTracking = async () => {
+    if (!selectedOrder) return
+    setIsUpdatingTracking(true)
     try {
       const response = await fetch('/api/admin/orders/tracking', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, trackingId })
+        body: JSON.stringify({ 
+          orderId: selectedOrder.orderId, 
+          trackingId: trackingIdInput,
+          trackingStatus: trackingStatusInput,
+          estimatedDelivery: estimatedDeliveryInput
+        })
       })
 
       const data = await response.json()
-
       if (data.success) {
-        alert('Tracking ID updated successfully!')
+        alert('Tracking info updated successfully!')
         await fetchOrders()
-        setSelectedOrder((prev) => (prev && prev.orderId === orderId ? { ...prev, trackingId } : prev))
         setIsEditingTracking(false)
-      } else {
-        alert('Error updating tracking ID')
       }
     } catch (error) {
-      if (error instanceof Error) {
-        alert(`Error updating tracking ID: ${error.message}`)
-      } else {
-        alert('Error updating tracking ID')
+      console.error('Error updating tracking:', error)
+    } finally {
+      setIsUpdatingTracking(false)
+    }
+  }
+
+  const addTrackingUpdate = async () => {
+    if (!selectedOrder || !updateStatusInput || !updateLocationInput) return
+    
+    const newUpdate = {
+      status: updateStatusInput,
+      location: updateLocationInput,
+      timestamp: new Date().toISOString()
+    }
+
+    const currentUpdates = selectedOrder.trackingUpdates || []
+    const updatedHistory = [newUpdate, ...currentUpdates]
+
+    try {
+      const response = await fetch('/api/admin/orders/tracking', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          orderId: selectedOrder.orderId, 
+          trackingUpdates: updatedHistory
+        })
+      })
+
+      if (response.ok) {
+        alert('Status update added!')
+        setUpdateStatusInput('')
+        setUpdateLocationInput('')
+        await fetchOrders()
+        // Local update for immediate feedback
+        setSelectedOrder(prev => prev ? { ...prev, trackingUpdates: updatedHistory } : prev)
       }
+    } catch (error) {
+       console.error('Error adding tracking update:', error)
     }
   }
 
@@ -301,50 +349,126 @@ export default function OrdersPage() {
               </div>
 
               {isEditingTracking ? (
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    value={trackingIdInput}
-                    onChange={(e) => setTrackingIdInput(e.target.value)}
-                    placeholder="Enter real tracking ID (e.g., DTDC12345)"
-                    className="w-full px-3 py-2 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
+                <div className="space-y-4 bg-white p-4 rounded-lg border border-green-200">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-gray-500 uppercase">Tracking Number</label>
+                      <input
+                        type="text"
+                        value={trackingIdInput}
+                        onChange={(e) => setTrackingIdInput(e.target.value)}
+                        placeholder="e.g. DTDC12345"
+                        className="w-full px-3 py-2 border rounded-lg"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-gray-500 uppercase">Logistics Status</label>
+                      <select
+                        value={trackingStatusInput}
+                        onChange={(e) => setTrackingStatusInput(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-lg"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="in_transit">In Transit</option>
+                        <option value="out_for_delivery">Out for Delivery</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="returned">Returned</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-gray-500 uppercase">Est. Delivery Date</label>
+                      <input
+                        type="date"
+                        value={estimatedDeliveryInput}
+                        onChange={(e) => setEstimatedDeliveryInput(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-lg"
+                      />
+                    </div>
+                  </div>
+                  
                   <div className="flex gap-2">
                     <button
-                      onClick={() => {
-                        if (trackingIdInput.trim()) {
-                          updateTrackingId(selectedOrder.orderId, trackingIdInput.trim());
-                        }
-                      }}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                      onClick={updateFullTracking}
+                      disabled={isUpdatingTracking}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                     >
-                      Save Tracking ID
+                      {isUpdatingTracking ? 'Saving...' : 'Save Logistics Info'}
                     </button>
                     <button
-                      onClick={() => {
-                        setIsEditingTracking(false);
-                        setTrackingIdInput('');
-                      }}
-                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                      onClick={() => setIsEditingTracking(false)}
+                      className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
                     >
                       Cancel
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-between">
-                  <p className="text-lg font-mono font-bold text-green-900">
-                    {selectedOrder.trackingId || 'Not set yet'}
-                  </p>
-                  <button
-                    onClick={() => {
-                      setIsEditingTracking(true);
-                      setTrackingIdInput(selectedOrder.trackingId || '');
-                    }}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                  >
-                    {selectedOrder.trackingId ? 'Edit' : 'Add'} Tracking ID
-                  </button>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-lg font-mono font-bold text-green-900">
+                        {selectedOrder.trackingId || 'No Tracking ID'}
+                      </p>
+                      <div className="flex gap-2 mt-1">
+                        <span className="text-xs bg-green-200 text-green-800 px-2 py-0.5 rounded-full font-bold uppercase">
+                          {selectedOrder.trackingStatus || 'pending'}
+                        </span>
+                        {selectedOrder.estimatedDelivery && (
+                          <span className="text-xs text-gray-500">
+                            Est: {selectedOrder.estimatedDelivery}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setIsEditingTracking(true);
+                        setTrackingIdInput(selectedOrder.trackingId || '');
+                        setTrackingStatusInput(selectedOrder.trackingStatus || 'pending');
+                        setEstimatedDeliveryInput(selectedOrder.estimatedDelivery || '');
+                      }}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    >
+                      Update Logistics
+                    </button>
+                  </div>
+
+                  {/* Tracking Updates Log */}
+                  <div className="mt-4 pt-4 border-t border-green-100">
+                    <p className="text-sm font-bold text-green-800 mb-2">Add Status Update</p>
+                    <div className="flex gap-2">
+                      <input 
+                        placeholder="Status (e.g. Out for delivery)"
+                        value={updateStatusInput}
+                        onChange={e => setUpdateStatusInput(e.target.value)}
+                        className="flex-1 px-3 py-1.5 text-sm border rounded-lg"
+                      />
+                      <input 
+                        placeholder="Location (e.g. Mumbai Hub)"
+                        value={updateLocationInput}
+                        onChange={e => setUpdateLocationInput(e.target.value)}
+                        className="flex-1 px-3 py-1.5 text-sm border rounded-lg"
+                      />
+                      <button 
+                        onClick={addTrackingUpdate}
+                        className="px-4 py-1.5 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    
+                    {selectedOrder.trackingUpdates && selectedOrder.trackingUpdates.length > 0 && (
+                      <div className="mt-4 space-y-2 max-h-40 overflow-y-auto">
+                        {selectedOrder.trackingUpdates.map((upd, idx) => (
+                          <div key={idx} className="text-xs flex justify-between bg-white/50 p-2 rounded border border-green-50">
+                            <span className="font-bold text-gray-700">{upd.status}</span>
+                            <span className="text-gray-500">{upd.location}</span>
+                            <span className="text-gray-400">{new Date(upd.timestamp).toLocaleDateString()}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -414,6 +538,18 @@ export default function OrdersPage() {
                     <div className="mb-2">
                       <span className="font-medium text-green-600">Customer Pays:</span>{' '}
                       {formatCurrency(selectedOrder.dropshipperSellingPrice)}
+                    </div>
+                  )}
+                  {selectedOrder.confirmationType && (
+                    <div className="mb-2">
+                      <span className="font-medium text-purple-600">Confirmation:</span>{' '}
+                      <span className="uppercase">{selectedOrder.confirmationType}</span>
+                    </div>
+                  )}
+                  {selectedOrder.orderNote && (
+                    <div className="mb-2">
+                      <span className="font-medium text-orange-600">Note:</span>{' '}
+                      <span className="italic">"{selectedOrder.orderNote}"</span>
                     </div>
                   )}
                 </div>

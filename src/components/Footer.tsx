@@ -46,54 +46,7 @@ export default function Footer() {
 
 
   return (
-    <>
-      {/* Dropshipper Banner - Show for all users */}
-      {(!user || (user && !user.is_dropshipper)) && (
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="text-center md:text-left mb-4 md:mb-0">
-                <h3 className="text-xl font-bold flex items-center gap-2">
-                  <TrendingUp className="h-6 w-6" />
-                  🚀 Become a Dropshipper
-                </h3>
-                <p className="text-blue-100 mt-1">Start earning with wholesale prices - Just ₹{dropshipperPrice}!</p>
-              </div>
-              <Link 
-                href="/dropshipper/plans"
-                className="inline-block bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
-              >
-                Join Now
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Vendor Banner */}
-      <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="text-center md:text-left mb-4 md:mb-0">
-              <h3 className="text-xl font-bold flex items-center gap-2">
-                <TrendingUp className="h-6 w-6" />
-                🏪 Become a Vendor
-              </h3>
-              <p className="text-green-100 mt-1">Sell your products and reach thousands of customers!</p>
-            </div>
-            <Button 
-              onClick={() => {
-                window.location.href = '/vendor/login'
-              }}
-              className="bg-white text-green-600 hover:bg-gray-100 font-bold px-6 py-3"
-            >
-              Vendor Login
-            </Button>
-          </div>
-        </div>
-      </div>
-      
-      <footer className="bg-gray-800 text-white border-t">
+    <footer className="bg-gray-800 text-white border-t">
       <div className="container py-8 md:py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
@@ -107,13 +60,11 @@ export default function Footer() {
               <li><Link href="/search" className="text-gray-400 hover:text-white">Search</Link></li>
               <li><Link href="/orders" className="text-gray-400 hover:text-white">My Orders</Link></li>
               <li><Link href="/account" className="text-gray-400 hover:text-white">Account</Link></li>
-              <li><Link href="/vendor/login" className="text-gray-400 hover:text-white">Vendor Login</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="font-semibold text-white">Help</h3>
             <ul className="mt-2 space-y-2 text-sm">
-              <li><Link href="/help" className="text-gray-400 hover:text-white">Help</Link></li>
               <li><Link href="/faq" className="text-gray-400 hover:text-white">FAQ</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact Us</Link></li>
               <li><Link href="/shipping-policy" className="text-gray-400 hover:text-white">Shipping Policy</Link></li>
@@ -143,6 +94,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-    </>
   );
 }
