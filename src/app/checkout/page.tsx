@@ -88,8 +88,15 @@ export default function Checkout(){
         // Show guest checkout options instead of redirecting
         setShowGuestOptions(true);
     }
+    // Don't redirect immediately - give time for cart to load from DB
     if (!authLoading && items.length === 0 && !isGuest) {
-      router.replace('/');
+      // Add a delay to allow cart to load from database
+      const timer = setTimeout(() => {
+        if (items.length === 0) {
+          router.replace('/');
+        }
+      }, 2000); // Wait 2 seconds for cart to load
+      return () => clearTimeout(timer);
     }
   }, [items, router, user, authLoading, isGuest]);
 
@@ -971,21 +978,28 @@ ${order.address.landmark ? `Landmark: ${order.address.landmark}` : ''}
         <div className="card sticky top-24 p-4">
           <h2 className="text-lg font-semibold">Order Summary</h2>
           <div className="mt-4 space-y-3">
-            {items.map(item => (
-              <div key={item.id} className="flex items-center gap-3 text-sm">
-                <div className="relative h-14 w-14 shrink-0">
-                  <Image src={item.image} alt={item.name} fill className="rounded-md object-cover" />
-                </div>
-                <div className="flex-grow">
-                  <div className="line-clamp-1 font-medium">{item.name}</div>
-                  {item.customName && (
-                    <div className="text-xs text-blue-600 font-medium">Custom: "{item.customName}"</div>
-                  )}
-                  <div className="text-xs text-gray-500">Qty: {item.qty}</div>
-                </div>
-                <div className="font-medium">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>
+            {items.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <p className="text-sm">Your cart is empty</p>
+                <p className="text-xs mt-2">Loading cart items...</p>
               </div>
-            ))}
+            ) : (
+              items.map(item => (
+                <div key={item.id} className="flex items-center gap-3 text-sm">
+                  <div className="relative h-14 w-14 shrink-0">
+                    <Image src={item.image} alt={item.name} fill className="rounded-md object-cover" />
+                  </div>
+                  <div className="flex-grow">
+                    <div className="line-clamp-1 font-medium">{item.name}</div>
+                    {item.customName && (
+                      <div className="text-xs text-blue-600 font-medium">Custom: "{item.customName}"</div>
+                    )}
+                    <div className="text-xs text-gray-500">Qty: {item.qty}</div>
+                  </div>
+                  <div className="font-medium">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>
+                </div>
+              ))
+            )}
           </div>
           <div className="mt-4 space-y-2 border-t pt-4 text-sm">
             <div className="flex justify-between">
