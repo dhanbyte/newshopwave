@@ -26,8 +26,8 @@ export default function ProductCard({ p, product, suggest }: { p?: Product; prod
   // Handle both Money object and legacy number formats
   const getPriceValue = (priceData: any): number => {
     if (typeof priceData === 'number') return priceData;
-    if (priceData?.original) return priceData.original;
     if (priceData?.discounted) return priceData.discounted;
+    if (priceData?.original) return priceData.original;
     return 0;
   };
   

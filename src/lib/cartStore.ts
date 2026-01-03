@@ -33,6 +33,7 @@ type CartState = {
   total: number
   deliveryInfo: DeliveryInfo
   paymentMethod: 'COD' | 'Online'
+  isDropshipper: boolean
   init: (userId: string) => void
   add: (userId: string, item: CartItem) => void
   remove: (userId: string, id: string) => void
@@ -125,6 +126,7 @@ export const useCart = create<CartState>()((set, get) => ({
     estimatedShipping: 0,
   },
   paymentMethod: 'Online',
+  isDropshipper: false,
   init: (userId?: string | null) => {
     // Load guest cart from localStorage first
     const guestCart = localStorage.getItem('guest_cart');
@@ -190,7 +192,7 @@ export const useCart = create<CartState>()((set, get) => ({
             }
 
             const totals = calculateTotals(mergedItems, get().paymentMethod, isDropshipper)
-            set({ items: mergedItems, ...totals })
+            set({ items: mergedItems, ...totals, isDropshipper })
           }
         }
       } catch (error) {
@@ -206,7 +208,7 @@ export const useCart = create<CartState>()((set, get) => ({
       ? currentItems.map((p) => (p.id === item.id ? { ...p, qty: Math.min(99, p.qty + item.qty) } : p))
       : [...currentItems, { ...item, qty: Math.max(1, item.qty) }]
 
-    const totals = calculateTotals(newItems, get().paymentMethod)
+    const totals = calculateTotals(newItems, get().paymentMethod, get().isDropshipper)
     set({ items: newItems, ...totals })
 
     if (userId) {
@@ -228,7 +230,7 @@ export const useCart = create<CartState>()((set, get) => ({
     const currentItems = get().items
     const newItems = currentItems.filter((p) => p.id !== id)
 
-    const totals = calculateTotals(newItems, get().paymentMethod)
+    const totals = calculateTotals(newItems, get().paymentMethod, get().isDropshipper)
     set({ items: newItems, ...totals })
 
     if (userId) {
@@ -251,7 +253,7 @@ export const useCart = create<CartState>()((set, get) => ({
       p.id === id ? { ...p, qty: Math.max(1, Math.min(99, qty)) } : p
     )
 
-    const totals = calculateTotals(newItems, get().paymentMethod)
+    const totals = calculateTotals(newItems, get().paymentMethod, get().isDropshipper)
     set({ items: newItems, ...totals })
 
     if (userId) {
@@ -270,7 +272,7 @@ export const useCart = create<CartState>()((set, get) => ({
   },
   setPaymentMethod: (method: 'COD' | 'Online') => {
     const currentItems = get().items
-    const totals = calculateTotals(currentItems, method)
+    const totals = calculateTotals(currentItems, method, get().isDropshipper)
     set({ paymentMethod: method, ...totals })
   },
   clear: () => {

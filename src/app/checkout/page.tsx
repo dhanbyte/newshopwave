@@ -11,16 +11,15 @@ import Link from 'next/link';
 import TrustBadges from '@/components/TrustBadges';
 import DeliveryEstimate from '@/components/DeliveryEstimate';
 import type { Address, Order } from '@/lib/types'
-import { CreditCard, Banknote, QrCode, ShieldCheck, Tag, CheckCircle, XCircle, Video } from 'lucide-react'
+import { CreditCard, Banknote, QrCode, ShieldCheck, Tag, CheckCircle, XCircle, Video, ArrowRight, Lock, Truck, Zap, MessageCircle, MapPin, ChevronRight, Gift } from 'lucide-react'
 import Image from 'next/image'
 import Script from 'next/script'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/context/ClerkAuthContext'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { referralService } from '@/lib/referralService'
 import SpinWheel from '@/components/SpinWheel'
-import { COD_CHARGE, getShippingDetails } from '@/lib/utils/shipping'
+import { getShippingDetails } from '@/lib/utils/shipping'
 import ShippingDetails from '@/components/ShippingDetails'
 import ProgressOfferBar from '@/components/ProgressOfferBar'
 import { GiftGallery, GIFTS } from '@/components/GiftCard'
@@ -29,13 +28,12 @@ const paymentOptions = [
   { id: 'UPI', icon: QrCode, title: 'UPI / QR Code', description: 'Pay with any UPI app' },
   { id: 'Card', icon: CreditCard, title: 'Credit / Debit Card', description: 'Visa, Mastercard, RuPay & more' },
   { id: 'NetBanking', icon: Banknote, title: 'Net Banking', description: 'All major banks supported' },
-  // COD hidden - prepaid only
 ]
 
 export default function Checkout(){
   const { user, loading: authLoading } = useAuth()
-  const { items, subtotal, totalDiscount, totalShipping, totalTax, total, clearCartFromDB } = useCart()
-  const { addresses, save, setDefault } = useAddressBook()
+  const { items, subtotal, totalDiscount, totalShipping, total, clearCartFromDB, init: initCart } = useCart()
+  const { addresses, save, setDefault, init: initAddress } = useAddressBook()
   const { placeOrder } = useOrders()
   const router = useRouter()
   const { toast } = useToast()
@@ -43,7 +41,10 @@ export default function Checkout(){
   const [editingAddress, setEditingAddress] = useState<Address | undefined>(undefined)
   const [paymentMethod, setPaymentMethod] = useState('UPI')
   const [isProcessing, setIsProcessing] = useState(false)
+  
+  // Persisted Guest States
   const [isGuest, setIsGuest] = useState(false)
+  const [guestPhone, setGuestPhone] = useState('')
   const [showGuestOptions, setShowGuestOptions] = useState(false)
   
   // Coins states
@@ -51,70 +52,77 @@ export default function Checkout(){
   const [coinsToUse, setCoinsToUse] = useState(0)
   const [coinsDiscount, setCoinsDiscount] = useState(0)
   const [coinsApplied, setCoinsApplied] = useState(false)
-  const [showWelcomeBonus, setShowWelcomeBonus] = useState(false)
   const [showSpinWheel, setShowSpinWheel] = useState(false)
   const [orderCompleted, setOrderCompleted] = useState(false)
+  const [isSyncing, setIsSyncing] = useState(true)
   
   // Dropshipper specific states
   const [sellingPrice, setSellingPrice] = useState<number>(0)
   const [dropshipperOrderType, setDropshipperOrderType] = useState<'prepaid' | 'cod'>('cod')
   const [confirmationType, setConfirmationType] = useState<'direct' | 'call'>('direct')
   const [orderNote, setOrderNote] = useState('')
+  const [phoneError, setPhoneError] = useState('')
   
-  // Calculate COD charge if COD is selected (COD hidden, always 0)
-  const codCharge = 0 // paymentMethod === 'COD' ? COD_CHARGE : 0
+  const finalTotal = total - coinsDiscount
+
+  // Effect to load guest status from session storage
+  useEffect(() => {
+    const savedIsGuest = localStorage.getItem('isGuest') === 'true';
+    const savedGuestPhone = localStorage.getItem('guestPhone') || '';
+    if (savedIsGuest) {
+      setIsGuest(true);
+      setGuestPhone(savedGuestPhone);
+    }
+    if (savedIsGuest) {
+      setIsGuest(true);
+      setGuestPhone(savedGuestPhone);
+    }
+  }, []);
+
+  // Init stores
+  useEffect(() => {
+    if (user?.id) {
+      initCart(user.id);
+      initAddress(user.id);
+    } else if (isGuest) {
+      initCart('guest');
+      initAddress('guest');
+    }
+  }, [user?.id, isGuest, initCart, initAddress]);
   
-  // Calculate final total with coins discount and COD charge
-  const finalTotal = total - coinsDiscount + codCharge
-  
-  // Initialize selling price for dropshippers
   useEffect(() => {
     if (user?.is_dropshipper && sellingPrice === 0 && finalTotal > 0) {
-      setSellingPrice(Math.ceil(finalTotal + 100)); // Default to cost + 100 profit
+      setSellingPrice(Math.ceil(finalTotal + 100));
     }
   }, [user?.is_dropshipper, finalTotal]);
   
-  // Get shipping details
-  const shippingDetails = getShippingDetails(items.map(item => ({
-    id: item.id,
-    qty: item.qty,
-    weight: item.weight,
-    name: item.name,
-    category: item.category
-  })))
-
   useEffect(() => {
-    if (!authLoading && !user && !isGuest) {
-        // Show guest checkout options instead of redirecting
+    if (!authLoading && !user && !isGuest && !orderCompleted) {
         setShowGuestOptions(true);
+    } else {
+        setShowGuestOptions(false);
     }
-    // Don't redirect immediately - give time for cart to load from DB
-    if (!authLoading && items.length === 0 && !isGuest) {
-      // Add a delay to allow cart to load from database
+    
+    if (!authLoading && items.length === 0 && !isGuest && !user && !orderCompleted) {
       const timer = setTimeout(() => {
-        if (items.length === 0) {
+        if (items.length === 0 && !orderCompleted && !isGuest && !user) {
           router.replace('/');
         }
-      }, 2000); // Wait 2 seconds for cart to load
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [items, router, user, authLoading, isGuest]);
+    if (!authLoading) {
+      const timer = setTimeout(() => setIsSyncing(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [items, router, user, authLoading, isGuest, orderCompleted]);
 
   useEffect(() => {
-    // Show form automatically if no addresses are saved or guest user
-    if (addresses.length === 0 || isGuest) {
+    if (addresses.length === 0 && (user || isGuest)) {
       setShowForm(true);
     }
-  }, [addresses.length, isGuest]);
+  }, [addresses.length, isGuest, user]);
 
-  // Auto-select Prepaid (UPI) for dropshippers
-  useEffect(() => {
-    if (user?.is_dropshipper && paymentMethod === 'Online') {
-      setPaymentMethod('UPI'); // Prepaid option
-    }
-  }, [user?.is_dropshipper]);
-
-  // Fetch user coins - always ensure 5 coins minimum
   useEffect(() => {
     const fetchUserCoins = async () => {
       if (user) {
@@ -123,7 +131,6 @@ export default function Checkout(){
           if (response.ok) {
             const coins = await response.json()
             if (coins === null || coins === undefined) {
-              // New user - set 5 coins
               setUserCoins(5)
               await fetch('/api/user-data', {
                 method: 'POST',
@@ -135,7 +142,6 @@ export default function Checkout(){
             }
           }
         } catch (error) {
-          console.error('Error fetching user coins:', error)
           setUserCoins(5)
         }
       }
@@ -143,109 +149,45 @@ export default function Checkout(){
     fetchUserCoins()
   }, [user])
 
-  // Track wallet balance separately for real-time updates
   const [walletBalance, setWalletBalance] = useState(0);
 
-  // Refresh wallet balance for dropshippers
   useEffect(() => {
     const refreshWalletBalance = async () => {
       if (user?.is_dropshipper && user?.id) {
         try {
-          // Fetch latest balance from Supabase
           const response = await fetch(`/api/user/balance?userId=${user.id}`);
           if (response.ok) {
             const data = await response.json();
             setWalletBalance(data.balance || user.dropshipper_earnings || 0);
           } else {
-            // Fallback to user object
             setWalletBalance(user.dropshipper_earnings || 0);
           }
         } catch (error) {
-          console.error('Error refreshing wallet balance:', error);
           setWalletBalance(user.dropshipper_earnings || 0);
         }
       }
     };
     refreshWalletBalance();
-    
-    // Refresh every 5 seconds while on checkout page
     const interval = setInterval(refreshWalletBalance, 5000);
     return () => clearInterval(interval);
-  }, [user?.id, user?.is_dropshipper, user?.dropshipper_earnings]);
+  }, [user?.id, user?.is_dropshipper]);
 
-  const handleCoinsChange = (value: number) => {
-    const maxCoins = Math.min(userCoins, Math.floor(total))
-    const coinsToApply = Math.max(0, Math.min(maxCoins, value))
-    setCoinsToUse(coinsToApply)
-    // Don't apply discount until user clicks Apply
-    if (!coinsApplied) {
-      setCoinsDiscount(0)
-    }
-  }
-
-  const applyCoins = () => {
-    setCoinsDiscount(coinsToUse)
-    setCoinsApplied(true)
-  }
-
-  const removeCoins = () => {
-    setCoinsDiscount(0)
-    setCoinsApplied(false)
-    setCoinsToUse(0)
-  }
-
-  const redirectToWhatsApp = (order: Order) => {
-    const adminPhoneNumber = "919638883833"; // Your WhatsApp number
-    
-    const itemsText = order.items.map(item => 
-        `- ${item.name} (Qty: ${item.qty}) - ₹${(item.price * item.qty).toLocaleString('en-IN')}`
-    ).join('\n');
-
-    const message = `
-*New Order Received!* ✨
-
-*Order ID:* #${order.id}
-*Customer:* ${order.address.fullName}
-*Phone:* ${order.address.phone}
-
----
-*Items:*
-${itemsText}
-
----
-*Subtotal:* ₹${subtotal.toLocaleString('en-IN')}
-*Shipping:* ₹${totalShipping.toLocaleString('en-IN')}
-*Tax:* ₹${totalTax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-*Total:* *₹${order.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*
-*Payment:* ${order.payment}
----
-
-*Shipping Address:*
-${order.address.line1}
-${order.address.line2 ? order.address.line2 : ''}
-${order.address.city}, ${order.address.state} - ${order.address.pincode}
-${order.address.landmark ? `Landmark: ${order.address.landmark}` : ''}
-    `;
-
-    const whatsappUrl = `https://wa.me/${adminPhoneNumber}?text=${encodeURIComponent(message.trim())}`;
-    
-    // Redirect to WhatsApp
-    window.location.href = whatsappUrl;
-  };
-
-  const handleSuccessfulPayment = async () => {
-    console.log('🎉 Processing successful payment...');
-    
+  const handleSuccessfulPayment = async (razorpayResponse?: any) => {
+    console.log('🚀 Finalizing order after payment...');
     try {
       const addr = addresses.find(a => a.default) || addresses[0]
-      if (!addr || !user) {
-        console.log('❌ Missing address or user data');
-        toast({ title: "Error", description: "Missing order information", variant: 'destructive' });
+      if (!addr) {
+        console.error('❌ NO ADDRESS FOUND FOR ORDER');
+        toast({ title: "Address Error", description: "Could not find delivery address for order.", variant: 'destructive' });
         setIsProcessing(false);
         return;
       }
       
-      // Calculate eligible gifts
+      const effectiveUserId = user?.id || 'guest_' + Date.now();
+      const effectiveUserEmail = user?.emailAddresses?.[0]?.emailAddress || 'guest@example.com';
+      const effectiveFullName = user?.fullName || addr.fullName || 'Guest User';
+      const effectivePhone = guestPhone || user?.phoneNumbers?.[0]?.phoneNumber || addr.phone || '';
+      
       const currentCartValue = subtotal - totalDiscount;
       const eligibleGifts = GIFTS.filter(g => currentCartValue >= g.threshold).map(g => ({
          id: `gift-${g.id}`,
@@ -261,919 +203,539 @@ ${order.address.landmark ? `Landmark: ${order.address.landmark}` : ''}
       
       const allItems = [...items, ...eligibleGifts];
       
-      console.log('📝 Creating order for user:', user.id);
-      const dropshipperInfo = user.is_dropshipper ? {
+      const dropshipperInfo = user?.is_dropshipper ? {
         sellingPrice,
         orderType: dropshipperOrderType,
         confirmation: confirmationType,
         note: orderNote
       } : undefined;
 
+      console.log('📝 Placing order in Firebase...');
       const newOrder = await placeOrder(
-        user.id, 
+        effectiveUserId, 
         allItems, 
         addr, 
         finalTotal, 
         paymentMethod as any, 
-        undefined,
+        razorpayResponse?.razorpay_payment_id || 'online_payment',
         dropshipperInfo
       )
       
-      console.log('✅ Order created:', newOrder.id);
+      console.log('✅ Order placed:', newOrder.id);
+      setOrderCompleted(true)
+      setIsProcessing(false)
       
-      // Register user in admin system
+      // Start background tasks
       try {
         await fetch('/api/register-user', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: user.id,
-            email: user.emailAddresses?.[0]?.emailAddress || user.id,
-            fullName: user.fullName || 'User',
-            phone: user.phoneNumbers?.[0]?.phoneNumber || ''
-          })
-        })
-      } catch (error) {
-        console.error('Error registering user:', error)
-      }
-      
-      // Save order to admin system
-      try {
+          body: JSON.stringify({ userId: effectiveUserId, email: effectiveUserEmail, fullName: effectiveFullName, phone: effectivePhone })
+        });
+        
         await fetch('/api/place-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: user.id,
-            items: allItems.map(item => ({
-              productId: item.id,
-              name: item.name,
-              price: item.price,
-              quantity: item.qty,
-              image: item.image
-            })),
+            userId: effectiveUserId,
+            items: allItems.map(item => ({ productId: item.id, name: item.name, price: item.price, quantity: item.qty, image: item.image })),
             total: finalTotal,
             paymentMethod: paymentMethod,
-            paymentId: 'razorpay_payment_id',
-            shippingAddress: {
-              name: addr.fullName,
-              phone: addr.phone,
-              address: addr.line1,
-              city: addr.city,
-              state: addr.state,
-              pincode: addr.pincode
-            },
-            ...(user.is_dropshipper && {
-                dropshipperSellingPrice: sellingPrice,
-                dropshipperOrderType: dropshipperOrderType,
-                confirmationType: confirmationType,
-                orderNote: orderNote
-            })
+            paymentId: razorpayResponse?.razorpay_payment_id || 'online_payment',
+            shippingAddress: { name: addr.fullName, phone: addr.phone, address: addr.line1, city: addr.city, state: addr.state, pincode: addr.pincode },
+            ...(user?.is_dropshipper && { dropshipperSellingPrice: sellingPrice, dropshipperOrderType: dropshipperOrderType, confirmationType: confirmationType, orderNote: orderNote })
           })
-        })
-      } catch (error) {
-        console.error('Error saving order to admin:', error)
+        });
+      } catch (bgError) {
+        console.warn('⚠️ Background order registration failed (non-critical):', bgError);
       }
       
-      // Deduct coins if applied
-      if (coinsApplied && coinsToUse > 0) {
-        console.log('💰 Deducting coins:', coinsToUse);
+      if (user && coinsApplied && coinsToUse > 0) {
         try {
           await fetch('/api/user-data', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              userId: user.id, 
-              type: 'coins', 
-              data: userCoins - coinsToUse 
-            })
+            body: JSON.stringify({ userId: user.id, type: 'coins', data: userCoins - coinsToUse })
           })
-        } catch (error) {
-          console.error('Error deducting coins:', error)
-        }
-      }
-      
-      // Track influencer conversion if referral from influencer
-      const influencerRef = sessionStorage.getItem('influencerRef')
-      if (influencerRef) {
-        console.log('📊 Recording influencer conversion:', influencerRef);
-        try {
-          await fetch('/api/referrals/record', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              influencerId: influencerRef,
-              productId: items[0]?.id, // First product for tracking
-              action: 'conversion',
-              orderAmount: finalTotal,
-              orderId: newOrder.id
-            })
-          })
-          sessionStorage.removeItem('influencerRef')
-        } catch (error) {
-          console.error('Failed to track influencer conversion:', error)
-        }
+        } catch (error) {}
       }
       
       console.log('🛒 Clearing cart...');
-      await clearCartFromDB(user.id);
-      
-      // Show spin wheel after order completion
-      console.log('🎯 Setting spin wheel to show...');
-      setOrderCompleted(true)
-      setShowSpinWheel(true)
-      
-      // Force show spin wheel after a small delay
-      setTimeout(() => {
-        console.log('🎯 Force showing spin wheel...');
-        setShowSpinWheel(true)
-      }, 500)
-      
-      console.log('✅ Order process completed successfully');
-      toast({ 
-        title: "🎉 Order Placed Successfully!", 
-        description: `Order #${newOrder.id} confirmed. Try your luck to win coins!` 
-      });
-      
-      // Don't redirect automatically - let spin wheel handle it
-      return; // Stop here to show spin wheel
+      await clearCartFromDB(effectiveUserId);
+      setShowSpinWheel(true);
+      toast({ title: "🎉 Order Placed!", description: `Order #${newOrder.id} is confirmed.` });
       
     } catch (error) {
-      console.error('💥 Order placement failed:', error);
-      toast({ 
-        title: "Order Failed", 
-        description: "Payment successful but order creation failed. Contact support.", 
-        variant: 'destructive' 
-      });
+      console.error('💥 ERROR FINALIZING ORDER:', error);
+      toast({ title: "Order Placement Error", description: error.message || "Failed to create order in database. Please contact support with your payment ID.", variant: 'destructive' });
       setIsProcessing(false);
     }
   }
 
   const handleOnlinePayment = async () => {
-    console.log('🚀 Payment initiated by user');
+    if (isProcessing) return;
     setIsProcessing(true);
+    
+    console.log('💳 Initiating Payment for ₹', finalTotal);
     
     const addr = addresses.find(a => a.default) || addresses[0]
     if (!addr) {
-      console.log('❌ No address found');
-      toast({ title: "Error", description: "Please add and select a delivery address.", variant: 'destructive' });
+      toast({ title: "Address Required", description: "Please add a delivery address first.", variant: 'destructive' });
       setShowForm(true);
       setIsProcessing(false);
       return;
     }
 
-    console.log('💰 Payment amount:', finalTotal);
-    console.log('📦 Items:', items.length);
-    console.log('🏠 Address:', addr.fullName);
-
     try {
-      console.log('🔄 Creating Razorpay order...');
       const res = await fetch('/api/phonepe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: finalTotal }),
       });
-
       const order = await res.json();
-      console.log('📋 Razorpay response:', order);
-
       if (!res.ok) {
-        console.log('❌ Razorpay order creation failed:', order.error);
-        toast({ title: "Payment Error", description: order.error || 'Payment gateway error', variant: 'destructive' });
+        toast({ title: "Payment Error", description: order.error || 'Payment gateway failed', variant: 'destructive' });
         setIsProcessing(false);
         return;
       }
       
-      const razorpayKeyId = order.key;
-      
       const options = {
-        key: razorpayKeyId,
+        key: order.key,
         amount: order.amount,
         currency: order.currency,
         name: 'ShopWave',
-        description: 'Online Shopping Payment',
-        image: 'https://ik.imagekit.io/b5qewhvhb/e%20commers/tach/shopwave-logo.png',
+        description: 'Order Payment',
+        image: 'https://ik.imagekit.io/b5qewhvhb/tach/shopwave-logo.png',
         order_id: order.orderId,
         handler: async function (response: any) {
-          console.log('✅ Payment SUCCESS:', response.razorpay_payment_id);
-          console.log('🔐 Verifying payment...');
-          
-          try {
-            // Verify payment signature
-            const verifyResponse = await fetch('/api/razorpay/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-              })
-            });
-            
-            const verifyResult = await verifyResponse.json();
-            
-            if (verifyResult.success) {
-              console.log('✅ Payment verified successfully');
-              console.log('📝 Creating order in database...');
-              handleSuccessfulPayment();
-            } else {
-              console.log('❌ Payment verification failed:', verifyResult.error);
-              toast({ 
-                title: "Payment Verification Failed", 
-                description: "Payment could not be verified. Contact support if amount was deducted.", 
-                variant: 'destructive' 
+            console.log('✅ Payment successful, verifying signature...');
+            try {
+              const verifyResponse = await fetch('/api/razorpay/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature })
               });
+              const verifyResult = await verifyResponse.json();
+              if (verifyResult.success) {
+                console.log('✅ Verification successful. Finalizing order...');
+                await handleSuccessfulPayment(response);
+              } else {
+                console.error('❌ Verification failed');
+                toast({ title: "Verification Failed", description: "Payment verification failed. If amount was deducted, contact support.", variant: 'destructive' });
+                setIsProcessing(false);
+              }
+            } catch (error) {
+              console.error('❌ Error during verification:', error);
+              toast({ title: "System Error", description: "Payment verification failed due to a system error.", variant: 'destructive' });
               setIsProcessing(false);
             }
-          } catch (error) {
-            console.error('Payment verification error:', error);
-            toast({ 
-              title: "Verification Error", 
-              description: "Unable to verify payment. Contact support if amount was deducted.", 
-              variant: 'destructive' 
-            });
-            setIsProcessing(false);
-          }
         },
-        prefill: {
-          name: addr.fullName,
-          contact: addr.phone,
-          email: user?.emailAddresses?.[0]?.emailAddress || '',
-        },
-        notes: {
-          address: `${addr.line1}, ${addr.city}`,
-          customer_id: user?.id || '',
-        },
-        theme: {
-          color: '#3b82f6'
-        },
-        modal: {
-          ondismiss: function() {
-            console.log('❌ Payment modal dismissed by user');
-            setIsProcessing(false);
-          }
-        },
-        config: {
-          display: {
-            blocks: {
-              banks: {
-                name: 'Pay using Net Banking',
-                instruments: [
-                  {
-                    method: 'netbanking'
-                  }
-                ]
-              },
-              utib: {
-                name: 'Pay using UPI',
-                instruments: [
-                  {
-                    method: 'upi'
-                  }
-                ]
-              }
-            },
-            sequence: ['block.utib', 'block.banks'],
-            preferences: {
-              show_default_blocks: true
-            }
-          }
-        }
+        prefill: { name: addr.fullName, contact: addr.phone, email: user?.emailAddresses?.[0]?.emailAddress || '' },
+        theme: { color: '#fb923c' },
+        modal: { ondismiss: () => { console.log('❌ Payment modal closed'); setIsProcessing(false); } }
       };
-
-      console.log('🎯 Opening Razorpay modal...');
       const rzp = new (window as any).Razorpay(options);
-      
-      rzp.on('payment.failed', function (response: any) {
-        console.log('❌ Payment FAILED:', response.error);
-        toast({ 
-          title: "Payment Failed", 
-          description: response.error.description || 'Payment was not successful', 
-          variant: 'destructive' 
-        });
-        setIsProcessing(false);
-      });
-      
       rzp.open();
-
     } catch (error) {
-      console.error('💥 Payment error:', error);
-      const errorMessage = error instanceof Error ? error.message : "Payment initiation failed";
-      toast({ title: "Error", description: errorMessage, variant: 'destructive' });
+      console.error('❌ Payment Initiation Error:', error);
+      toast({ title: "Error", description: "Connection failed. Please check your internet.", variant: 'destructive' });
       setIsProcessing(false);
-    }
-  }
-  
-  if (authLoading) {
-    return <div className="flex justify-center py-10"><LoadingSpinner /></div>;
-  }
-
-  if (items.length === 0 || !user) {
-    return null;
-  }
-
-  const handleCODOrder = async () => {
-    console.log('🚀 COD Order initiated by user');
-    setIsProcessing(true);
-    
-    const addr = addresses.find(a => a.default) || addresses[0]
-    if (!addr) {
-      console.log('❌ No address found');
-      toast({ title: "Error", description: "Please add and select a delivery address.", variant: 'destructive' });
-      setShowForm(true);
-      setIsProcessing(false);
-      return;
-    }
-
-    try {
-      console.log('📝 Processing COD order for user:', user?.id);
-
-      // Calculate eligible gifts
-      const currentCartValue = subtotal - totalDiscount;
-      const eligibleGifts = GIFTS.filter(g => currentCartValue >= g.threshold).map(g => ({
-         id: `gift-${g.id}`,
-         qty: 1,
-         weight: 0,
-         name: `FREE GIFT: ${g.name}`,
-         category: 'gift',
-         price: 0,
-         image: g.image,
-         variantId: 'gift',
-         slug: 'gift'
-      }));
-      
-      const allItems = [...items, ...eligibleGifts];
-
-      // 1. Call API First (Handles Wallet Deduction & Supabase Order)
-      // This is critical for Dropshippers to ensure funds are deducted BEFORE order is confirmed locally
-      const apiResponse = await fetch('/api/place-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user!.id,
-          items: allItems.map(item => ({
-            productId: item.id,
-            name: item.name,
-            price: item.price,
-            quantity: item.qty,
-            image: item.image
-          })),
-          total: finalTotal,
-          paymentMethod: 'COD',
-          paymentId: 'cod_order',
-          shippingAddress: {
-            name: addr.fullName,
-            phone: addr.phone,
-            address: addr.line1,
-            city: addr.city,
-            state: addr.state,
-            pincode: addr.pincode
-          },
-          ...(user!.is_dropshipper && {
-              dropshipperSellingPrice: sellingPrice,
-              dropshipperOrderType: dropshipperOrderType,
-              confirmationType: confirmationType,
-              orderNote: orderNote
-          })
-        })
-      });
-
-      const apiResult = await apiResponse.json();
-
-      if (!apiResult.success) {
-        throw new Error(apiResult.error || 'Failed to place order');
-      }
-
-      console.log('✅ API Order created:', apiResult.orderId);
-
-      // 2. Create Firebase Order (For UI/Client State)
-      // We pass the orderId from API to keep them in sync
-      const dropshipperInfo = user!.is_dropshipper ? {
-        sellingPrice,
-        orderType: dropshipperOrderType,
-        confirmation: confirmationType,
-        note: orderNote
-      } : undefined;
-
-      const newOrder = await placeOrder(
-        user!.id, 
-        allItems, 
-        addr, 
-        finalTotal, 
-        'COD' as any, 
-        apiResult.orderId,
-        dropshipperInfo
-      )
-      
-      console.log('✅ COD Order created:', newOrder.id);
-      
-      // Register user in admin system (Background)
-      try {
-        await fetch('/api/register-user', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: user!.id,
-            email: user!.emailAddresses?.[0]?.emailAddress || user!.id,
-            fullName: user!.fullName || 'User',
-            phone: user!.phoneNumbers?.[0]?.phoneNumber || ''
-          })
-        })
-      } catch (error) {
-        console.error('Error registering user:', error)
-      }
-      
-      // Deduct coins if applied
-      if (coinsApplied && coinsToUse > 0) {
-        console.log('💰 Deducting coins:', coinsToUse);
-        try {
-          await fetch('/api/user-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              userId: user!.id, 
-              type: 'coins', 
-              data: userCoins - coinsToUse 
-            })
-          })
-        } catch (error) {
-          console.error('Error deducting coins:', error)
-        }
-      }
-      
-      console.log('🛒 Clearing cart...');
-      await clearCartFromDB(user!.id);
-      
-      // Show spin wheel after order completion
-      console.log('🎯 Setting spin wheel to show...');
-      setOrderCompleted(true)
-      setShowSpinWheel(true)
-      
-      console.log('✅ COD Order process completed successfully');
-      toast({ 
-        title: "🎉 Order Placed Successfully!", 
-        description: user?.is_dropshipper 
-          ? `Order #${newOrder.id} confirmed. Amount deducted from wallet.`
-          : `Order #${newOrder.id} confirmed. Pay ₹${finalTotal} on delivery!` 
-      });
-      
-    } catch (error: any) {
-      console.error('💥 COD Order placement failed:', error);
-      toast({ 
-        title: "Order Failed", 
-        description: error.message || "COD order creation failed. Please try again.", 
-        variant: 'destructive' 
-      });
-      setIsProcessing(false);
-    }
-  }
-
-  const handleAction = () => {
-    // For dropshippers, always use wallet-based flow (both Prepaid and COD)
-    if (user?.is_dropshipper) {
-      handleCODOrder(); // This already handles wallet deduction
-    } else if (paymentMethod === 'COD') {
-      handleCODOrder();
-    } else {
-      handleOnlinePayment(); // Razorpay for regular customers
     }
   }
 
   const handleSaveAddress = async (addr: Omit<Address, 'id'>) => {
     if (user) {
-      try {
-        const addressToSave = editingAddress ? { ...editingAddress, ...addr } : addr;
-        await save(user.id, addressToSave);
-        setShowForm(false);
-        setEditingAddress(undefined);
-        toast({
-          title: "Address Saved",
-          description: "Your delivery address has been saved successfully.",
-        });
-      } catch (error) {
-        console.error('Failed to save address:', error);
-        toast({
-          title: "Error",
-          description: "Failed to save address. Please try again.",
-          variant: "destructive"
-        });
-      }
+      await save(user.id, editingAddress ? { ...editingAddress, ...addr } : addr);
     } else if (isGuest) {
-      // For guest users, store address temporarily
-      const guestAddress = { ...addr, id: 'guest-address', default: true };
-      // Store in state for checkout
-      save('guest', guestAddress);
-      setShowForm(false);
-      toast({
-        title: "Address Added",
-        description: "Your delivery address has been added for this order.",
-      });
+      save('guest', { ...addr, id: 'guest-address', default: true });
     }
-  }
-
-  const handleSetDefault = async (addressId: string) => {
-    if (user) {
-        await setDefault(user.id, addressId);
-    }
+    setShowForm(false);
+    setEditingAddress(undefined);
   }
 
   const handleSpinWin = async (wonCoins: number) => {
     const newCoins = userCoins - (coinsApplied ? coinsToUse : 0) + wonCoins
     setUserCoins(newCoins)
-    
-    try {
-      await fetch('/api/user-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          userId: user?.id, 
-          type: 'coins', 
-          data: newCoins 
-        })
-      })
-    } catch (error) {
-      console.error('Error updating coins:', error)
+    if (user) {
+      await fetch('/api/user-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: user.id, type: 'coins', data: newCoins }) })
     }
   }
 
   const handleSpinClose = () => {
     setShowSpinWheel(false)
-    if (orderCompleted) {
-      router.push('/account')
-    }
+    if (orderCompleted) router.push('/account')
   }
+
+  if (authLoading) return <div className="flex justify-center py-20"><LoadingSpinner /></div>;
+
+  if (orderCompleted) {
+    return (
+      <div className="min-h-[80vh] flex flex-col items-center justify-center p-6 text-center bg-white animate-in zoom-in duration-500">
+        <div className="w-32 h-32 bg-green-50 text-green-500 rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-green-100 ring-[12px] ring-green-50/50 animate-bounce">
+          <CheckCircle className="w-16 h-16" strokeWidth={3} />
+        </div>
+        <h2 className="text-5xl font-black text-slate-900 mb-6 tracking-tighter">ORDER PLACED! 🎉</h2>
+        <p className="text-slate-500 font-bold mb-10 max-w-sm text-lg leading-tight uppercase tracking-wider">Your package is ready to ship. Keep your phone handy! 🚚</p>
+        <div className="flex flex-col gap-4 w-full max-w-sm">
+          <Button asChild className="h-16 font-black text-lg rounded-3xl bg-brand hover:scale-[1.05] transition-transform shadow-2xl shadow-brand/30"><Link href="/account">Track My Order 📦</Link></Button>
+          <Button variant="ghost" asChild className="h-14 font-black rounded-3xl text-slate-400 hover:text-brand"><Link href="/">Back to Shop 🛍️</Link></Button>
+        </div>
+        <SpinWheel isOpen={showSpinWheel} onClose={handleSpinClose} onWin={handleSpinWin} />
+      </div>
+    );
+  }
+
+  if (items.length === 0 && !isGuest && !user && !showGuestOptions) return null;
 
   return (
     <>
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       
-      {/* Guest Checkout Options Modal */}
-      {showGuestOptions && !isGuest && !user && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <h2 className="text-2xl font-bold mb-4 text-center">Complete Your Purchase</h2>
-            <p className="text-gray-600 text-center mb-6">Choose how you'd like to continue</p>
-            
-            <div className="space-y-3">
-              <button
-                onClick={() => {
-                  setIsGuest(true);
-                  setShowGuestOptions(false);
-                }}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all"
-              >
-                🛒 Continue as Guest
-              </button>
-              
-              <Link
-                href="/sign-in"
-                className="block w-full bg-white border-2 border-gray-300 hover:border-blue-600 text-gray-700 hover:text-blue-600 font-semibold py-3 px-6 rounded-lg transition-all text-center"
-              >
-                🔐 Sign In for Faster Checkout
-              </Link>
+      {showGuestOptions && (
+        <div className="fixed inset-0 bg-slate-900/95 z-[100] flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="bg-white rounded-[40px] p-10 max-w-sm w-full shadow-2xl animate-in zoom-in duration-300">
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-brand/10 text-brand rounded-full flex items-center justify-center mx-auto mb-6"><ShieldCheck className="w-10 h-10" /></div>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tight">Guest Checkout</h2>
+              <p className="text-slate-400 font-bold text-xs mt-3 uppercase tracking-widest leading-relaxed">Enter your mobile number to start your shopping journey</p>
             </div>
-            
-            <p className="text-xs text-gray-500 text-center mt-4">
-              Signed in users get order tracking, faster checkout, and exclusive offers
-            </p>
+            <div className="space-y-6">
+              <div className="relative group">
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-black border-r border-slate-100 pr-4">+91</span>
+                <input type="tel" maxLength={10} placeholder="98765 43210" value={guestPhone} onChange={(e) => { setGuestPhone(e.target.value.replace(/\D/g, '')); setPhoneError(''); }} className={`w-full h-16 pl-20 pr-6 bg-slate-50 border-2 rounded-[24px] text-xl font-black placeholder:text-slate-200 focus:ring-8 focus:ring-brand/5 transition-all outline-none ${phoneError ? 'border-red-500' : 'border-slate-100 focus:border-brand'}`} />
+              </div>
+              <button onClick={() => { 
+                if (guestPhone.length !== 10) { setPhoneError('Invalid Number'); return; } 
+                localStorage.setItem('isGuest', 'true');
+                localStorage.setItem('guestPhone', guestPhone);
+                setIsGuest(true); 
+                setShowGuestOptions(false); 
+              }} className="w-full h-16 bg-brand text-white font-black text-xl rounded-[24px] shadow-2xl shadow-brand/30 transition-all active:scale-95 group overflow-hidden relative">
+                <span className="relative z-10 flex items-center justify-center gap-2">Continue 🛍️</span>
+                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-[20deg]" />
+              </button>
+              <div className="text-center">
+                 <Link href="/login" className="text-[10px] font-black text-slate-400 hover:text-brand uppercase tracking-widest">Already have an account? Login</Link>
+              </div>
+            </div>
           </div>
         </div>
       )}
       
-      <div className="grid gap-6 md:grid-cols-[1fr_360px] md:items-start">
-        <div className="space-y-4">
-          <h1 className="mb-4 text-2xl font-bold">
-            Checkout {isGuest && <span className="text-sm font-normal text-gray-500">(Guest)</span>}
+      <div className="grid gap-6 md:grid-cols-[1fr_380px] md:items-start max-w-7xl mx-auto px-4 py-8">
+        <div className="md:col-span-1 space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+            <Lock className="w-6 h-6 md:w-8 md:h-8 text-brand" />
+            Secure Checkout
           </h1>
-          <ProgressOfferBar />
-          
-          {/* Trust Building Banner */}
-          <div className="bg-gradient-to-r from-green-600 to-green-700 text-white p-4 rounded-xl shadow-lg mb-6 flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <CheckCircle className="h-5 w-5 fill-white text-green-600" />
-                <span className="font-black text-lg">GST VERIFIED SELLER</span>
-              </div>
-              <p className="text-sm font-mono opacity-90">GSTIN: 10ELHPD1779R1ZQ</p>
-            </div>
-            <div className="hidden sm:block">
-              <ShieldCheck className="h-12 w-12 opacity-30" />
-            </div>
-          
-          {/* Gift Gallery */}
-          <GiftGallery cartValue={subtotal - totalDiscount} />
+          <div className="flex items-center gap-1 bg-green-50 px-3 py-1 rounded-lg border border-green-100">
+            <ShieldCheck className="w-4 h-4 text-green-600" />
+            <span className="text-xs font-bold text-green-700 uppercase tracking-wide">100% Safe</span>
           </div>
-
-          <div className="card p-4">
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-lg font-medium">Delivery Address</h2>
-              {!showForm && <button onClick={() => { setEditingAddress(undefined); setShowForm(true); }} className="text-sm font-semibold text-brand hover:underline">+ Add New</button>}
-            </div>
-
-            {!showForm ? (
-              <div className="space-y-3">
-                {addresses.map((a) => (
-                  <div key={a.id} className={`rounded-lg border p-3 cursor-pointer transition-all ${a.default ? 'border-brand ring-2 ring-brand/20' : 'border-gray-200 hover:border-gray-400'}`} onClick={() => a.id && handleSetDefault(a.id)}>
-                    <div className="font-semibold text-sm">{a.fullName} — {a.phone}</div>
-                    <div className="text-sm text-gray-600">{a.line1}{a.line2 ? `, ${a.line2}` : ''}, {a.city}, {a.state} - {a.pincode}</div>
-                    {a.landmark && <div className="text-xs text-gray-500">Landmark: {a.landmark}</div>}
-                    {a.default && <div className="mt-1 text-xs font-bold text-green-600">Default Address</div>}
-                  </div>
-                ))}
-              </div>
-            ) : (
-                <div className="mt-3">
-                    <AddressForm 
-                        action={handleSaveAddress}
-                        initial={editingAddress} 
-                        onCancel={() => { if(addresses.length > 0) { setShowForm(false); setEditingAddress(undefined); } }} 
-                    />
-                </div>
-            )}
-          </div>
-          
-          {/* Replacement Policy Notice */}
-          <div className="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
-            <h3 className="text-sm font-bold text-amber-900 flex items-center gap-2 mb-2">
-              <Video className="h-4 w-4" /> REPLACEMENT POLICY (MUST READ)
-            </h3>
-            <ul className="text-xs text-amber-800 space-y-1.5 list-disc pl-4">
-              <li><strong>Replacement Only</strong>: No returns/refunds. Only replacement for damaged items.</li>
-              <li><strong>Unboxing Video Mandatory</strong>: No replacement without a clear opening video.</li>
-              <li><strong>Non-Refundable</strong>: Payments via Razorpay/UPI are non-refundable.</li>
-            </ul>
-          </div>
-
-          {user?.is_dropshipper && (
-            <div className="card p-4 space-y-4 border-2 border-brand/20 bg-brand/5">
-              <h2 className="text-lg font-bold text-brand flex items-center gap-2">
-                🏷️ Dropshipper Order Configuration
-              </h2>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-1">
-                  <label className="text-sm font-semibold">Your Selling Price (to Customer)</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
-                    <input 
-                      type="number"
-                      value={sellingPrice}
-                      onChange={(e) => setSellingPrice(Number(e.target.value))}
-                      className="w-full pl-8 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand shadow-sm"
-                      placeholder="Enter price customer will pay"
-                    />
-                  </div>
-                  <p className="text-[10px] text-gray-500">Your profit: ₹{Math.max(0, sellingPrice - finalTotal).toLocaleString()}</p>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-sm font-semibold">Customer Payment Type</label>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => setDropshipperOrderType('cod')}
-                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-all ${dropshipperOrderType === 'cod' ? 'bg-brand text-white border-brand' : 'bg-white text-gray-600 border-gray-200 hover:border-brand/40'}`}
-                    >
-                      Cash on Delivery
-                    </button>
-                    <button 
-                      onClick={() => setDropshipperOrderType('prepaid')}
-                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-all ${dropshipperOrderType === 'prepaid' ? 'bg-brand text-white border-brand' : 'bg-white text-gray-600 border-gray-200 hover:border-brand/40'}`}
-                    >
-                      Prepaid
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-sm font-semibold">Confirmation Preference</label>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => setConfirmationType('direct')}
-                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-all ${confirmationType === 'direct' ? 'bg-brand text-white border-brand' : 'bg-white text-gray-600 border-gray-200 hover:border-brand/40'}`}
-                    >
-                      Confirm Direct
-                    </button>
-                    <button 
-                      onClick={() => setConfirmationType('call')}
-                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-all ${confirmationType === 'call' ? 'bg-brand text-white border-brand' : 'bg-white text-gray-600 border-gray-200 hover:border-brand/40'}`}
-                    >
-                      Call to Confirm
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-sm font-semibold">Order Note (Optional)</label>
-                  <input 
-                    type="text"
-                    value={orderNote}
-                    onChange={(e) => setOrderNote(e.target.value)}
-                    placeholder="e.g. Please wrap carefully"
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand shadow-sm"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-          
         </div>
-        <div className="card sticky top-24 p-4">
-          <h2 className="text-lg font-semibold">Order Summary</h2>
-          <div className="mt-4 space-y-3">
-            {items.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <p className="text-sm">Your cart is empty</p>
-                <p className="text-xs mt-2">Loading cart items...</p>
+
+        {/* TRUST BLOCK */}
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 border-green-100 mb-4">
+          <h3 className="text-xs md:text-sm font-black text-green-800 mb-3 md:mb-4 uppercase tracking-wide flex items-center gap-2">
+            <span className="bg-green-200 text-green-800 p-1 rounded">✨</span> Why Prepaid?
+          </h3>
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
+             <div className="flex items-start gap-2 backdrop-blur-sm bg-white/40 p-2 md:p-3 rounded-xl border border-green-100/50">
+               <Truck className="w-4 h-4 md:w-5 md:h-5 text-green-600 mt-0.5" />
+               <div className="leading-tight">
+                 <p className="font-black text-xs md:text-sm text-slate-800">Fast Dispatch</p>
+                 <p className="text-[10px] md:text-xs font-medium text-slate-500 mt-0.5">Dispatched within 24hrs</p>
+               </div>
+             </div>
+             <div className="flex items-start gap-2 backdrop-blur-sm bg-white/40 p-2 md:p-3 rounded-xl border border-green-100/50">
+               <Zap className="w-4 h-4 md:w-5 md:h-5 text-green-600 mt-0.5" />
+               <div className="leading-tight">
+                 <p className="font-black text-xs md:text-sm text-slate-800">3-5 Days Delivery</p>
+                 <p className="text-[10px] md:text-xs font-medium text-slate-500 mt-0.5">Super fast shipping</p>
+               </div>
+             </div>
+             <div className="flex items-start gap-2 backdrop-blur-sm bg-white/40 p-2 md:p-3 rounded-xl border border-green-100/50">
+                <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-green-600 mt-0.5" />
+               <div className="leading-tight">
+                 <p className="font-black text-xs md:text-sm text-slate-800">Zero Fraud</p>
+                 <p className="text-[10px] md:text-xs font-medium text-slate-500 mt-0.5">Prepaid is most secure</p>
+               </div>
+             </div>
+             <div className="flex items-start gap-2 backdrop-blur-sm bg-white/40 p-2 md:p-3 rounded-xl border border-green-100/50">
+               <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 mt-0.5" />
+               <div className="leading-tight">
+                 <p className="font-black text-xs md:text-sm text-slate-800">Support</p>
+                 <p className="text-[10px] md:text-xs font-medium text-slate-500 mt-0.5">WhatsApp help available</p>
+               </div>
+             </div>
+          </div>
+        </div>
+
+        <ProgressOfferBar />
+
+        {/* 1. Address Section */}
+        <section className="bg-white rounded-2xl md:rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+          <div className="bg-slate-50 px-4 md:px-6 py-3 md:py-4 border-b border-slate-100 flex justify-between items-center">
+             <h2 className="text-sm md:text-lg font-black text-slate-800 uppercase tracking-wide flex items-center gap-2">
+               <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-brand text-white flex items-center justify-center text-xs md:text-sm">1</div>
+               Delivery Details
+             </h2>
+             {(editingAddress || addresses.length > 0) && !showForm && (
+               <button onClick={() => { setEditingAddress(editingAddress || addresses[0]); setShowForm(true); }} className="text-[10px] md:text-xs font-bold text-brand hover:text-brand/80 border border-brand/20 px-3 py-1 rounded-full bg-brand/5">
+                 CHANGE
+               </button>
+             )}
+          </div>
+          
+          <div className="p-4 md:p-6">
+            {!showForm && (editingAddress || addresses.length > 0) ? (
+              <div className="group relative bg-slate-50 rounded-xl md:rounded-2xl p-4 border-2 border-slate-100 hover:border-brand/30 transition-all cursor-pointer" onClick={() => { setEditingAddress(editingAddress || addresses[0]); setShowForm(true); }}>
+                <div className="flex items-start gap-3 md:gap-4">
+                  <div className="mt-1 bg-white p-2 rounded-full shadow-sm text-brand">
+                    <MapPin className="w-4 h-4 md:w-5 md:h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-black text-sm md:text-base text-slate-900">{(editingAddress || addresses[0]).fullName}</h3>
+                      <span className="bg-slate-200 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Home</span>
+                    </div>
+                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium mb-1 line-clamp-2">{(editingAddress || addresses[0]).line1}, {(editingAddress || addresses[0]).city}, {(editingAddress || addresses[0]).state} - {(editingAddress || addresses[0]).pincode}</p>
+                    <p className="text-xs md:text-sm font-bold text-slate-900">+91 {(editingAddress || addresses[0]).phone}</p>
+                    <div className="flex items-center gap-1 mt-2 text-[10px] font-bold text-green-600 bg-green-50 w-fit px-2 py-1 rounded-lg">
+                      <CheckCircle className="w-3 h-3" /> Area Serviceable
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-slate-300 group-hover:text-brand group-hover:translate-x-1 transition-all" />
+                </div>
               </div>
             ) : (
-              items.map(item => (
-                <div key={item.id} className="flex items-center gap-3 text-sm">
-                  <div className="relative h-14 w-14 shrink-0">
-                    <Image src={item.image} alt={item.name} fill className="rounded-md object-cover" />
-                  </div>
-                  <div className="flex-grow">
-                    <div className="line-clamp-1 font-medium">{item.name}</div>
-                    {item.customName && (
-                      <div className="text-xs text-blue-600 font-medium">Custom: "{item.customName}"</div>
-                    )}
-                    <div className="text-xs text-gray-500">Qty: {item.qty}</div>
-                  </div>
-                  <div className="font-medium">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>
-                </div>
-              ))
+               <AddressForm action={handleSaveAddress} initial={editingAddress} prefillPhone={guestPhone} onCancel={() => { setShowForm(false); setEditingAddress(undefined); }} />
             )}
           </div>
-          <div className="mt-4 space-y-2 border-t pt-4 text-sm">
-            <div className="flex justify-between">
-              <span>Subtotal (MRP)</span>
-              <span>₹{subtotal.toLocaleString('en-IN')}</span>
-            </div>
-            {totalDiscount > 0 && (
-              <div className="flex justify-between text-green-600">
-                <span>Discount</span>
-                <span>-₹{totalDiscount.toLocaleString('en-IN')}</span>
-              </div>
-            )}
-            <div className="flex justify-between font-medium">
-              <span>Item Total</span>
-              <span>₹{(subtotal - totalDiscount).toLocaleString('en-IN')}</span>
-            </div>
-            
-            {/* Only show shipping for dropshippers */}
-            {user?.is_dropshipper && (
-              <div className="flex justify-between">
-                <span>Shipping ({shippingDetails.totalWeightKg}kg)</span>
-                <span>₹{shippingDetails.shippingCost}</span>
-              </div>
-            )}
-            
-            {/* Show Free Delivery for normal users */}
-            {!user?.is_dropshipper && (
-              <div className="flex justify-between text-green-600 font-medium">
-                <span>🎉 Delivery</span>
-                <span>FREE</span>
-              </div>
-            )}
-            
-            {/* Prepaid Discount - 5% for normal users */}
-            {!user?.is_dropshipper && paymentMethod !== 'COD' && (
-              <div className="flex justify-between text-green-600 font-medium">
-                <span>💳 Prepaid Discount (5%)</span>
-                <span>-₹{Math.round((subtotal - totalDiscount) * 0.05).toLocaleString('en-IN')}</span>
-              </div>
-            )}
-            
-            {/* COD charge removed - now ₹0 */}
-          </div>
-          
+        </section>
 
-          
-          <div className="mt-3 flex justify-between font-semibold border-t pt-3">
-            <span>Total Amount</span>
-            <div className="text-right">
-              {coinsDiscount > 0 && (
-                <div className="text-sm text-gray-500 line-through">
-                  ₹{total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </div>
-              )}
-              <span className="text-lg">₹{finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-            </div>
-          </div>
+        {/* 2. Payment Section */}
+        <section className={`bg-white rounded-2xl md:rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-500 ${!editingAddress && addresses.length === 0 || showForm ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
+           <div className="bg-slate-50 px-4 md:px-6 py-3 border-b border-slate-100">
+             <h2 className="text-sm md:text-lg font-black text-slate-800 uppercase tracking-wide flex items-center gap-2">
+               <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-brand text-white flex items-center justify-center text-xs md:text-sm">2</div>
+               Payment Method
+             </h2>
+           </div>
 
-          {!user?.is_dropshipper && (
-            <div className="mt-6 space-y-4">
-              <DeliveryEstimate />
-              <TrustBadges />
-            </div>
-          )}
-          
-          <div className="mt-4">
-              <h3 className="text-md font-semibold mb-2">Payment Method</h3>
-              
-              {user?.is_dropshipper && (
-                <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-blue-800 font-medium">Wallet Balance</span>
-                    <span className="text-lg font-bold text-blue-900">₹{walletBalance.toLocaleString()}</span>
+           <div className="p-3 md:p-6 space-y-2 md:space-y-4">
+              {/* UPI Option */}
+              <button
+                onClick={() => setPaymentMethod('UPI')}
+                className={`w-full relative overflow-hidden flex flex-col items-start gap-2 p-3 md:p-5 rounded-xl md:rounded-2xl border-2 transition-all group text-left ${
+                  paymentMethod === 'UPI'
+                    ? 'border-green-500 bg-green-50 ring-4 ring-green-100 shadow-xl shadow-green-100'
+                    : 'border-slate-100 hover:border-green-200 hover:bg-green-50/30'
+                }`}
+              >
+                {paymentMethod === 'UPI' && (
+                  <div className="absolute top-0 right-0 bg-green-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-bl-xl uppercase tracking-wider shadow-sm">
+                    Recommended
                   </div>
-                  {/* COD payment option removed - prepaid only */}
+                )}
+                
+                <div className="flex items-center gap-3 w-full">
+                  <div className={`h-10 w-10 md:h-12 md:w-12 rounded-xl flex items-center justify-center text-xl md:text-2xl shadow-sm border transition-colors ${paymentMethod === 'UPI' ? 'bg-green-100 border-green-200 text-green-600' : 'bg-white border-slate-100 text-slate-400'}`}>
+                    <QrCode className="w-5 h-5 md:w-6 md:h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className={`font-black text-sm md:text-base ${paymentMethod === 'UPI' ? 'text-green-800' : 'text-slate-700'}`}>Pay with UPI / QR</h3>
+                    <p className="text-[10px] md:text-xs font-semibold text-slate-400">GooglePay, PhonePe, Paytm</p>
+                  </div>
+                  <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center transition-all ${paymentMethod === 'UPI' ? 'border-green-500 bg-green-500 text-white scale-110' : 'border-slate-200'}`}>
+                    {paymentMethod === 'UPI' && <CheckCircle className="w-3 h-3 md:w-4 md:h-4" />}
+                  </div>
                 </div>
-              )}
+                
+                <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-md transition-colors ${paymentMethod === 'UPI' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}`}>
+                   <Zap className="w-3 h-3" /> Fastest & Safest
+                </div>
+              </button>
 
-              <div className="space-y-2">
-                  {/* All users - Prepaid payment options only */}
-                  {paymentOptions.map(opt => (
-                    <div key={opt.id}>
-                      <label className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-all ${paymentMethod === opt.id ? 'border-brand ring-2 ring-brand/20' : 'border-gray-200 hover:border-gray-400'}`}>
-                        <input type="radio" name="paymentMethod" value={opt.id} checked={paymentMethod === opt.id} onChange={() => setPaymentMethod(opt.id)} className="h-4 w-4 text-brand focus:ring-brand" />
-                        <opt.icon className="h-6 w-6 text-gray-600" />
-                        <div>
-                          <div className="font-semibold text-sm">{opt.title}</div>
-                          <div className="text-xs text-gray-500">{opt.description}</div>
+              {/* Card Option */}
+              <button
+                onClick={() => setPaymentMethod('CARD')}
+                className={`w-full flex items-center gap-3 md:gap-4 p-3 rounded-xl md:rounded-2xl border-2 transition-all group text-left ${
+                  paymentMethod === 'CARD'
+                    ? 'border-brand bg-brand/5 ring-4 ring-brand/10'
+                    : 'border-slate-100 hover:border-slate-200'
+                }`}
+              >
+                <div className={`h-10 w-10 md:h-12 md:w-12 rounded-xl flex items-center justify-center shadow-sm border transition-colors ${paymentMethod === 'CARD' ? 'bg-white border-brand/20 text-brand' : 'bg-white border-slate-100 text-slate-400'}`}>
+                  <CreditCard className="w-5 h-5 md:w-6 md:h-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className={`font-black text-sm md:text-base ${paymentMethod === 'CARD' ? 'text-brand' : 'text-slate-700'}`}>Credit / Debit Card</h3>
+                  <p className="text-[10px] md:text-xs font-semibold text-slate-400">Visa, Mastercard, RuPay</p>
+                </div>
+                <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'CARD' ? 'border-brand bg-brand text-white scale-110' : 'border-slate-200'}`}>
+                    {paymentMethod === 'CARD' && <CheckCircle className="w-3 h-3 md:w-4 md:h-4" />}
+                </div>
+              </button>
+
+              {/* NetBanking Option */}
+              <button
+                onClick={() => setPaymentMethod('NETBANKING')}
+                className={`w-full flex items-center gap-3 md:gap-4 p-3 rounded-xl md:rounded-2xl border-2 transition-all group text-left ${
+                  paymentMethod === 'NETBANKING'
+                    ? 'border-brand bg-brand/5 ring-4 ring-brand/10'
+                    : 'border-slate-100 hover:border-slate-200'
+                }`}
+              >
+                <div className={`h-10 w-10 md:h-12 md:w-12 rounded-xl flex items-center justify-center shadow-sm border transition-colors ${paymentMethod === 'NETBANKING' ? 'bg-white border-brand/20 text-brand' : 'bg-white border-slate-100 text-slate-400'}`}>
+                  <Banknote className="w-5 h-5 md:w-6 md:h-6" />
+                </div>
+                <div className="flex-1">
+                   <h3 className={`font-black text-sm md:text-base ${paymentMethod === 'NETBANKING' ? 'text-brand' : 'text-slate-700'}`}>Net Banking</h3>
+                   <p className="text-[10px] md:text-xs font-semibold text-slate-400">All Major Banks Supported</p>
+                </div>
+                 <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'NETBANKING' ? 'border-brand bg-brand text-white scale-110' : 'border-slate-200'}`}>
+                    {paymentMethod === 'NETBANKING' && <CheckCircle className="w-3 h-3 md:w-4 md:h-4" />}
+                </div>
+              </button>
+
+              {/* Desktop Pay Button */}
+              <div className="hidden md:block pt-4">
+                 <Button
+                  onClick={handleOnlinePayment}
+                  className="w-full h-16 mt-2 text-xl font-black rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-2xl shadow-green-500/30 hover:scale-[1.02] active:scale-95 transition-all text-white"
+                  disabled={isProcessing || items.length === 0}
+                >
+                  {isProcessing ? (
+                    <div className="flex items-center gap-3">
+                      <span className="h-6 w-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                      Processing...
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center leading-tight">
+                      <span>PAY ₹{finalTotal.toLocaleString()} & PLACE ORDER</span>
+                      <span className="text-[10px] font-bold text-green-100 mt-1 opacity-90 uppercase tracking-wide">100% Secure • Instant Confirmation</span>
+                    </div>
+                  )}
+                </Button>
+              </div>
+           </div>
+        </section>
+      </div>
+
+        {/* Column 2: Sticky Summary */}
+        {/* Column 2: Sticky Summary */}
+        <div className="md:sticky md:top-24 space-y-6">
+          <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-5 flex justify-between items-center text-white">
+              <h2 className="text-lg font-black tracking-tight flex items-center gap-2"><div className="bg-white/10 p-1.5 rounded-lg">🛍️</div> Order Summary</h2>
+              <span className="bg-white/10 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border border-white/10">{items.length} Items</span>
+            </div>
+            
+            <div className="p-6">
+              {items.length > 0 ? (
+                <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                  {items.map(item => (
+                    <div key={item.id} className="flex gap-4 group">
+                      <div className="relative h-16 w-16 shrink-0 rounded-xl overflow-hidden border border-slate-100 bg-slate-50 group-hover:border-brand/30 transition-all">
+                        {item.image ? (
+                          <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-2xl">📦</div>
+                        )}
+                      </div>
+                      <div className="flex-grow min-w-0 flex flex-col justify-center">
+                        <h4 className="font-bold text-slate-900 line-clamp-2 text-sm leading-tight">{item.name}</h4>
+                        <div className="flex items-center justify-between mt-1.5">
+                           <div className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">Qty: {item.qty}</div>
+                           <span className="block font-black text-slate-900 text-sm">₹{(item.price * item.qty).toLocaleString()}</span>
                         </div>
-                      </label>
+                      </div>
                     </div>
                   ))}
+                </div>
+              ) : (
+                <div className="text-center py-10 mb-4 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+                  <div className="text-4xl mb-2 opacity-30">🛒</div>
+                  <p className="text-slate-400 font-bold text-sm">Cart is empty</p>
+                </div>
+              )}
+              
+              <div className="space-y-3 pt-6 border-t-2 border-dashed border-slate-100">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="font-bold text-slate-500">Subtotal</span>
+                  <span className="font-black text-slate-900">₹{subtotal.toLocaleString()}</span>
+                </div>
+                
+                {totalDiscount > 0 && (
+                  <div className="flex justify-between items-center text-sm">
+                     <span className="font-bold text-green-600 flex items-center gap-1"><Tag className="w-3 h-3" /> Savings</span>
+                     <span className="font-black text-green-600">-₹{totalDiscount.toLocaleString()}</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between items-center text-sm">
+                  <span className="font-bold text-slate-500">Delivery</span>
+                  <span className={`font-black ${totalShipping === 0 ? 'text-green-600' : 'text-slate-900'}`}>
+                    {totalShipping === 0 ? 'FREE' : `₹${totalShipping}`}
+                  </span>
+                </div>
+                
+                <div className="pt-4 mt-2 border-t border-slate-100 flex justify-between items-center">
+                  <span className="text-base font-black text-slate-900">Total to Pay</span>
+                  <span className="text-3xl font-black text-slate-900 tracking-tighter text-brand">₹{finalTotal.toLocaleString()}</span>
+                </div>
               </div>
+
+               {/* Desktop Pay Button */}
+               <div className="hidden md:block mt-6">
+                  <Button 
+                    onClick={handleOnlinePayment} 
+                    className="w-full h-14 text-lg font-black rounded-xl bg-slate-900 text-white hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all active:scale-95" 
+                    disabled={isProcessing || items.length === 0}
+                  >
+                    {isProcessing ? 'Processing...' : `Pay ₹${finalTotal.toLocaleString()}`}
+                  </Button>
+                  <p className="text-center text-[10px] font-bold text-slate-400 mt-3 flex items-center justify-center gap-1.5 uppercase tracking-wide opacity-70">
+                    <ShieldCheck className="h-3.5 w-3.5" /> 100% Secure Payment
+                  </p>
+               </div>
+            </div>
           </div>
 
-          <Button 
-              onClick={() => {
-                // Check if address exists
-                if (addresses.length === 0) {
-                  // Show address form
-                  setShowForm(true);
-                  // Scroll to address section
-                  const addressSection = document.querySelector('h2');
-                  addressSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  // Show toast
-                  toast({
-                    title: "📍 Address Required",
-                    description: "Please add a delivery address to continue",
-                    variant: "destructive"
-                  });
-                  return;
-                }
-                // Proceed with payment
-                handleAction();
-              }} 
-              className="mt-4 w-full" 
-              disabled={isProcessing}
-          >
-              {isProcessing ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                  {user?.is_dropshipper ? 'Processing Wallet Payment...' : (paymentMethod === 'COD' ? 'Placing Order...' : 'Processing Payment...')}
-                </div>
-              ) : addresses.length === 0 ? (
-                '📍 Add Delivery Address First'
-              ) : (
-                user?.is_dropshipper
-                  ? `Pay from Wallet & Place Order - ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                  : (paymentMethod === 'COD' 
-                      ? `Place COD Order - ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                      : `Pay ₹${finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
-              )}
-          </Button>
-          
-          <Button variant="link" asChild className="mt-2 w-full">
-            <Link href="/cart">Edit Cart</Link>
-          </Button>
-          
-          <div className="mt-6 space-y-4">
-            <ShippingDetails items={items.map(item => ({
-              id: item.id,
-              qty: item.qty,
-              weight: item.weight,
-              name: item.name,
-              category: item.category
-            }))} />
-            
-            <div className="card p-4 bg-blue-50 border-blue-200">
-              <h3 className="font-semibold text-blue-800 mb-2">Need Help? Call Us!</h3>
-              <a href="tel:+919157499884" className="flex items-center gap-2 text-blue-700 font-medium">
-                📞 +91 91574 99884
-              </a>
-              <p className="text-xs text-blue-600 mt-1">Available 9 AM - 9 PM for order assistance</p>
-            </div>
-            
-            <div className="card p-4 bg-orange-50 border-orange-200">
-              <h3 className="font-semibold text-orange-800 mb-2">📦 Dropshipping & Wholesale</h3>
-              <p className="text-sm text-orange-700 mb-2">
-                DROPSHIPPING के लिए या WHOLESALE PAYMENT के लिए ORDER करें
-              </p>
-              <a href="tel:+919157499884" className="flex items-center gap-2 text-orange-700 font-medium">
-                📞 +91 91574 99884
-              </a>
-              <p className="text-xs text-orange-600 mt-1">Special rates for bulk orders & dropshipping</p>
-            </div>
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-5 border border-green-100 flex items-center gap-4 shadow-sm">
+             <div className="h-12 w-12 rounded-full bg-white flex items-center justify-center text-green-500 shadow-sm border border-green-100 shrink-0">
+               <ShieldCheck className="h-6 w-6" />
+             </div>
+             <div>
+               <h4 className="font-black text-sm text-slate-900 mb-0.5">Top-notch Security</h4>
+               <p className="text-xs font-semibold text-slate-500 leading-tight">Your payment details are encrypted and safe.</p>
+             </div>
           </div>
         </div>
       </div>
-      
-      <SpinWheel 
-        isOpen={showSpinWheel}
-        onClose={handleSpinClose}
-        onWin={handleSpinWin}
-      />
+      <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-slate-100 p-4 md:hidden z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] pb-safe animation-slide-up">
+        <Button 
+          onClick={handleOnlinePayment}
+          className="w-full h-16 text-lg font-black rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-xl shadow-green-500/30 hover:scale-[1.02] active:scale-95 transition-all flex flex-col items-center justify-center gap-0.5"
+          disabled={isProcessing || items.length === 0}
+        >
+          {isProcessing ? (
+             <div className="flex items-center gap-2">
+               <span className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+               Processing...
+             </div>
+          ) : (
+            <>
+              <span className="text-lg leading-none mt-1">PAY ₹{finalTotal.toLocaleString()} & PLACE ORDER</span>
+              <span className="text-[10px] font-bold text-green-100 opacity-90 uppercase tracking-wide">100% Secure • Instant Confirmation</span>
+            </>
+          )}
+        </Button>
+      </div>
+      <SpinWheel isOpen={showSpinWheel} onClose={handleSpinClose} onWin={handleSpinWin} />
     </>
-  )
+  );
 }
