@@ -69,61 +69,76 @@ export default function ProductCampaignManager({ products }: ProductCampaignMana
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold flex items-center gap-2">
+    <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col h-full relative">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 text-slate-800">
           <MessageCircle className="w-5 h-5 text-green-600" />
           WhatsApp Campaigns
         </h2>
-        <div className="flex gap-2">
-           <Button 
-            variant="outline" 
-            onClick={() => handleBlast('new_arrival')}
-            disabled={isGenerating || selectedProducts.length === 0}
-            className="text-blue-600 border-blue-200 hover:bg-blue-50"
-          >
-            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Tag className="w-4 h-4 mr-2" />}
-            New Arrival Blast
-          </Button>
-          <Button 
-            onClick={() => handleBlast('offer')}
-            disabled={isGenerating || selectedProducts.length === 0}
-            className="bg-green-600 hover:bg-green-700 text-white"
-          >
-            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4 mr-2" />}
-            Send Offers
-          </Button>
-        </div>
+        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{products.length} Products</span>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 max-h-[400px] overflow-y-auto pr-2">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 max-h-[400px] overflow-y-auto pr-1 pb-20 custom-scrollbar">
         {products.map(product => (
           <div 
             key={product.id}
             onClick={() => toggleProduct(product.id)}
-            className={`cursor-pointer group relative border rounded-md p-2 transition-all ${selectedProducts.includes(product.id) ? 'border-green-500 bg-green-50 ring-1 ring-green-500' : 'hover:border-gray-300'}`}
+            className={`cursor-pointer group relative border rounded-md p-1.5 transition-all h-full flex flex-col ${selectedProducts.includes(product.id) ? 'border-green-500 bg-green-50 ring-1 ring-green-500' : 'hover:border-gray-300 bg-white'}`}
           >
-            <div className="relative aspect-square mb-2 rounded overflow-hidden bg-gray-100">
+            <div className="relative aspect-square mb-1.5 rounded-sm overflow-hidden bg-gray-100">
               {product.image ? (
-                <Image src={product.image} alt={product.name} fill className="object-cover" />
+                <Image src={product.image} alt={product.name} fill className="object-cover" sizes="100px" />
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-400 text-xs">No Image</div>
+                <div className="flex items-center justify-center h-full text-gray-300 text-[10px]">No Img</div>
               )}
               {selectedProducts.includes(product.id) && (
-                <div className="absolute top-1 right-1 bg-green-500 text-white rounded-full p-0.5">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                <div className="absolute top-1 right-1 bg-green-500 text-white rounded-full p-0.5 shadow-sm">
+                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
                 </div>
               )}
             </div>
-            <p className="text-xs font-medium text-gray-700 truncate">{product.name}</p>
-            <p className="text-xs text-gray-500">₹{product.price}</p>
+            <div className="flex-1 min-w-0">
+               <p className="text-[10px] font-bold text-gray-800 leading-tight line-clamp-2 mb-0.5 break-words" title={product.name}>{product.name}</p>
+               <p className="text-[10px] font-bold text-green-600">₹{product.price}</p>
+            </div>
           </div>
         ))}
       </div>
       
-      <p className="text-xs text-gray-500 mt-4 text-center">
-        Select products above to create a WhatsApp blast. Currently simulates sending to your own number for testing.
-      </p>
+      {/* Sticky Action Footer */}
+      {selectedProducts.length > 0 && (
+        <div className="absolute bottom-4 left-4 right-4 bg-slate-900/90 backdrop-blur-md text-white p-3 rounded-xl shadow-xl flex items-center justify-between animate-in slide-in-from-bottom-5 duration-200">
+          <div className="pl-2">
+            <span className="text-xs font-medium text-slate-400 block uppercase tracking-wider">Selected</span>
+            <span className="text-xl font-black leading-none">{selectedProducts.length}</span>
+          </div>
+          <div className="flex gap-2">
+            <Button 
+               size="sm"
+               variant="secondary"
+               onClick={() => handleBlast('new_arrival')}
+               disabled={isGenerating}
+               className="h-10 px-4 font-bold text-xs bg-slate-700 hover:bg-slate-600 text-white border-0"
+             >
+               {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : "New Arrivals 🚀"}
+             </Button>
+             <Button 
+               size="sm"
+               onClick={() => handleBlast('offer')}
+               disabled={isGenerating}
+               className="h-10 px-4 font-bold text-xs bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/20 border-0"
+             >
+               {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Offers 🔥"}
+             </Button>
+          </div>
+        </div>
+      )}
+      
+      {selectedProducts.length === 0 && (
+        <p className="text-xs text-gray-400 mt-2 text-center italic">
+          Tap items to select for campaign
+        </p>
+      )}
     </div>
   );
 }
