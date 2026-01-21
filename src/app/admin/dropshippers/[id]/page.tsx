@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, TrendingUp, Package, DollarSign, CheckCircle, Plus, Minus, Download, Upload, MessageCircle } from 'lucide-react'
+import { ArrowLeft, TrendingUp, Package, DollarSign, CheckCircle, Plus, Minus, Download, Upload, MessageCircle, ShieldCheck } from 'lucide-react'
 import { generateCustomerMessage, generateDropshipperMessage, openWhatsApp } from '@/lib/whatsappTemplates'
 
 interface DropshipperStats {
@@ -338,6 +338,32 @@ export default function DropshipperDetailPage({ params }: { params: { id: string
             </div>
             <CheckCircle className="text-purple-500" size={40} />
           </div>
+        </div>
+      </div>
+
+      {/* Subscription & Payment Info */}
+      <div className="bg-white rounded-lg shadow p-6 mb-6 border-l-4 border-blue-600">
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+           <ShieldCheck className="text-blue-600" /> Subscription & Payment Details
+        </h2>
+        <div className="grid md:grid-cols-3 gap-8">
+           <div className="space-y-1">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Plan</p>
+              <p className="text-lg font-black text-slate-900">{(dropshipper as any).dropshipper_plan_id || 'N/A'}</p>
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">{(dropshipper as any).dropshipper_plan_interval || 'Standard'}</span>
+           </div>
+           <div className="space-y-1">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Payment Reference</p>
+              <p className="text-lg font-mono font-bold text-blue-600">{(dropshipper as any).dropshipper_payment_id || 'NO_REF_FOUND'}</p>
+              <p className="text-xs text-slate-500">Verified via Razorpay</p>
+           </div>
+           <div className="space-y-1">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Member Since</p>
+              <p className="text-lg font-bold text-slate-900">
+                {new Date(dropshipper.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </p>
+              <p className="text-xs text-green-600 font-bold italic">Status: {dropshipper.dropshipper_status}</p>
+           </div>
         </div>
       </div>
 

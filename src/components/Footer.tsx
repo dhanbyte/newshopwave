@@ -75,7 +75,14 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-white">Follow Us</h3>
+            <h3 className="font-semibold text-white">Dropshipping</h3>
+            <ul className="mt-2 space-y-2 text-sm">
+              <li><Link href="/dropshipping-plans" className="text-blue-400 hover:text-blue-300 font-semibold">Dropshipping Plans</Link></li>
+              <li><Link href="/dropshipping" className="text-gray-400 hover:text-white">How it Works</Link></li>
+              <li><Link href="/affiliate-program" className="text-gray-400 hover:text-white">Affiliate Program</Link></li>
+              <li><Link href="/referral" className="text-gray-400 hover:text-white">Referral Program</Link></li>
+            </ul>
+            <h3 className="font-semibold text-white mt-6">Follow Us</h3>
             <div className="flex items-center gap-4 mt-2">
               <Link href="https://www.youtube.com/@shopwave" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white" aria-label="YouTube">
                 <Youtube size={20} />

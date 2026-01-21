@@ -1,0 +1,490 @@
+/* Gaming Theme Variables & Base */
+.affiliatePage {
+    --neon-cyan: #00E0FF;
+    --neon-purple: #BD00FF;
+    --neon-green: #00FF94;
+    --bg-dark: #050505;
+    --card-bg: #0F0F12;
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --font-gaming: 'Orbitron', sans-serif;
+
+    background-color: var(--bg-dark);
+    background-image: radial-gradient(circle at 50% 0%, #12121a 0%, #050505 80%);
+    color: #fff;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+    padding-bottom: 80px;
+}
+
+.mainContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* Background Grid Animation */
+.affiliatePage::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Hero Section */
+.heroSection {
+    text-align: center;
+    padding: 80px 20px 40px;
+    position: relative;
+    z-index: 1;
+}
+
+.glitchTitle {
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-shadow:
+        0 0 5px rgba(255, 255, 255, 0.1);
+    position: relative;
+    color: white;
+    font-family: var(--font-gaming);
+}
+
+.heroSubtitle {
+    font-size: 1.2rem;
+    color: #888;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+}
+
+/* Agent Card Preview */
+.agentCardPreview {
+    width: 350px;
+    background: linear-gradient(180deg, #151515 0%, #050505 100%);
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    height: fit-content;
+}
+
+/* CTA Button */
+.ctaButton {
+    background: transparent;
+    color: var(--neon-cyan);
+    border: 2px solid var(--neon-cyan);
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    transition: all 0.3s ease;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+}
+
+.ctaButton:hover {
+    background: var(--neon-cyan);
+    color: #000;
+    box-shadow: 0 0 30px var(--neon-cyan);
+}
+
+/* Section Titles */
+.sectionTitle {
+    text-align: center;
+    font-size: 2rem;
+    margin: 80px 0 40px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-family: var(--font-gaming);
+}
+
+.sectionTitle span {
+    color: var(--neon-purple);
+}
+
+/* Loot Boxes (Plans) */
+.plansContainer {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.planCard {
+    background: #0f0f13;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 40px 30px;
+    width: 350px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+}
+
+.planCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--neon-purple);
+}
+
+.planCard:hover {
+    transform: translateY(-5px);
+    border-color: #555;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.planName {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-family: var(--font-gaming);
+}
+
+.planPrice {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.planProfit {
+    color: var(--neon-green);
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.featureList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.featureList li {
+    margin-bottom: 15px;
+    color: #bbb;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+/* Milestones */
+.milestonesContainer {
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.milestoneCard {
+    background: #111;
+    border: 1px solid #333;
+    padding: 25px;
+    border-radius: 10px;
+    width: 250px;
+    text-align: center;
+    transition: 0.3s all;
+}
+
+.milestoneCard:hover {
+    border-color: var(--neon-green);
+    transform: translateY(-3px);
+}
+
+.milestoneCount {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 5px;
+}
+
+.milestoneBonus {
+    font-size: 1.8rem;
+    color: var(--neon-green);
+    font-weight: bold;
+}
+
+/* The Vault (Bank Form) */
+.vaultSection {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.vaultSection.active {
+    border-color: var(--neon-cyan);
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 10px;
+    color: #888;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.input {
+    width: 100%;
+    background: #050505;
+    border: 1px solid #333;
+    padding: 15px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    background: #0a0a0a;
+}
+
+.saveButton {
+    width: 100%;
+    background: var(--neon-green);
+    color: black;
+    font-weight: bold;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-top: 10px;
+    transition: transform 0.2s;
+    letter-spacing: 1px;
+}
+
+.saveButton:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Leaderboard */
+.leaderboardTable {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.leaderboardTable th {
+    text-align: left;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.leaderboardTable td {
+    padding: 20px;
+    border-bottom: 1px solid #222;
+    color: #ddd;
+}
+
+.rank1 {
+    color: gold;
+}
+
+.rank2 {
+    color: silver;
+}
+
+.rank3 {
+    color: #cd7f32;
+}
+
+@media (max-width: 768px) {
+    .glitchTitle {
+        font-size: 2.2rem;
+    }
+
+    .plansContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .vaultSection {
+        padding: 20px;
+        margin: 0 20px;
+    }
+
+    .agentCardPreview {
+        width: 100%;
+    }
+}
+
+/* Category Nav */
+.categoryNav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+}
+
+.catButton {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #888;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+    font-family: var(--font-gaming);
+}
+
+.catButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.activeCat {
+    background: var(--neon-cyan);
+    color: black;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 224, 255, 0.3);
+}
+
+/* Rank Table */
+.rankTableWrapper {
+    background: #0f0f13;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.rankTable {
+    width: 100%;
+    border-collapse: collapse;
+    color: #ccc;
+}
+
+.rankTable th {
+    text-align: left;
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    color: var(--neon-cyan);
+}
+
+.rankTable td {
+    padding: 15px;
+    border-bottom: 1px solid #222;
+}
+
+/* Armory Grid */
+.armoryGrid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.assetCard {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    transition: 0.3s all;
+}
+
+.assetCard:hover {
+    border-color: var(--neon-green);
+    transform: translateY(-5px);
+}
+
+.assetPreview {
+    height: 120px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.downloadBtn {
+    background: transparent;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    width: 100%;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+.downloadBtn:hover {
+    background: var(--neon-green);
+    color: black;
+}
+
+/* FAQ */
+.faqItem {
+    background: #0a0a0d;
+    border: 1px solid #222;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}

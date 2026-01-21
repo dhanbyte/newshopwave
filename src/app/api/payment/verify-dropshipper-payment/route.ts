@@ -29,6 +29,8 @@ export async function POST(request: Request) {
       razorpay_signature,
       planId,
       interval,
+      name,
+      phone,
     } = await request.json()
 
     console.log('Verifying payment:', { razorpay_order_id, razorpay_payment_id, planId, interval })
@@ -39,6 +41,7 @@ export async function POST(request: Request) {
     else if (planId === 'plan_monthly') amount = 99 * 100
     else if (planId === 'plan_yearly') amount = 799 * 100
     else if (planId === 'plan_premium') amount = 1999 * 100
+    else if (planId === 'plan_all_in_one_5000') amount = 5000 * 100
 
     // Verify signature
     const text = `${razorpay_order_id}|${razorpay_payment_id}`
@@ -73,6 +76,9 @@ export async function POST(request: Request) {
       case 'yearly':
         subscriptionEndDate.setFullYear(now.getFullYear() + 1)
         break
+      case 'lifetime':
+        subscriptionEndDate.setFullYear(now.getFullYear() + 10) // 10 years for lifetime
+        break
     }
 
     // Update user's dropshipper subscription in database
@@ -103,6 +109,8 @@ export async function POST(request: Request) {
         dropshipper_subscription_start: now.toISOString(),
         dropshipper_subscription_end: subscriptionEndDate.toISOString(),
         dropshipper_payment_id: razorpay_payment_id,
+        name: name || dbUser.name,
+        dropshipper_phone: phone || dbUser.dropshipper_phone,
         updated_at: now.toISOString(),
       })
       .eq('clerk_user_id', userId)
