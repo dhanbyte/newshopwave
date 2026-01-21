@@ -13,14 +13,10 @@ export async function POST(request: Request) {
     const authObj = await auth()
     const userId = authObj.userId
     
-    if (!userId) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const { planId, amount, interval } = await request.json()
+    // We now allow guest orders for the ₹5,000 plan
+    // If not logged in, userId will be null but we continue anyway.
+    
+    const { planId, amount, interval, email } = await request.json()
 
     if (!planId || !amount || !interval) {
       return NextResponse.json(

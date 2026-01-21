@@ -25,22 +25,13 @@ export default function DropshipperForm() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    email: user?.primaryEmailAddress?.emailAddress || '',
     plan: 'All-in-One Dropshipping Plan (₹5,000)',
   });
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!user) {
-      toast({
-        title: "Login Required",
-        description: "Please sign in to join the Partner Program.",
-        variant: "destructive"
-      });
-      window.location.href = '/sign-in';
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -57,6 +48,7 @@ export default function DropshipperForm() {
           planId: 'plan_all_in_one_5000',
           amount: 5000,
           interval: 'lifetime',
+          email: formData.email
         }),
       });
 
@@ -84,6 +76,7 @@ export default function DropshipperForm() {
               interval: 'lifetime',
               name: formData.name,
               phone: formData.phone,
+              email: formData.email
             }),
           });
 
@@ -96,7 +89,7 @@ export default function DropshipperForm() {
             });
 
             // 4. Send WhatsApp message to Admin
-            const wpMessage = `New application for Partner Program! 🚀%0A%0A*Name:* ${formData.name}%0A*WhatsApp:* ${formData.phone}%0A*Plan:* ${formData.plan}%0A*Payment ID:* ${response.razorpay_payment_id}`;
+            const wpMessage = `New application for Partner Program! 🚀%0A%0A*Name:* ${formData.name}%0A*WhatsApp:* ${formData.phone}%0A*Email:* ${formData.email}%0A*Plan:* ${formData.plan}%0A*Payment ID:* ${response.razorpay_payment_id}`;
             window.open(`https://wa.me/919157499884?text=${wpMessage}`, '_blank');
 
             // 5. Redirect to Google Form after a delay
@@ -112,9 +105,9 @@ export default function DropshipperForm() {
           }
         },
         prefill: {
-          name: formData.name || user.fullName || '',
+          name: formData.name || user?.fullName || '',
           contact: formData.phone || '',
-          email: user.primaryEmailAddress?.emailAddress || '',
+          email: formData.email || user?.primaryEmailAddress?.emailAddress || '',
         },
         theme: { color: '#2563eb' },
       };
@@ -152,6 +145,18 @@ export default function DropshipperForm() {
             placeholder="e.g. Rahul Kumar" 
             value={formData.name}
             onChange={e => setFormData({...formData, name: e.target.value})}
+            className="h-14 bg-gray-50 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-600 font-medium"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-gray-700 uppercase tracking-tight">Email Address</label>
+          <Input 
+            required 
+            type="email"
+            placeholder="rahul@example.com" 
+            value={formData.email}
+            onChange={e => setFormData({...formData, email: e.target.value})}
             className="h-14 bg-gray-50 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-600 font-medium"
           />
         </div>

@@ -16,13 +16,9 @@ export async function POST(request: Request) {
     const authObj = await auth()
     const userId = authObj.userId
     
-    if (!userId) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
+    // We now allow guest verification. If not logged in, we verify and return success.
+    // The user will be redirected to the Google Form regardless.
+    
     const {
       razorpay_order_id,
       razorpay_payment_id,
@@ -31,6 +27,7 @@ export async function POST(request: Request) {
       interval,
       name,
       phone,
+      email,
     } = await request.json()
 
     console.log('Verifying payment:', { razorpay_order_id, razorpay_payment_id, planId, interval })
@@ -81,105 +78,40 @@ export async function POST(request: Request) {
         break
     }
 
-    // Update user's dropshipper subscription in database
-    console.log('Fetching user from DB:', userId)
-    const { data: dbUser, error: userError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('clerk_user_id', userId)
-      .single()
-
-    if (userError || !dbUser) {
-      console.error('Error fetching user:', userError)
-      return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      )
-    }
-    console.log('User found:', dbUser.id)
-
-    // Update user with dropshipper subscription details
-    const { error: updateError } = await supabase
-      .from('users')
-      .update({
-        is_dropshipper: true,
-        dropshipper_status: 'active',
-        dropshipper_plan_id: planId,
-        dropshipper_plan_interval: interval,
-        dropshipper_subscription_start: now.toISOString(),
-        dropshipper_subscription_end: subscriptionEndDate.toISOString(),
-        dropshipper_payment_id: razorpay_payment_id,
-        name: name || dbUser.name,
-        dropshipper_phone: phone || dbUser.dropshipper_phone,
-        updated_at: now.toISOString(),
-      })
-      .eq('clerk_user_id', userId)
-
-    if (updateError) {
-      console.error('❌ Error updating user subscription:', {
-        error: updateError,
-        errorMessage: updateError.message,
-        errorDetails: updateError.details,
-        errorHint: updateError.hint,
-        userId: userId,
-        dbUserId: dbUser.id,
-        planId: planId,
-        interval: interval
-      })
-      
-      // ⚠️ CRITICAL: Payment succeeded but DB update failed
-      // Before refunding, let's try one more time with a retry mechanism
-      console.log('🔄 Attempting retry for database update...')
-      
-      const { error: retryError } = await supabase
+    // If user is logged in, update their subscription
+    if (userId) {
+      console.log('Fetching user from DB:', userId)
+      const { data: dbUser, error: userError } = await supabase
         .from('users')
-        .update({
-          is_dropshipper: true,
-          dropshipper_status: 'active',
-          dropshipper_plan_id: planId,
-          dropshipper_plan_interval: interval,
-          dropshipper_subscription_start: now.toISOString(),
-          dropshipper_subscription_end: subscriptionEndDate.toISOString(),
-          dropshipper_payment_id: razorpay_payment_id,
-          updated_at: now.toISOString(),
-        })
+        .select('*')
         .eq('clerk_user_id', userId)
-      
-      if (!retryError) {
-        console.log('✅ Retry successful! Subscription activated.')
-        // Continue to success response
+        .single()
+
+      if (userError || !dbUser) {
+        console.error('Error fetching user:', userError)
+        // If user not in DB yet, we skip update but still return success for payment
       } else {
-        console.error('❌ Retry also failed:', retryError)
-        
-        // ⚠️ WARNING: Commenting out automatic refund for now
-        // Manual admin intervention required
-        console.error('🚨 MANUAL ACTION REQUIRED: Payment successful but database update failed')
-        console.error('Payment ID:', razorpay_payment_id)
-        console.error('User ID:', userId)
-        console.error('Amount:', amount)
-        
-        // DON'T REFUND AUTOMATICALLY - Contact admin first
-        /* 
-        try {
-          await (razorpay as any).refunds.create({
-            payment_id: razorpay_payment_id,
-            amount: amount,
+        console.log('User found:', dbUser.id)
+        // Update user with dropshipper subscription details
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({
+            is_dropshipper: true,
+            dropshipper_status: 'active',
+            dropshipper_plan_id: planId,
+            dropshipper_plan_interval: interval,
+            dropshipper_subscription_start: now.toISOString(),
+            dropshipper_subscription_end: subscriptionEndDate.toISOString(),
+            dropshipper_payment_id: razorpay_payment_id,
+            name: name || dbUser.name,
+            dropshipper_phone: phone || dbUser.dropshipper_phone,
+            updated_at: now.toISOString(),
           })
-          console.log('Refund initiated for failed subscription activation')
-        } catch (refundErr) {
-          console.error('Refund failed:', refundErr)
+          .eq('clerk_user_id', userId)
+
+        if (updateError) {
+          console.error('❌ Error updating user subscription:', updateError)
         }
-        */
-        
-        return NextResponse.json(
-          { 
-            success: false, 
-            error: 'Database update failed. Payment received. Please contact support with payment ID: ' + razorpay_payment_id,
-            paymentId: razorpay_payment_id,
-            dbError: retryError.message || 'Unknown database error'
-          },
-          { status: 500 }
-        )
       }
     }
 
@@ -188,8 +120,7 @@ export async function POST(request: Request) {
       await supabase
         .from('payments')
         .insert({
-          user_id: dbUser.id,
-          clerk_user_id: userId,
+          clerk_user_id: userId || 'GUEST',
           razorpay_order_id,
           razorpay_payment_id,
           amount: amount,
@@ -199,6 +130,7 @@ export async function POST(request: Request) {
           plan_id: planId,
           plan_interval: interval,
           created_at: now.toISOString(),
+          email: email || 'No Email Provided'
         })
     } catch (paymentLogError) {
       console.log('Payment log error (table may not exist):', paymentLogError)
